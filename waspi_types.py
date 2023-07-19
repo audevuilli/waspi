@@ -1,5 +1,5 @@
 """Module that contains the types used by waspi."""
-import datatime
+import datetime
 from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 from uuid import UUID
