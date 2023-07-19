@@ -13,7 +13,7 @@ the samplerate (interval in ms for reading sensor values).
 import datetime
 import serial
 import time
-from typing import Optional, List
+import asyncio
 
 from data import Sensor, SensorValue
 from waspi_types import SensorReader
@@ -21,6 +21,7 @@ from waspi_types import SensorReader
 CONST_BAUD_RATE = 9600
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 HWID = 'SCALE'
+SAMPLE_RATE = 10
 
 class WeightSensing(SensorReader):
     """A SensorReader that read load cell value every 10 seconds."""
@@ -28,10 +29,10 @@ class WeightSensing(SensorReader):
     def __init__(self, samplerate: int, hwid: str): 
         """Initialise the weight sensing."""
         # Reading interval
-        self.samplerate = samplerate
+        self.samplerate = SAMPLE_RATE
         self.hwid = HWID
 
-    def get_reading(self, sensor: List[Sensor]) -> SensorValue: 
+    async def get_reading(self, sensor: List[Sensor]) -> SensorValue: 
         """Get sensor reading every 10 second."""
         try: 
             # Open the serial port
@@ -59,8 +60,9 @@ class WeightSensing(SensorReader):
                 except ValueError:
                     print("Invalide data received.")
 
-                    # Add a delay if needed
-                    time.sleep(1)
+                # Add a delay between weight scale readings
+                await asyncio.sleep(self.samplerate)
+                    
 
         except serial.SerialException as e:
             print("Error opening the serial port:", e)
@@ -74,3 +76,5 @@ if __name__ == "__main__":
     print(reading.datetime)
     print(reading.hwid)
     print(reading.value)
+
+
