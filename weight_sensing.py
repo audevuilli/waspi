@@ -51,7 +51,7 @@ class WeightSensing(SensorReader):
                     print(f"Value from line: {value}")
                     value_timestamp = datetime.datetime.now()
 
-                    sensor_value = SensorValue(datetime=value_timestamp, hwid=self.hwid, value=valu, deployment=None)
+                    sensor_value = SensorValue(datetime=value_timestamp, hwid=self.hwid, value=value, deployment=None)
                     print(f"Sensor Value: {sensor_value}")
 
                     return sensor_value
