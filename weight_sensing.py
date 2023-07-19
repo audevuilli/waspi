@@ -16,7 +16,7 @@ import time
 from typing import Optional, List
 
 from data import Sensor, SensorValue
-from types import SensorReader
+from waspi_types import SensorReader
 
 CONST_BAUD_RATE = 9600
 CONST_SERIAL_PORT = '/dev/ttyACM0'
