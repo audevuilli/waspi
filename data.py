@@ -3,6 +3,7 @@ import datetime
 from typing import List, Optional, Tuple
 from uuid import UUID, uuid4
 from pydantic import Field
+from dataclass import dataclass
 
 class Deployment:
     """A Deployment class to capture information about the system.
@@ -34,7 +35,7 @@ class Sensor:
     unit: Optional[str]
     """The unit of the sensor reading."""
 
-
+@dataclass
 class SensorValue:
     """A reading from a sensor."""
     

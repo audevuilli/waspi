@@ -66,6 +66,8 @@ class WeightSensing(SensorReader):
             print("Error opening the serial port:", e)
 
 
+
+
 if __name__ == "__main__":
     reader = WeightSensing(samplerate = 10, hwid = HWID)
     reading = reader.get_reading([HWID])
