@@ -2,6 +2,7 @@
 import datetime
 from typing import List, Optional, Tuple
 from uuid import UUID, uuid4
+from pydantic import Field
 
 class Deployment:
     """A Deployment class to capture information about the system.

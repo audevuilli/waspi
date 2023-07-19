@@ -11,12 +11,12 @@ the samplerate (interval in ms for reading sensor values).
 """
 
 import datetime
+import serial
+import time
 from typing import Optional, List
 
 from data import Sensor, SensorValue
 from types import SensorReader
-
-from pySerialTransfer import pySerialTransfer as txfr
 
 CONST_BAUD_RATE = 9600
 CONST_SERIAL_PORT = '/dev/ttyACM0'
@@ -31,7 +31,7 @@ class WeightSensing(SensorReader):
         self.samplerate = samplerate
         self.hwid = HWID
 
-    def read_sensor_data(self): 
+    def get_reading(self, sensor: List[Sensor]) -> SensorValue: 
         """Get sensor reading every 10 second."""
         try: 
             # Open the serial port
@@ -43,16 +43,16 @@ class WeightSensing(SensorReader):
         
             while True:
                 # Read data from the Arduino 
-                line = ser.readline().decode.strip()
+                line = ser.readline().decode('utf-8').rstrip()
                 print(f"Arduino Line: {line}")
 
                 try: 
                     value = float(line)
+                    print(f"Value from line: {value}")
                     value_timestamp = datetime.datetime.now()
 
-                    hwid = self.hwid
-
-                    sensor_value = SensorValue(value_timestamp, hwid, value)
+                    sensor_value = SensorValue(datetime=value_timestamp, hwid=self.hwid, value=value)
+                    print(f"Sensor Value: {sensor_value}")
 
                     return sensor_value
             
@@ -65,17 +65,9 @@ class WeightSensing(SensorReader):
         except serial.SerialException as e:
             print("Error opening the serial port:", e)
 
-    def get_reading(self, sensor: List[str]) -> SensorValue:
-        # Assuming you have multiple sensors, you can use the 'sensor' parameter
-        # to identify which sensor to read from (e.g., using the sensor's ID).
-        # For this example, I've hardcoded the sensor ID as 'your_sensor_hwid'.
-
-        # Call the method to read data from the Arduino
-        return self.read_sensor_data()
-
 
 if __name__ == "__main__":
-    reader = WeightSensing()
+    reader = WeightSensing(samplerate = 10, hwid = HWID)
     reading = reader.get_reading([HWID])
     print(reading.datetime)
     print(reading.hwid)
