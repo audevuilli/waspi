@@ -33,7 +33,7 @@ class WeightSensor(SensorReader):
         self.samplerate = SAMPLE_RATE
         self.hwid = HWID
 
-    def get_sensor_reading(self, sensor: List[Sensor]) -> SensorValue:
+    def get_sensor_reading(self) -> SensorValue:
         """Get sensor reading every 10 second."""
         
         with serial.Serial(CONST_SERIAL_PORT, CONST_BAUD_RATE, timeout=1) as ser:
