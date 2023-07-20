@@ -1,5 +1,5 @@
 """Waspi components."""
-from components.weight_sensing import WeightSensor
+from components.sensor_manager import WeightSensor
 
 __all__ = [
     WeightSensor
