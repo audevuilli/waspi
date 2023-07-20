@@ -16,14 +16,15 @@ import time
 import asyncio
 
 from data import Sensor, SensorValue
-from waspi_types import SensorReader
+from components.types import SensorReader
 
 CONST_BAUD_RATE = 9600
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 HWID = 'SCALE'
 SAMPLE_RATE = 10
 
-class WeightSensing(SensorReader):
+
+class WeightSensor(SensorReader):
     """A SensorReader that read load cell value every 10 seconds."""
 
     def __init__(self, samplerate: int, hwid: str): 
@@ -32,7 +33,7 @@ class WeightSensing(SensorReader):
         self.samplerate = SAMPLE_RATE
         self.hwid = HWID
 
-    async def get_reading(self, sensor: List[Sensor]) -> SensorValue: 
+    def get_sensor_reading(self, sensor: List[Sensor]) -> SensorValue: 
         """Get sensor reading every 10 second."""
         try: 
             # Open the serial port
