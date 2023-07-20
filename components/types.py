@@ -13,7 +13,7 @@ class SensorReader(ABC):
     The SensorReader is responsible for reading values from the sensors.
     """
     @abstractmethod
-    def get_reading(self, sensor: List[Sensor]) -> SensorValue:
+    def get_sensor_reading(self, sensor: List[Sensor]) -> SensorValue:
         """ Read values from the sensors and return reading.
 
         The reading should be saved in flash memory and the value 
