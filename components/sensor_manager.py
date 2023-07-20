@@ -14,6 +14,7 @@ import datetime
 import serial
 import time
 import asyncio
+from typing import List
 
 from data import Sensor, SensorValue
 from components.types import SensorReader

@@ -1,3 +1,4 @@
+import datetime
 import components
 
 HWID = 'SCALE'
