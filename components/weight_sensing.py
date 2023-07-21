@@ -14,68 +14,37 @@ import datetime
 import serial
 import time
 import asyncio
+from typing import List
 
-from data import Sensor, SensorValue
-from components.types import SensorReader
+#from data import Sensor, SensorValue
+#from components.types import SensorReader
+from pySerialTransfer import pySerialTransfer as txfr
 
-CONST_BAUD_RATE = 9600
-CONST_SERIAL_PORT = '/dev/ttyACM0'
+
+# CONST_SERIAL_PORT = '/dev/ttyACM0'
+CONST_SERIAL_PORT = txfr.GetSerialDevice()
+print("Serial Port: {CONST_SERIAL_PORT}")
+CONST_BAUD_RATE = 115200
+
 HWID = 'SCALE'
 SAMPLE_RATE = 10
+start_pos = 0
+
+link = txfr.SerialTransfer(
+    port=CONST_SERIAL_PORT,
+    baud=CONST_BAUD_RATE,
+    restrict_ports=False,
+    timeout=0.5)
 
 
-class WeightSensor(SensorReader):
-    """A SensorReader that read load cell value every 10 seconds."""
+link.open()
 
-    def __init__(self, samplerate: int, hwid: str): 
-        """Initialise the weight sensing."""
-        # Reading interval
-        self.samplerate = SAMPLE_RATE
-        self.hwid = HWID
+input_buffer = link.read_all()
+print(input_buffer)
 
-    def get_sensor_reading(self) -> SensorValue: 
-        """Get sensor reading every 10 second."""
-        try: 
-            # Open the serial port
-            ser = serial.Serial(CONST_SERIAL_PORT, CONST_BAUD_RATE, timeout=1)
-            print("Serial connection established.")
-
-            #Wait for the Arduino to initialise
-            time.sleep(2)
-        
-            while True:
-                # Read data from the Arduino 
-                line = ser.readline().decode('utf-8').rstrip()
-                print(f"Arduino Line: {line}")
-
-                try: 
-                    value = float(line)
-                    print(f"Value from line: {value}")
-                    value_timestamp = datetime.datetime.now()
-
-                    sensor_value = SensorValue(datetime=value_timestamp, hwid=self.hwid, value=value, deployment=None)
-                    print(f"Sensor Value: {sensor_value}")
-
-                    return sensor_value
-            
-                except ValueError:
-                    print("Invalide data received.")
-
-                # Add a delay between weight scale readings
-                await asyncio.sleep(self.samplerate)
-                    
-
-        except serial.SerialException as e:
-            print("Error opening the serial port:", e)
-
-
-
-
-if __name__ == "__main__":
-    reader = WeightSensing(samplerate = 10, hwid = HWID)
-    reading = reader.get_reading([HWID])
-    print(reading.datetime)
-    print(reading.hwid)
-    print(reading.value)
-
+# Request to arduino code
+link.write(bytes([start_pos]))
+message = link.read_until()
+decode_message = message.decode()
+print(f"Message: {decode_message}")
 
