@@ -23,29 +23,29 @@ CONST_BAUD_RATE = 115200
 HWID = 'SCALE'
 link = None
 
-def serial_rx_coroutine():
-    try: 
-        link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
 
-        link.open()
-        sleep(5)
-    
-        while True:
-            if link.available():
-                y = link.rx_obj(obj_type='f')
-                print("Rx Object: {:0.3f}".format(y))
+class WaspiSerial():
+    def serial_rx_coroutine():
+        try: 
+            link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
 
-            elif link.status < 0:
-                if link.status == txfer.CRC_ERROR:
-                    print('ERROR: CRC_ERROR')
-                elif link.status == txfer.PAYLOAD_ERROR:
-                    print('ERROR: PAYLOAD_ERROR')
-                elif link.status == txfer.STOP_BYTE_ERROR:
-                    print('ERROR: STOP_BYTE_ERROR')
-                else:
-                    print('ERROR: {}'.format(link.status))
-                
-    except KeyboardInterrupt:   
-        link.close()
+            link.open()
+            sleep(5)
 
-serial_rx()
+            while True:
+                if link.available():
+                    y = link.rx_obj(obj_type='f')
+                    print("Rx Object: {:0.3f}".format(y))
+
+                elif link.status < 0:
+                    if link.status == txfer.CRC_ERROR:
+                        print('ERROR: CRC_ERROR')
+                    elif link.status == txfer.PAYLOAD_ERROR:
+                        print('ERROR: PAYLOAD_ERROR')
+                    elif link.status == txfer.STOP_BYTE_ERROR:
+                        print('ERROR: STOP_BYTE_ERROR')
+                    else:
+                        print('ERROR: {}'.format(link.status))
+
+        except KeyboardInterrupt:   
+            link.close()
