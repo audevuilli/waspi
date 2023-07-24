@@ -1,6 +1,5 @@
 import datetime
-#import components
-from components.sensor_manager import WeightSensor
+from sensor_manager import WeightSensor
 
 HWID = 'weight_scale'
 SAMPLE_INTERVAL = 60
