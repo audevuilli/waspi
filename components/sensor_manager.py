@@ -18,7 +18,7 @@ from typing import List
 
 from data import Sensor, SensorValue
 from components.types import SensorReader
-from waspi_serial import serial_rx_coroutine
+from components.waspi_serial import serial_rx_coroutine
 
 CONST_BAUD_RATE = 115200
 CONST_SERIAL_PORT = '/dev/ttyACM0'
