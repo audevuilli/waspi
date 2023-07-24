@@ -22,30 +22,34 @@ from pySerialTransfer import pySerialTransfer as txfr
 
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
-#CONST_SERIAL_PORT = txfr.GetSerialDevice()
-#print("Serial Port: {CONST_SERIAL_PORT}")
+
 CONST_BAUD_RATE = 115200
-
 HWID = 'SCALE'
-SAMPLE_RATE = 10
-start_pos = 0
+link = None
 
-link = txfr.SerialTransfer(
-    port=CONST_SERIAL_PORT,
-    baud=CONST_BAUD_RATE,
-    restrict_ports=False,
-    timeout=0.5)
+def serial_rx():
+    try: 
+        link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
 
-link = serial.Serial(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, timeout=0.5)
-link.close()
-link.open()
+        link.open()
+        sleep(5)
+    
+        while True:
+            if link.available():
+                y = link.rx_obj(obj_type='f')
+                print(f"Rx Object: {y}")
 
-input_buffer = link.read_all()
-print(input_buffer)
+            elif link.status < 0:
+                if link.status == txfer.CRC_ERROR:
+                    print('ERROR: CRC_ERROR')
+                elif link.status == txfer.PAYLOAD_ERROR:
+                    print('ERROR: PAYLOAD_ERROR')
+                elif link.status == txfer.STOP_BYTE_ERROR:
+                    print('ERROR: STOP_BYTE_ERROR')
+                else:
+                    print('ERROR: {}'.format(link.status))
+                
+    except KeyboardInterrupt:   
+        link.close()
 
-# Request to arduino code
-link.write(bytes([start_pos]))
-message = link.read_until()
-decode_message = message.decode()
-print(f"Message: {decode_message}")
-
+serial_rx()
