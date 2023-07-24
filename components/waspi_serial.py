@@ -10,14 +10,10 @@ It specifies the sensor id, the unit of measurement, as well as,
 the samplerate (interval in ms for reading sensor values). 
 """
 
-import datetime
 import serial
-import time
+from time import sleep
 import asyncio
-from typing import List
 
-#from data import Sensor, SensorValue
-#from components.types import SensorReader
 from pySerialTransfer import pySerialTransfer as txfr
 
 
@@ -27,7 +23,7 @@ CONST_BAUD_RATE = 115200
 HWID = 'SCALE'
 link = None
 
-def serial_rx():
+def serial_rx_coroutine():
     try: 
         link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
 
@@ -37,7 +33,7 @@ def serial_rx():
         while True:
             if link.available():
                 y = link.rx_obj(obj_type='f')
-                print(f"Rx Object: {y}")
+                print("Rx Object: {:0.3f}".format(y))
 
             elif link.status < 0:
                 if link.status == txfer.CRC_ERROR:
