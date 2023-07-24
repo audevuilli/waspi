@@ -21,9 +21,9 @@ from typing import List
 from pySerialTransfer import pySerialTransfer as txfr
 
 
-# CONST_SERIAL_PORT = '/dev/ttyACM0'
-CONST_SERIAL_PORT = txfr.GetSerialDevice()
-print("Serial Port: {CONST_SERIAL_PORT}")
+CONST_SERIAL_PORT = '/dev/ttyACM0'
+#CONST_SERIAL_PORT = txfr.GetSerialDevice()
+#print("Serial Port: {CONST_SERIAL_PORT}")
 CONST_BAUD_RATE = 115200
 
 HWID = 'SCALE'
@@ -36,7 +36,8 @@ link = txfr.SerialTransfer(
     restrict_ports=False,
     timeout=0.5)
 
-
+link = serial.Serial(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, timeout=0.5)
+link.close()
 link.open()
 
 input_buffer = link.read_all()

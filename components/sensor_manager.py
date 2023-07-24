@@ -22,8 +22,8 @@ from pySerialTransfer import pySerialTransfer as txfr
 
 
 CONST_BAUD_RATE = 115200
-# CONST_SERIAL_PORT = '/dev/ttyACM0'
-CONST_SERIAL_PORT = txfr.GetSerialDevice()
+CONST_SERIAL_PORT = '/dev/ttyACM0'
+#CONST_SERIAL_PORT = txfr.GetSerialDevice()
 HWID = 'SCALE'
 SAMPLE_RATE = 10
 
