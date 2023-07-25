@@ -104,6 +104,7 @@ callbacks[0]  = periodic_report
 def serial_rx_time():
     while True:
         try: 
+            global link
             link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
             link.debug = True
             link.open()
