@@ -34,13 +34,13 @@ def get_blob(n):
         },
         # Temperature
         {
-             'hwid': 'sensor-temperature',
-             'value': n['sensor-temperature'],
+             'hwid': 'temperature-sensor',
+             'value': n['temperature-sensor'],
         },
         # # Humidity
         {
-             'hwid': 'sensor-humidity',
-             'value': n['sensor-humidity'],
+             'hwid': 'humidity-sensor',
+             'value': n['humidity-sensor'],
         },
     ]
 
