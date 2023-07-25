@@ -97,7 +97,7 @@ def periodic_report():
 callbacks = [None] * 256
 callbacks[0]  = periodic_report
 
-def serial_rx_coroutine():
+async def serial_rx_coroutine():
     while True:
         try: 
             global link
@@ -105,11 +105,10 @@ def serial_rx_coroutine():
             link.debug = True
             link.open()
             link.set_callbacks(callbacks)
-            print(f"after link.set_callbacks: {link}")
 
             while True:
                 link.tick()
-                sleep(0.1)
+                await asyncio.sleep(0.1)
             link.close()
 
         except Exception as e:
@@ -117,7 +116,7 @@ def serial_rx_coroutine():
 
 ###################################################################################################
 
-def mqtt_tx_coroutine():
+async def mqtt_tx_coroutine():
 
     # Initialise the MQTT messenger.
     mqtt_client = mqtt.Client(DEFAULT_CLIENTID)
@@ -125,30 +124,30 @@ def mqtt_tx_coroutine():
     mqtt_client.connect(DEFAULT_HOST, DEFAULT_PORT)
 
     # Send Messages
-    try:
-        print("Periodic Report - Jblob")
-        print(jblob)
-        response = mqtt_client,publish(DEFAULT_TOPIC, payload=jblob)
-        response.wait_for_publish(timeout=5)
+    while True:
+        try:
+            print("Periodic Report - Jblob")
+            serial_data = periodic_report()
+            response = mqtt_client.publish(DEFAULT_TOPIC, payload=serial_data)
+            response.wait_for_publish(timeout=5)
     
-    except ValueError:
-        status = data.ResponseStatus.ERROR
-    except RuntimeError:
-        status = data.ResponseStatus.FAILED
+        except ValueError:
+            status = data.ResponseStatus.ERROR
+        except RuntimeError:
+            status = data.ResponseStatus.FAILED
     
-    received_on = datetime.datetime.now()
-    print(recieved_on)
+        received_on = datetime.datetime.now()
+        print(recieved_on)
+    
+    await asyncio.sleep(9)
 
-    return
 
 ###################################################################################################
 
 # Call the function to run 
-
-serial_rx_coroutine()
-mqtt_tx_coroutine()
-
-#loop = asyncio.create_task(serial_rx_coroutine())
-#loop = asyncio.get_event_loop()
-#loop.close()
+loop = asyncio.get_event_loop()
+loop = asyncio.create_task(serial_rx_coroutine())
+loop = asyncio.create_task(mqtt_tx_coroutine())
+loop.run_forever()
+loop.close()
 
