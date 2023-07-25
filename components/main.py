@@ -19,26 +19,19 @@ HWID = 'weight_scale'
 #serial_rx = compoments.Serial_Rx(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE)
 serial_rx = Serial_Rx(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE)
 
-"""Define the Sensor Reporter objebt"""
-#reporter = components.SensorReporter(hwid=HWID)
-reporter = SensorReporter(hwid=HWID)
-
 """Initialise the MQTT Messenger."""
 #mqtt_messenger = components.MQTTMessenger(
 mqtt_messenger = MQTTMessenger(
-        host=config_mqtt.DEFAULT_MQTT_HOST, 
-        username=config_mqtt.DEFAULT_MQTT_CLIENT_USER, 
-        password=config_mqtt.DEFAULT_MQTT_CLIENT_PASS, 
-        port=config_mqtt.DEFAULT_MQTT_PORT, 
-        clientid=config_mqtt.DEFAULT_MQTT_CLIENTID, 
-        topic=config_mqtt.DEFAULT_MQTT_TOPIC
+        host=config_mqtt.DEFAULT_HOST, 
+        username=config_mqtt.DEFAULT_MQTTCLIENT_USER, 
+        password=config_mqtt.DEFAULT_MQTTCLIENT_PASS, 
+        port=config_mqtt.DEFAULT_PORT, 
+        clientid=config_mqtt.DEFAULT_CLIENTID, 
+        topic=config_mqtt.DEFAULT_TOPIC
 )
 
-# Define the callbacks
-callbacks[0] = reporter.periodic_report()
-
-# Receive the sensor data
-getSensors_value = serial_rx.serial_rx_coroutine(callbacks)
+# Get the sensor data
+getSensors_value = serial_rx.serial_rx_coroutine()
 print(f"Sensor Values: {getSensors_value}")
 
 # Send weight data via MQTT

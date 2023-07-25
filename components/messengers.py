@@ -5,7 +5,7 @@ from typing import Optional
 import paho.mqtt.client as mqtt
 
 import data
-from components import types
+from waspi_types import Messenger
 #from components.types import Messenger
 #from components import waspi_types
 
@@ -13,7 +13,7 @@ __all__ = [
     "MQTTMessenger",
 ]
 
-class MQTTMessenger(types.Messenger):
+class MQTTMessenger(Messenger):
     """Messenger that sends messages via MQTT."""
 
     client: mqtt.Client

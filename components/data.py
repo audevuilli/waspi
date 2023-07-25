@@ -1,5 +1,6 @@
 """Data objects for waspi system.py"""
 import datetime
+from enum import IntEnum
 from typing import List, Optional, Tuple
 from uuid import UUID, uuid4
 from pydantic import Field

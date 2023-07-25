@@ -24,25 +24,24 @@ from waspi_util import *
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
 hwid = 'weight_scale'
-link = None
 
 def get_blob(n):
     map = [
         # Load Cell
         {
-            'hwid': f'{hwid}',
+            'hwid': 'weight_scale',
             'value': n['weight-scale'],
         },
         # Temperature
-        # {
-        #     'hwid': f'{hwid}',
-        #     'value': n['sensor-temperature'],
-        # },
+        {
+             'hwid': 'sensor-temperature',
+             'value': n['sensor-temperature'],
+        },
         # # Humidity
-        # {
-        #     'hwid': f'{hwid}',
-        #     'value': n['sensor-humidity'],
-        # }
+        {
+             'hwid': 'sensor-humidity',
+             'value': n['sensor-humidity'],
+        },
     ]
 
     # Set timestamp
@@ -63,8 +62,8 @@ def periodic_report():
     data['weight-scale'] = round(data['weight-scale'], 3)
 
     # 2/ Temperature & humidity - SHT31 sensor
-    # idx, data['temperature-sensor-a'] = get_uint16_t(link, idx)
-    # idx, data['humidity-sensor-a'] = get_uint16_t(link, idx)
+    idx, data['temperature-sensor'] = get_float(link, idx)
+    idx, data['humidity-sensor'] = get_float(link, idx)
     # idx, data['temperature-sensor-b'] = get_uint16_t(link, idx)
     # idx, data['humidity-sensor-b'] = get_uint16_t(link, idx)
     # idx, data['temperature-sensor-c'] = get_uint16_t(link, idx)
@@ -81,7 +80,7 @@ def periodic_report():
 callbacks = [None] * 256
 callbacks[0]  = periodic_report
 
-def serial_rx_time():
+async def serial_rx_coroutine():
     while True:
         try: 
             global link
@@ -93,10 +92,15 @@ def serial_rx_time():
 
             while True:
                 link.tick()
-                sleep(5)
+                await asyncio.sleep(0.1)
             link.close()
 
         except Exception as e:
             print(e) 
 
-serial_rx_time()
+serial_rx_coroutine()
+
+#loop = asyncio.create_task(serial_rx_coroutine())
+#loop = asyncio.get_event_loop()
+#loop.close()
+
