@@ -11,6 +11,7 @@ the samplerate (interval in ms for reading sensor values).
 """
 
 from time import sleep
+import datetime
 import time
 import asyncio
 import arrow
