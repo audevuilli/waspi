@@ -78,8 +78,8 @@ def periodic_report():
     idx = 0
 
     # 1/ Load Cell
-    idx, data['weight-scale'] = get_float(link, idx)
-    print(f"Weight Scale Data float: {idx, data}")
+    #idx, data['weight-scale'] = get_float(link, idx)
+    #print(f"Weight Scale Data float: {idx, data}")
     idx, data['weight-scale'] = get_uint16_t(link, idx)
     print(f"Weight Scale Data uint16: {idx, data}")
 
@@ -106,6 +106,8 @@ def serial_rx_time():
             link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
             link.debug = True
             link.open()
+            print(link)
+            print(f"Datetime Now: {datetime.datetime.now()}")
             link.set_callbacks(callbacks)
 
             while True:
