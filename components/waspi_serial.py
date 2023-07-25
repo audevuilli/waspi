@@ -87,7 +87,7 @@ def periodic_report():
 
     # 3/ Format Data - hwid, value, timestammp_rx
     blob = get_blob(data)
-    jblob = json.dump(blob)
+    jblob = json.dumps(blob)
     mqtt_jblob = json.loads(jblob)
     print(f"TIME: {datetime.datetime.now()}")
     print(f"JBLOB: {mqtt_jblob}")
