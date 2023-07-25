@@ -18,13 +18,12 @@ from pySerialTransfer import pySerialTransfer as txfr
 
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
-
 CONST_BAUD_RATE = 115200
-HWID = 'SCALE'
+HWID = 'weight_scale'
 link = None
 
 
-def serial_rx_coroutine():
+def serial_rx():
     try: 
         link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
 
@@ -48,3 +47,24 @@ def serial_rx_coroutine():
 
     except KeyboardInterrupt:   
         link.close()
+
+#serial_rx_coroutine()
+
+def serial_rx_time():
+    while True:
+        try: 
+            link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
+            link.debug = True
+            link.open()
+            #link.set_callbacks(callbacks)
+
+            while True:
+                link.tick()
+                sleep(5)
+            link.close()
+
+        except Exception as e:
+            print(e) 
+
+
+serial_rx_time()

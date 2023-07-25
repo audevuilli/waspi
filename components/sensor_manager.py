@@ -40,6 +40,34 @@ class WeightSensor(SensorReader):
         print(f"Time now is: {time}")
         
         # Create an arra to receive the data from the sensor
+        loadCell_Buffer = [0 for i in range(SAMPLE_COUNT)]
+        
+        for i in range(0, SAMPLE_COUNT):
+            data = serial_rx_coroutine()
+            loadCell_Buffer[i] = data
+            
+        
+        # Calculate the average value over 1 second
+        loadCell_Value = float(sum(loadCell_Buffer)/len(loadCell_Buffer))
+        print(f"Load Cell Value is: {loadCell_Value}")
+
+        sensor_value = SensorValue(
+            datetime=timenow, 
+            hwid=self.hwid,
+            value=loadCell_Value, 
+            deployment=None
+        )
+
+        return sensor_value
+
+def get_sensor_reading(self) -> SensorValue:
+        """Get sensor reading every 10 second."""
+
+        # Get the start time 
+        timenow = datetime.datetime.now()
+        print(f"Time now is: {time}")
+        
+        # Create an arra to receive the data from the sensor
         loadCell_Buffer = []
         
         for i in range(0, SAMPLE_COUNT):
@@ -57,4 +85,4 @@ class WeightSensor(SensorReader):
             deployment=None
         )
 
-        return sensor_value
+get_sensor_reading(HWID)

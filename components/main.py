@@ -16,9 +16,9 @@ def main():
         print(f"Time Now: {time_now}")
         time_next_sample = time_now + datetime.timedelta(seconds=SAMPLE_INTERVAL)
 
-        while time_now < time_next_sample:
-            print(f"No Sensor Reading")
-            pass
+        #while time_now < time_next_sample:
+        #    print(f"No Sensor Reading")
+        #    pass
 
         # Read weight sensor data
         weight_data = weight_sensor.get_sensor_reading()
