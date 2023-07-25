@@ -63,7 +63,10 @@ def periodic_report():
 
     # 2/ Temperature & humidity - SHT31 sensor
     idx, data['temperature-sensor'] = get_float(link, idx)
+    data['temperature-sensor'] = round(data['temperature-sensor'], 2)
+    
     idx, data['humidity-sensor'] = get_float(link, idx)
+    data['humidity-sensor'] = round(data['humidity-sensor'], 2)
     # idx, data['temperature-sensor-b'] = get_uint16_t(link, idx)
     # idx, data['humidity-sensor-b'] = get_uint16_t(link, idx)
     # idx, data['temperature-sensor-c'] = get_uint16_t(link, idx)
