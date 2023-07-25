@@ -88,31 +88,10 @@ def periodic_report():
     # 3/ Format Data - hwid, value, timestammp_rx
     blob = get_blob(data)
     jblob = json.dumps(blob)
-    print(jblob)
+    print(f"JBLOB: {jblob}")
+    print(f"JBLOB: {data}")
 
-    return jblob
-
-###################################################################################################
-    
-callbacks = [None] * 256
-callbacks[0]  = periodic_report
-
-async def serial_rx_coroutine():
-    while True:
-        try: 
-            global link
-            link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
-            link.debug = True
-            link.open()
-            link.set_callbacks(callbacks)
-
-            while True:
-                link.tick()
-                await asyncio.sleep(0.1)
-            link.close()
-
-        except Exception as e:
-            print(e) 
+    return jblob, data
 
 ###################################################################################################
 
@@ -128,6 +107,7 @@ async def mqtt_tx_coroutine():
         try:
             print("Periodic Report - Jblob")
             serial_data = periodic_report()
+            print(f"Serial Data: {serial_data}")
             response = mqtt_client.publish(DEFAULT_TOPIC, payload=serial_data)
             response.wait_for_publish(timeout=5)
     
@@ -141,13 +121,62 @@ async def mqtt_tx_coroutine():
     
     await asyncio.sleep(9)
 
+#################################################################################################
 
+
+callbacks = [None] * 256
+callbacks[0]  = periodic_report
+
+async def serial_rx_coroutine():
+    while True:
+        try: 
+            global link
+            link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
+            link.debug = True
+            link.open()
+            link.set_callbacks(callbacks)
+
+            while True:
+                link.tick()
+                await asyncio.sleep(0.1)
+                link.close()
+
+        except Exception as e:
+            print(e) 
+        
+
+###################################################################################################
+
+async def main():
+    
+    global link
+
+    # Start the Serial Transfer - Read Data - Periodic Rerpot
+    link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
+    link.debug = True
+    link.open()
+    link.set_callbacks(callbacks)
+
+    try:
+        # Start the MQTT publisher coroutine
+        mqtt_publisher = mqtt_tx_coroutine()
+
+        while True:
+            link.tick()
+            await asyncio.sleep(0.1)
+   
+    except Exception as e:
+        print(e)
+    finally:
+        link.close()
+    
 ###################################################################################################
 
 # Call the function to run 
 loop = asyncio.get_event_loop()
-loop = asyncio.create_task(serial_rx_coroutine())
-loop = asyncio.create_task(mqtt_tx_coroutine())
-loop.run_forever()
-loop.close()
+#loop = asyncio.create_task(serial_rx_coroutine())
+#loop = asyncio.create_task(mqtt_tx_coroutine())
+loop.run_until_complete(main())
+#loop.run_forever()
+#loop.close()
 
