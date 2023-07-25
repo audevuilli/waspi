@@ -16,10 +16,10 @@ import time
 import asyncio
 import arrow
 import json
-from typing import Optiona, List
+from typing import Optional, List
 
 from pySerialTransfer import pySerialTransfer as txfr
-from components.types import SerialReader
+from components.waspi_types import SerialReader
 from waspi_util import *
 
 link = None
