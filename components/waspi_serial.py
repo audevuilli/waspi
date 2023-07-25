@@ -80,7 +80,7 @@ def periodic_report():
 callbacks = [None] * 256
 callbacks[0]  = periodic_report
 
-async def serial_rx_coroutine():
+def serial_rx_coroutine():
     while True:
         try: 
             global link
@@ -92,7 +92,7 @@ async def serial_rx_coroutine():
 
             while True:
                 link.tick()
-                await asyncio.sleep(0.1)
+                sleep(0.1)
             link.close()
 
         except Exception as e:
