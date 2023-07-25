@@ -47,10 +47,10 @@ print(f"MQTT Response: {response}")
 
 
 
-def main(): 
-    """Define the Serial_Rx object."""
-    """Define the Sensor Reporter objebt"""
-    """Initialise the MQTT Messenger."""
+""" def main(): 
+    #Define the Serial_Rx object.
+    #Define the Sensor Reporter objebt
+    #Initialise the MQTT Messenger.
    
     def process():
 
@@ -62,4 +62,4 @@ def main():
     #process()
 
 #if __name__ == "__main__":
-#    main()
+#    main() """
