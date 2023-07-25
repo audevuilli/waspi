@@ -4,7 +4,9 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 from uuid import UUID
 
-from data import Deployment, Sensor, SensorValue, Message
+#from data import Deployment, Sensor, SensorValue, Message
+import data
+#from data import *
 
 
 class SensorReader(ABC):
@@ -13,7 +15,7 @@ class SensorReader(ABC):
     The SensorReader is responsible for reading values from the sensors.
     """
     @abstractmethod
-    def get_sensor_reading(self) -> SensorValue:
+    def get_sensor_reading(self) -> data.SensorValue:
         """ Read values from the sensors and return reading.
 
         The reading should be saved in flash memory and the value 
@@ -28,31 +30,31 @@ class Store(ABC):
     """
 
     @abstractmethod
-    def get_current_deployment(self) -> Deployment:
+    def get_current_deployment(self) -> data.Deployment:
         """Get the current deployment from the local filesystem."""
 
     @abstractmethod
-    def store_deployment(self, deployment: Deployment) -> None:
+    def store_deployment(self, deployment: data.Deployment) -> None:
         """Store the deployment locally."""
 
     @abstractmethod
-    def get_sensors(self) -> Sensor:
+    def get_sensors(self) -> data.Sensor:
         """Get the current sensors."""
 
     @abstractmethod
     def store_sensor(
         self, 
-        sensor: Sensor, 
-        deployment: Optional[Deployment] = None,
+        sensor: data.Sensor, 
+        deployment: Optional[data.Deployment] = None,
     ) -> None:
         """Store the sensor locally"""
     
     @abstractmethod
     def store_sensorvalue(
         self,
-        value: SensorValue,
-        sensor: Optional[Sensor] = None, 
-        deployment: Optional[Deployment] = None,
+        value: data.SensorValue,
+        sensor: Optional[data.Sensor] = None, 
+        deployment: Optional[data.Deployment] = None,
     ) -> None:
         """Store the sensor values locally.
 
@@ -70,7 +72,6 @@ class Messenger(ABC):
     """
 
     @abstractmethod
-    def send_message(self, message: Message):
+    def send_message(self, message: data.Message) -> data.Response:
         """Send the message to a remote server."""
-
 

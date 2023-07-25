@@ -64,3 +64,37 @@ class Message:
         default_factory=datetime.datetime.now
     )
     """The datetime when the message was created."""
+
+
+class ResponseStatus(IntEnum):
+    """The status of a message."""
+
+    SUCCESS = 0
+    """The message was received successfully."""
+
+    FAILED = 1
+    """The message failed to send."""
+
+    ERROR = 2
+    """The message was sent, but there was an error."""
+
+    TIMEOUT = 3
+    """The message timed out."""
+
+
+class Response(BaseModel):
+    """The response from sending a message."""
+
+    status: ResponseStatus
+    """The status of the message."""
+
+    message: Message
+    """The message that was sent."""
+
+    content: Optional[str] = None
+    """The content of the response."""
+
+    received_on: datetime.datetime = Field(
+        default_factory=datetime.datetime.now
+    )
+    """The datetime the message was received."""

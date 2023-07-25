@@ -34,15 +34,15 @@ def get_blob(n):
             'value': n['weight-scale'],
         },
         # Temperature
-        {
-            'hwid': f'{hwid}',
-            'value': n['sensor-temperature'],
-        },
-        # Humidity
-        {
-            'hwid': f'{hwid}',
-            'value': n['sensor-humidity'],
-        }
+        # {
+        #     'hwid': f'{hwid}',
+        #     'value': n['sensor-temperature'],
+        # },
+        # # Humidity
+        # {
+        #     'hwid': f'{hwid}',
+        #     'value': n['sensor-humidity'],
+        # }
     ]
 
     # Set timestamp
@@ -85,10 +85,11 @@ def periodic_report():
     jblob = json.dumps(blob)
     print(jblob)
 
+    return jblob
+
 
 callbacks = [None] * 256
 callbacks[0]  = periodic_report
-#callbacks[16]  = periodic_report
 
 def serial_rx_time():
     while True:
@@ -98,6 +99,7 @@ def serial_rx_time():
             link.debug = True
             link.open()
             link.set_callbacks(callbacks)
+            print(f"after link.set_callbacks: {link}")
 
             while True:
                 link.tick()
