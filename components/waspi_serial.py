@@ -23,53 +23,32 @@ from waspi_util import *
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
-HWID = 'weight_scale'
+hwid = 'weight_scale'
 link = None
-
-
-def serial_rx():
-    try: 
-        link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
-
-        link.open()
-        sleep(5)
-
-        while True:
-            if link.available():
-                y = link.rx_obj(obj_type='f')
-                print("Rx Object: {:0.3f}".format(y))
-
-            elif link.status < 0:
-                if link.status == txfer.CRC_ERROR:
-                    print('ERROR: CRC_ERROR')
-                elif link.status == txfer.PAYLOAD_ERROR:
-                    print('ERROR: PAYLOAD_ERROR')
-                elif link.status == txfer.STOP_BYTE_ERROR:
-                    print('ERROR: STOP_BYTE_ERROR')
-                else:
-                    print('ERROR: {}'.format(link.status))
-
-    except KeyboardInterrupt:   
-        link.close()
-
-#serial_rx_coroutine()
 
 def get_blob(n):
     map = [
         # Load Cell
         {
-            'hwid': f'{hwid}S001',
+            'hwid': f'{hwid}',
             'value': n['weight-scale'],
         },
+        # Temperature
+        {
+            'hwid': f'{hwid}',
+            'value': n['sensor-temperature'],
+        },
+        # Humidity
+        {
+            'hwid': f'{hwid}',
+            'value': n['sensor-humidity'],
+        }
     ]
 
     # Set timestamp
-    when = arrow.utcnow.datetime.timestamp()
-    print(f"Time now with arrow: {when}")
-    time_now = datetime.datetime.now()
-    print(f"Time now with datetime: {time_now}")
+    timestamp_rx = arrow.utcnow().datetime.timestamp()
     for x in map:
-        x['when'] = time_now
+        x['timestamp_rx'] = timestamp_rx
     
     return map
 
@@ -80,23 +59,33 @@ def periodic_report():
 
     # 1/ Load Cell
     idx, data['weight-scale'] = get_float(link, idx)
-    print(f"Weight Scale Data float: {idx, data}")
     #idx, data['weight-scale'] = get_uint16_t(link, idx)
     #print(f"Weight Scale Data uint16: {idx, data}")
 
-    # 8/ Uptime
-    idx, data['uptime'] = get_uint32_t(link, idx) # returns Arduino millis() ms
-    data['uptime'] = data['uptime'] // 1000 # to seconds
+    # 2/ Temperature & humidity - SHT31 sensor
+    # idx, data['temperature-sensor-a'] = get_uint16_t(link, idx)
+    # idx, data['humidity-sensor-a'] = get_uint16_t(link, idx)
+    # idx, data['temperature-sensor-b'] = get_uint16_t(link, idx)
+    # idx, data['humidity-sensor-b'] = get_uint16_t(link, idx)
+    # idx, data['temperature-sensor-c'] = get_uint16_t(link, idx)
+    # idx, data['humidity-sensor-c'] = get_uint16_t(link, idx)
 
-    print(arrow.now(), data)
-    print(datetime.datetime.now(), data) 
-    
+    # 3/ Accelerometer Data
+    # idx, data['accelerometer-x-sensor-a'] = get_uint16_t(link, idx)
+    # idx, data['accelerometer-y-sensor-a'] = get_uint16_t(link, idx)
+    # idx, data['accelerometer-x-sensor-b'] = get_uint16_t(link, idx)
+    # idx, data['accelerometer-y-sensor-b'] = get_uint16_t(link, idx)
+
+    # 4/ Receive Time
+    #idx, data['uptime'] = get_uint32_t(link, idx) # returns Arduino millis() ms
+    #data['uptime'] = data['uptime'] // 1000 # to seconds
+
+    # Format Data - hwid, value, timestammp_rx
     blob = get_blob(data)
     jblob = json.dumps(blob)
     print(jblob)
 
 
-#callbacks[0]  = periodic_report
 callbacks = [None] * 256
 callbacks[0]  = periodic_report
 #callbacks[16]  = periodic_report
@@ -108,8 +97,6 @@ def serial_rx_time():
             link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
             link.debug = True
             link.open()
-            print(link)
-            print(f"Datetime Now: {datetime.datetime.now()}")
             link.set_callbacks(callbacks)
 
             while True:
@@ -119,6 +106,5 @@ def serial_rx_time():
 
         except Exception as e:
             print(e) 
-
 
 serial_rx_time()
