@@ -91,9 +91,6 @@ def periodic_report():
     mqtt_jblob = json.loads(jblob)
     print(f"TIME: {datetime.datetime.now()}")
     print(f"JBLOB: {mqtt_jblob}")
-    print(f"JBLOB DATA 1: {mqtt_jblob[0]['hwid']}")
-    print(f"JBLOB DATA 2: {mqtt_jblob[1]['hwid']}")
-    print(f"JBLOB DATA 3: {mqtt_jblob[2]['hwid']}")
     print(f"DATA: {data}")
     print("")
 
@@ -127,6 +124,11 @@ async def mqtt_tx_coroutine():
             mqtt_topic = json_serialdata[0]['hwid']
             response = mqtt_client.publish(DEFAULT_TOPIC+"/"+mqtt_topic, payload=json_serialdata[0])
             response.wait_for_publish(timeout=5)
+
+            received_on = datetime.datetime.now()
+            print(recieved_on)
+
+            await asyncio.sleep(9)
     
         except ValueError:
             status = data.ResponseStatus.ERROR
@@ -135,8 +137,6 @@ async def mqtt_tx_coroutine():
     
         received_on = datetime.datetime.now()
         print(recieved_on)
-    
-    await asyncio.sleep(9)
 
 #################################################################################################
 
