@@ -10,11 +10,14 @@ It specifies the sensor id, the unit of measurement, as well as,
 the samplerate (interval in ms for reading sensor values). 
 """
 
-import serial
 from time import sleep
+import time
 import asyncio
+import arrow
+import json
 
 from pySerialTransfer import pySerialTransfer as txfr
+from waspi_util import *
 
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
@@ -50,13 +53,56 @@ def serial_rx():
 
 #serial_rx_coroutine()
 
+def get_blob(n):
+    map = [
+        # Load Cell
+        {
+            'hwid': f'{hwid}S001',
+            'value': n['weight-scale'],
+        },
+    ]
+
+    # Set timestamp
+    when = arrow.utcnow.datetime.timestamp()
+    print(f"Time now with arrow: {when}")
+    time_now = datetime.datetime.now()
+    print(f"Time now with datetime: {time_now}")
+    for x in map:
+        x['when'] = time_now
+    
+    return map
+
+def periodic_report():
+
+    data = {}
+    idx = 0
+
+    # 1/ Load Cell
+    idx, data['weight-scale'] = get_float(link, idx)
+
+    # 8/ Uptime
+    idx, data['uptime'] = get_uint32_t(link, idx) # returns Arduino millis() ms
+    data['uptime'] = data['uptime'] // 1000 # to seconds
+
+    print(arrow.now(), data)
+    print(datetime.datetime.now(), data) 
+    
+    blob = get_blob(data)
+    jblob = json.dumps(blob)
+    print(jblob)
+
+
+#callbacks[0]  = periodic_report
+callbacks[16]  = periodic_report
+
+
 def serial_rx_time():
     while True:
         try: 
             link = txfr.SerialTransfer(CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, restrict_ports=False)
             link.debug = True
             link.open()
-            #link.set_callbacks(callbacks)
+            link.set_callbacks(callbacks)
 
             while True:
                 link.tick()
