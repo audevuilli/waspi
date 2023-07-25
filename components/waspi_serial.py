@@ -79,6 +79,9 @@ def periodic_report():
 
     # 1/ Load Cell
     idx, data['weight-scale'] = get_float(link, idx)
+    print(f"Weight Scale Data float: {idx, data}")
+    idx, data['weight-scale'] = get_uint16_t(link, idx)
+    print(f"Weight Scale Data uint16: {idx, data}")
 
     # 8/ Uptime
     idx, data['uptime'] = get_uint32_t(link, idx) # returns Arduino millis() ms
@@ -93,8 +96,9 @@ def periodic_report():
 
 
 #callbacks[0]  = periodic_report
-callbacks[16]  = periodic_report
-
+callbacks = [None] * 256
+callbacks[0]  = periodic_report
+#callbacks[16]  = periodic_report
 
 def serial_rx_time():
     while True:
