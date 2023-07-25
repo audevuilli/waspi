@@ -17,13 +17,25 @@ import asyncio
 import arrow
 import json
 
+import paho.mqtt.client as mqtt
+
 from pySerialTransfer import pySerialTransfer as txfr
 from waspi_util import *
+import config_mqtt
 
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
 hwid = 'weight_scale'
+
+DEFAULT_HOST = mqtt_config.DEFAULT_HOST
+DEFAULT_PORT = mqtt_config.DEFAULT_PORT
+DEFAULT_MQTTCLIENT_USER = mqtt_config.DEFAULT_MQTTCLIENT_USER
+DEFAULT_MQTTCLIENT_PASS = mqtt_config.DEFAULT_MQTTCLIENT_PASS
+DEFAULT_CLIENTID = mqtt_config.DEFAULT_CLIENTID 
+DEFAULT_TOPIC = mqtt_config.DEFAULT_TOPIC
+
+###################################################################################################
 
 def get_blob(n):
     map = [
@@ -51,6 +63,7 @@ def get_blob(n):
     
     return map
 
+###################################################################################################
 
 def periodic_report():
 
@@ -64,7 +77,7 @@ def periodic_report():
     # 2/ Temperature & humidity - SHT31 sensor
     idx, data['temperature-sensor'] = get_float(link, idx)
     data['temperature-sensor'] = round(data['temperature-sensor'], 2)
-    
+
     idx, data['humidity-sensor'] = get_float(link, idx)
     data['humidity-sensor'] = round(data['humidity-sensor'], 2)
     # idx, data['temperature-sensor-b'] = get_uint16_t(link, idx)
@@ -79,7 +92,8 @@ def periodic_report():
 
     return jblob
 
-
+###################################################################################################
+    
 callbacks = [None] * 256
 callbacks[0]  = periodic_report
 
@@ -101,7 +115,38 @@ def serial_rx_coroutine():
         except Exception as e:
             print(e) 
 
+###################################################################################################
+
+def mqtt_tx_coroutine():
+
+    # Initialise the MQTT messenger.
+    mqtt_client = mqtt.Client(DEFAULT_CLIENTID)
+    mqtt_client.username_pw_set(DEFAULT_MQTTCLIENT_USER, DEFAULT_MQTTCLIENT_PASS)
+    mqtt_client.connect(DEFAULT_HOST, DEFAULT_PORT)
+
+    # Send Messages
+    try:
+        print("Periodic Report - Jblob")
+        print(jblob)
+        response = mqtt_client,publish(DEFAULT_TOPIC, payload=jblob)
+        response.wait_for_publish(timeout=5)
+    
+    except ValueError:
+        status = data.ResponseStatus.ERROR
+    except RuntimeError:
+        status = data.ResponseStatus.FAILED
+    
+    received_on = datetime.datetime.now()
+    print(recieved_on)
+
+    return
+
+###################################################################################################
+
+# Call the function to run 
+
 serial_rx_coroutine()
+mqtt_tx_coroutine()
 
 #loop = asyncio.create_task(serial_rx_coroutine())
 #loop = asyncio.get_event_loop()
