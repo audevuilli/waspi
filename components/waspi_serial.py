@@ -87,12 +87,13 @@ def periodic_report():
 
     # 3/ Format Data - hwid, value, timestammp_rx
     blob = get_blob(data)
-    jblob = json.dumps(blob)
-    print(f"TIME: {dateimte.datetime.now()}")
-    print(f"JBLOB: {jblob}")
-    print(f"JBLOB DATA 1: {jblob[0]['hwid']}")
-    print(f"JBLOB DATA 2: {jblob[1]['hwid']}")
-    print(f"JBLOB DATA 3: {jblob[2]['hwid']}")
+    jblob = json.dump(blob)
+    mqtt_jblob = json.loads(jblob)
+    print(f"TIME: {datetime.datetime.now()}")
+    print(f"JBLOB: {mqtt_jblob}")
+    print(f"JBLOB DATA 1: {mqtt_jblob[0]['hwid']}")
+    print(f"JBLOB DATA 2: {mqtt_jblob[1]['hwid']}")
+    print(f"JBLOB DATA 3: {mqtt_jblob[2]['hwid']}")
     print(f"DATA: {data}")
     print("")
 
@@ -108,13 +109,23 @@ async def mqtt_tx_coroutine():
     mqtt_client.connect(DEFAULT_HOST, DEFAULT_PORT)
 
     print("---- SEND MQTT DATA ----")
-    
+
     while True:
         try:
             print("Periodic Report - Jblob")
             serial_data = periodic_report()
-            print(f"Serial Data: {serial_data}")
-            response = mqtt_client.publish(DEFAULT_TOPIC, payload=serial_data)
+            json_serialdata = json.loads(serial_data)
+            
+            #for i in range(len(json_serialdata)):
+            #    mqtt_topic = json_serialdata[i]['hwid']
+            #    response = mqtt_client.publish(DEFAULT_TOPIC+"/"+mqtt_topic, payload=json_serialdata)
+
+            print(f"SERIAL DATA 1: {json_serialdata[0]['hwid']}")
+            print(f"SERIAL DATA 2: {json_serialdata[1]['hwid']}")
+            print(f"SERIAL DATA 3: {json_serialdata[2]['hwid']}")
+
+            mqtt_topic = json_serialdata[0]['hwid']
+            response = mqtt_client.publish(DEFAULT_TOPIC+"/"+mqtt_topic, payload=json_serialdata[0])
             response.wait_for_publish(timeout=5)
     
         except ValueError:
