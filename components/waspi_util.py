@@ -25,3 +25,6 @@ def get_uint16_t(link, start_pos, fn = None):
 
 def get_int16_t(link, start_pos, fn = None):
 	return get_value_int(link, start_pos, 2, '<h', fn)
+
+def get_uint32_t(link, start_pos, fn = None):
+	return get_value_int(link, start_pos, 4, '<I', fn)
