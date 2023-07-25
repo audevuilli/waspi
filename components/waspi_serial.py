@@ -88,8 +88,13 @@ def periodic_report():
     # 3/ Format Data - hwid, value, timestammp_rx
     blob = get_blob(data)
     jblob = json.dumps(blob)
+    print(f"TIME: {dateimte.datetime.now()}")
     print(f"JBLOB: {jblob}")
-    print(f"JBLOB: {data}")
+    print(f"JBLOB DATA 1: {jblob[0]['hwid']}")
+    print(f"JBLOB DATA 2: {jblob[1]['hwid']}")
+    print(f"JBLOB DATA 3: {jblob[2]['hwid']}")
+    print(f"DATA: {data}")
+    print("")
 
     return jblob, data
 
@@ -102,7 +107,8 @@ async def mqtt_tx_coroutine():
     mqtt_client.username_pw_set(DEFAULT_MQTTCLIENT_USER, DEFAULT_MQTTCLIENT_PASS)
     mqtt_client.connect(DEFAULT_HOST, DEFAULT_PORT)
 
-    # Send Messages
+    print("---- SEND MQTT DATA ----")
+    
     while True:
         try:
             print("Periodic Report - Jblob")
@@ -157,6 +163,7 @@ async def main():
     link.open()
     link.set_callbacks(callbacks)
 
+    print("---- START MQTT ----")
     try:
         # Start the MQTT publisher coroutine
         mqtt_publisher = mqtt_tx_coroutine()
