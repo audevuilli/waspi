@@ -8,6 +8,14 @@ from uuid import UUID
 import data
 #from data import *
 
+class SerialReader(ABC):
+    """ Read value from the sensor using pySerialTransfer."""
+    
+    @abstractmethod
+    def serial_rx_coroutine(self):
+        """ Get values from the sensors via SerialTransfer. 
+        """
+
 
 class SensorReader(ABC):
     """Read value from the sensor. 

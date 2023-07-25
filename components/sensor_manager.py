@@ -16,42 +16,54 @@ import time
 import asyncio
 from typing import List
 
-from data import Sensor, SensorValue
-from components.types import SensorReader
-from components.waspi_serial import serial_rx_time
+#from data import Sensor, SensorValue
+#from components.types import SensorReader
+#from components.waspi_serial import serial_rx_time
 
-CONST_BAUD_RATE = 115200
-CONST_SERIAL_PORT = '/dev/ttyACM0'
-HWID = 'weight_scale'
-SAMPLE_COUNT = 10
+hwid = 'weight_scale'
 
-class WeightSensor(SensorReader):
-    """A SensorReader that read load cell value every 10 seconds."""
+#class SensorReporter(SensorReader):
+class SensorReporter():
+    """A SensorReporter that read sensor values every 10 seconds."""
 
     def __init__(self, hwid: str): 
         """Initialise the weight sensing."""
-        self.hwid = HWID
+        self.hwid = hwid
 
-    def get_sensor_reading(self) -> SensorValue:
+    def get_blob(n):
+        map = [
+            # Load Cell
+            {
+            'hwid': f'{hwid}',
+            'value': n['weight-scale'],
+            },
+        ]
+
+        # Set timestamp
+        timestamp_rx = arrow.utcnow().datetime.timestamp()
+        for x in map:
+            x['timestamp_rx'] = timestamp_rx
+        return map
+
+    def periodic_report(self):
         """Get sensor reading every 10 second."""
 
-        # Get the start time 
-        timenow = datetime.datetime.now()
-        print(f"Time now is: {timenow}")
-        
-        
-        # Get the Reading from the sensor
-        loadCell_Value = serial_rx_time()
-        print(loadCell_Value)
+        data = {}
+        idx = 0
 
-        sensor_value = SensorValue(
-            datetime=timenow, 
-            hwid=self.hwid,
-            value=loadCell_Value, 
-            deployment=None
-        )
-        print(sensor_value)
+        # 1/ Load Cell
+        idx, data['weight-scale'] = get_float(link, idx)
+        data['weight-scale'] = round(data['weight-scale'], 3)
 
-        return sensor_value
+        # 3/ Format Data - hwid, value, timestammp_rx
+        blob = get_blob(data)
+        print(blob)
+        jblob = json.dumps(blob)
+        print(jblob)
 
-# get_sensor_reading(HWID)
+        return jblob
+
+
+#sensor_value = SensorValue(datetime=timenow, hwid=self.hwid,
+#                           value=loadCell_Value,deployment=None)
+#print(sensor_value)
