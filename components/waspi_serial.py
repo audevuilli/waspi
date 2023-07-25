@@ -52,6 +52,7 @@ def get_blob(n):
     
     return map
 
+
 def periodic_report():
 
     data = {}
@@ -59,8 +60,7 @@ def periodic_report():
 
     # 1/ Load Cell
     idx, data['weight-scale'] = get_float(link, idx)
-    #idx, data['weight-scale'] = get_uint16_t(link, idx)
-    #print(f"Weight Scale Data uint16: {idx, data}")
+    data['weight-scale'] = round(data['weight-scale'], 3)
 
     # 2/ Temperature & humidity - SHT31 sensor
     # idx, data['temperature-sensor-a'] = get_uint16_t(link, idx)
@@ -70,17 +70,7 @@ def periodic_report():
     # idx, data['temperature-sensor-c'] = get_uint16_t(link, idx)
     # idx, data['humidity-sensor-c'] = get_uint16_t(link, idx)
 
-    # 3/ Accelerometer Data
-    # idx, data['accelerometer-x-sensor-a'] = get_uint16_t(link, idx)
-    # idx, data['accelerometer-y-sensor-a'] = get_uint16_t(link, idx)
-    # idx, data['accelerometer-x-sensor-b'] = get_uint16_t(link, idx)
-    # idx, data['accelerometer-y-sensor-b'] = get_uint16_t(link, idx)
-
-    # 4/ Receive Time
-    #idx, data['uptime'] = get_uint32_t(link, idx) # returns Arduino millis() ms
-    #data['uptime'] = data['uptime'] // 1000 # to seconds
-
-    # Format Data - hwid, value, timestammp_rx
+    # 3/ Format Data - hwid, value, timestammp_rx
     blob = get_blob(data)
     jblob = json.dumps(blob)
     print(jblob)
