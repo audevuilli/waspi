@@ -9,6 +9,7 @@ from typing import List
 #from data import Sensor, SensorValue
 #from components.types import SensorReader
 #from components.waspi_serial import serial_rx_time
+from pySerialTransfer import pySerialTransfer as txfr
 from waspi_util import *
 
 hwid = 'weight_scale'
