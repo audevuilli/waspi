@@ -21,7 +21,7 @@ class SensorInfo:
         self.hwid = hwid
     
     @staticmethod
-    def get_SensorInfo(hwid):
+    def get_SensorInfo(self):
         map = [
             # Set Sensor Information
             {
@@ -59,11 +59,11 @@ class SerialReceiver(SensorReporter):
         self.port = port
         self.baud = baud
     
-    def get_SerialRx(port, baud):           
+    def get_SerialRx(self):           
         while True:
             try:
                 global link
-                link = txfr.SerialTransfer(port=self.port, baud=self.baud, restrict_ports=False)
+                link = txfr.SerialTransfer(self.port, self.baud, restrict_ports=False)
                 link.debug = True
                 link.open()
 
