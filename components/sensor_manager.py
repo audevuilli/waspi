@@ -26,7 +26,7 @@ class SensorInfo:
             # Set Sensor Information
             {
                 'hwid': f'{self.hwid}',
-                'value': n[f'{self.hwid}'],  
+                'value': [f'{self.hwid}'],  
             }
         ]
         # Set timestamp - Sensor access
@@ -37,7 +37,6 @@ class SensorInfo:
 
 class SensorReporter(SensorInfo):
 
-    @staticmethod
     def get_PeriodicReport(self):
         
         data = {}
