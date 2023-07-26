@@ -41,8 +41,8 @@ class SensorReporter:
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(data)
-
         json_sensorinfo = json.dumps(sensor_info)
+        print(json_sensorinfo)
         return json_sensorinfo
 
 
@@ -74,3 +74,5 @@ class SerialReceiver(SensorReporter):
     
             except Exception as e:
                 print(e) 
+        
+        return 
