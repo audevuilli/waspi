@@ -4,8 +4,8 @@ from typing import Optional
 
 import paho.mqtt.client as mqtt
 
-import data
-from waspi_types import Messenger
+from components import data
+from components.waspi_types import Messenger
 #from components.types import Messenger
 #from components import waspi_types
 

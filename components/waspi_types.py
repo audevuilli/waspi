@@ -5,7 +5,7 @@ from typing import List, Optional, Tuple
 from uuid import UUID
 
 #from data import Deployment, Sensor, SensorValue, Message
-import data
+from components import data
 #from data import *
 
 class SerialReader(ABC):
