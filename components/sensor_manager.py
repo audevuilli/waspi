@@ -3,12 +3,8 @@
 import arrow
 import json
 from time import sleep
-import asyncio
 from typing import List
 
-#from data import Sensor, SensorValue
-#from components.types import SensorReader
-#from components.waspi_serial import serial_rx_time
 from pySerialTransfer import pySerialTransfer as txfr
 from waspi_util import *
 
@@ -68,7 +64,7 @@ class SerialReceiver(SensorReporter):
                 link.open()
 
                 # Set callbacks_list 
-                callbacks_list = [SensorReporter.get_PeriodicReport]
+                callbacks_list = [SensorReporter.get_PeriodicReport(link)]
                 link.set_callbacks(callbacks_list)
 
                 while True:
