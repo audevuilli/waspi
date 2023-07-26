@@ -59,7 +59,7 @@ class SerialReceiver(SensorReporter):
         self.port = port
         self.baud = baud
     
-    def get_SerialRx(self):           
+    def get_SerialRx(port, baud):           
         while True:
             try:
                 global link
