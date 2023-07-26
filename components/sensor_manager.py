@@ -1,8 +1,8 @@
 """Implementation of a SensorReporter for waspi."""
 
-import datetime
-import serial
-import time
+import arrow
+import json
+from time import sleep
 import asyncio
 from typing import List
 
@@ -13,48 +13,69 @@ from waspi_util import *
 
 hwid = 'weight_scale'
 
-#class SensorReporter(SensorReader):
-class SensorReporter():
-    """A SensorReporter that read sensor values every 10 seconds."""
 
-    def __init__(self, hwid: str): 
-        """Initialise the weight sensing."""
+class SensorInfo:
+
+    def __init__(self, hwid):
         self.hwid = hwid
-
-    def get_blob(n):
+    
+    @staticmethod
+    def get_SensorInfo(hwid):
         map = [
-            # Load Cell
+            # Set Sensor Information
             {
-            'hwid': f'{hwid}',
-            'value': n['weight-scale'],
-            },
+                'hwid': f'{self.hwid}',
+                'value': n[f'{self.hwid}'],  
+            }
         ]
-
-        # Set timestamp
+        # Set timestamp - Sensor access
         timestamp_rx = arrow.utcnow().datetime.timestamp()
         for x in map:
             x['timestamp_rx'] = timestamp_rx
         return map
 
-    def periodic_report(self):
-        """Get sensor reading every 10 second."""
+class SensorReporter(SensorInfo):
 
+    @staticmethod
+    def get_PeriodicReport(self):
+        
         data = {}
         idx = 0
 
-        # 1/ Load Cell
-        idx, data['weight-scale'] = get_float(link, idx)
-        data['weight-scale'] = round(data['weight-scale'], 3)
+        # 1/ Format Sensor Values
+        idx, data[str(self.hwid)] = get_float(link, idx)
+        data[str(self.hwid)] = round(data[str(self.hwid)], 3)
 
-        # 3/ Format Data - hwid, value, timestammp_rx
-        blob = get_blob(data)
-        print(blob)
-        jblob = json.dumps(blob)
-        print(jblob)
+        # 2/ Format Sensor Report
+        sensor_info = SensorInfo.get_SensorInfo(data)
+        print(f"SENSOR INFO: {sensor_info}")
+        json_sensorinfo = json.dumps(sensor_info)
 
-        return jblob
+        return json_sensorinfo
 
+class SerialReceiver(SensorReporter):
 
-#sensor_value = SensorValue(datetime=timenow, hwid=self.hwid,
-#                           value=loadCell_Value,deployment=None)
-#print(sensor_value)
+    def __init__(self, port, baud):
+        self.port = port
+        self.baud = baud
+    
+    @staticmethod
+    def get_SerialRx(self):           
+        while True:
+            try:
+                global link
+                link = txfr.SerialTransfer(port=self.port, baud=self.baud, restrict_ports=False)
+                link.debug = True
+                link.open()
+
+                # Set callbacks_list 
+                callbacks_list = [SensorReporter.get_PeriodicReport]
+                link.set_callbacks(callbacks_list)
+
+                while True:
+                    link.tick() #parse incoming packets
+                    sleep(5)
+                link.close()
+    
+            except Exception as e:
+                print(e) 

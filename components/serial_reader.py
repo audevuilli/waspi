@@ -1,8 +1,10 @@
 """Implementation of a SerialReader for waspi. """
 
 from time import sleep
-import asyncio
+import arrow # manage timestamp
 import json
+import asyncio
+
 from typing import Optional, List
 
 from pySerialTransfer import pySerialTransfer as txfr
@@ -65,7 +67,7 @@ class Serial_Rx(SerialReader):
                 link.set_callbacks(callbacks)
 
                 while True:
-                    link.tick()
+                    link.tick() #parse incoming packets
                     sleep(5)
                 link.close()
     
