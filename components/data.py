@@ -83,7 +83,7 @@ class ResponseStatus(IntEnum):
     """The message timed out."""
 
 
-class Response(BaseModel):
+class Response():
     """The response from sending a message."""
 
     status: ResponseStatus
