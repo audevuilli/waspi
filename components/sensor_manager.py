@@ -3,26 +3,22 @@
 import arrow
 import json
 from time import sleep
-from typing import List
 
 from pySerialTransfer import pySerialTransfer as txfr
 from waspi_util import *
 
-hwid = 'weight_scale'
-
-
 class SensorInfo:
+    """Get Sensor Information for the given sensor HWID."""
 
     def __init__(self, hwid):
         self.hwid = hwid
     
-    @staticmethod
-    def get_SensorInfo(self):
+    def get_SensorInfo(self, n):
         map = [
             # Set Sensor Information
             {
-                'hwid': f'{self.hwid}',
-                'value': [f'{self.hwid}'],  
+                'hwid': self.hwid,
+                'value': n[self.hwid],  
             }
         ]
         # Set timestamp - Sensor access
@@ -31,7 +27,9 @@ class SensorInfo:
             x['timestamp_rx'] = timestamp_rx
         return map
 
+
 class SensorReporter(SensorInfo):
+    """Create the report for the given sensor HWID. -> Parent Class SensorInfo."""
 
     def get_PeriodicReport(self):
         
@@ -39,22 +37,24 @@ class SensorReporter(SensorInfo):
         idx = 0
 
         # 1/ Format Sensor Values
-        idx, data[str(self.hwid)] = get_float(link, idx)
-        data[str(self.hwid)] = round(data[str(self.hwid)], 3)
+        idx, data[self.hwid] = get_float(link, idx)
+        data[self.hwid] = round(data[self.hwid], 3)
 
         # 2/ Format Sensor Report
-        sensor_info = SensorInfo.get_SensorInfo(data)
-        print(f"SENSOR INFO: {sensor_info}")
+        sensor_info = self.get_SensorInfo(data)
         json_sensorinfo = json.dumps(sensor_info)
 
         return json_sensorinfo
 
 class SerialReceiver(SensorReporter):
+    """Get the sensor values from the Serial Port. -> Parent class SensorReporter, SensorInfo."""
 
     def __init__(self, port, baud):
+        # Call the __init__ method of the parent class - SensorInfo
+        super().__init__(hwid) 
         self.port = port
         self.baud = baud
-    
+  
     def get_SerialRx(self):           
         while True:
             try:
@@ -64,8 +64,8 @@ class SerialReceiver(SensorReporter):
                 link.open()
 
                 # Set callbacks_list 
-                callbacks_list = [SensorReporter.get_PeriodicReport(link)]
-                link.set_callbacks(callbacks_list)
+                callbacks = [self.get_PeriodicReport]
+                link.set_callbacks(callbacks)
 
                 while True:
                     link.tick() #parse incoming packets
