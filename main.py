@@ -17,6 +17,7 @@ def main():
         
         """Create the Serial_Rx object."""
         serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid=HWID)        
+        print(serial_rx)
         
         """Initialise the MQTT Messenger."""
         mqtt_messenger = MQTTMessenger(
@@ -30,8 +31,12 @@ def main():
 
         def process():
 
+                print(f"START PROCESS - {datetime.datetime.now()}")
+
                 # Get the sensor values from serial port
                 ws_values = serial_rx.get_SerialRx()
+                ## LOOK WHAT HAPPENING HERE
+                ## HOW TO STOP get_SerialRx() in order to send dat via MQTT?
                 print(f"WS Serial Rx: {ws_values}")
 
                 # Send sensor values to  MQTT
