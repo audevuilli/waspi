@@ -18,15 +18,16 @@ hwid_ws = SensorInfo('weight_scale')
 ws_report = SensorReporter(hwid_ws) 
 print("")
 print(f"WS Reporter: {ws_report}")
-print(ws_values)
 
 """Define the Serial_Rx object."""
 serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE)
+print("")
+print(f"WS Serial Rx: {serial_rx}")
 
 ws_values = serial_rx.get_SerialRx()
 print("")
 print(f"WS Serial Rx: {ws_values}")
-print(ws_values)
+
 
 
 #serial_rx = compoments.Serial_Rx(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE)

@@ -59,7 +59,6 @@ class SerialReceiver(SensorReporter):
         self.port = port
         self.baud = baud
     
-    @staticmethod
     def get_SerialRx(self):           
         while True:
             try:
