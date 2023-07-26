@@ -1,22 +1,23 @@
 import datetime
 import config_mqtt
-from components.sensor_manager import SensorInfo, SensorReporter, SerialReceiver
+from components.sensor_manager import SensorReporter, SerialReceiver
 from components.messengers import MQTTMessenger
 
 from config_mqtt import *
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
-hwid = 'weight_scale'
+HWID = 'weight_scale'
 
 
 def main():
         
         """Create the sensor object."""
-        hwid_ws = SensorInfo('weight_scale')    
+        #hwid_ws = SensorInfo(hwid=HWID)  
+        hwid_ws = SensorReporter(hwid=HWID)
         
         """Create the sensor reporter object."""
-        ws_report = SensorReporter(hwid_ws)     
+        #ws_report = SensorReporter(hwid_ws)     
         
         """Create the Serial_Rx object."""
         serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE)        

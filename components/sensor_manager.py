@@ -5,7 +5,7 @@ import json
 from time import sleep
 
 from pySerialTransfer import pySerialTransfer as txfr
-from waspi_util import *
+from components.waspi_util import *
 
 class SensorInfo:
     """Get Sensor Information for the given sensor HWID."""
@@ -28,8 +28,25 @@ class SensorInfo:
         return map
 
 
-class SensorReporter(SensorInfo):
+class SensorReporter:
     """Create the report for the given sensor HWID. -> Parent Class SensorInfo."""
+
+    def __init__(self, hwid):
+        self.hwid = hwid
+
+    def get_SensorInfo(self, n):
+        map = [
+            # Set Sensor Information
+            {
+                'hwid': self.hwid,
+                'value': n[self.hwid],  
+            }
+        ]
+        # Set timestamp - Sensor access
+        timestamp_rx = arrow.utcnow().datetime.timestamp()
+        for x in map:
+            x['timestamp_rx'] = timestamp_rx
+        return map
 
     def get_PeriodicReport(self):
         
@@ -42,9 +59,10 @@ class SensorReporter(SensorInfo):
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(data)
-        json_sensorinfo = json.dumps(sensor_info)
-
-        return json_sensorinfo
+        print(sensor_info)
+        #json_sensorinfo = json.dumps(sensor_info)
+        #return json_sensorinfo
+        return sensor_info
 
 class SerialReceiver(SensorReporter):
     """Get the sensor values from the Serial Port. -> Parent class SensorReporter, SensorInfo."""
