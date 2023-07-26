@@ -7,34 +7,15 @@ from time import sleep
 from pySerialTransfer import pySerialTransfer as txfr
 from components.waspi_util import *
 
-class SensorInfo:
-    """Get Sensor Information for the given sensor HWID."""
-
-    def __init__(self, hwid):
-        self.hwid = hwid
-    
-    def get_SensorInfo(self, n):
-        map = [
-            # Set Sensor Information
-            {
-                'hwid': self.hwid,
-                'value': n[self.hwid],  
-            }
-        ]
-        # Set timestamp - Sensor access
-        timestamp_rx = arrow.utcnow().datetime.timestamp()
-        for x in map:
-            x['timestamp_rx'] = timestamp_rx
-        return map
-
-
 class SensorReporter:
-    """Create the report for the given sensor HWID. -> Parent Class SensorInfo."""
+    """Get the sensor report for a given sensor HWID."""
 
     def __init__(self, hwid):
         self.hwid = hwid
 
     def get_SensorInfo(self, n):
+        """Create an sensor object."""
+
         map = [
             # Set Sensor Information
             {
@@ -49,6 +30,7 @@ class SensorReporter:
         return map
 
     def get_PeriodicReport(self):
+        """Create a report based on the sensor object."""
         
         data = {}
         idx = 0
@@ -59,15 +41,15 @@ class SensorReporter:
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(data)
-        print(sensor_info)
-        #json_sensorinfo = json.dumps(sensor_info)
-        #return json_sensorinfo
-        return sensor_info
+
+        json_sensorinfo = json.dumps(sensor_info)
+        return json_sensorinfo
+
 
 class SerialReceiver(SensorReporter):
-    """Get the sensor values from the Serial Port. -> Parent class SensorReporter, SensorInfo."""
+    """Get the sensor values from the Serial Port. -> Parent class SensorReporter."""
 
-    def __init__(self, port, baud):
+    def __init__(self, port, baud, hwid):
         # Call the __init__ method of the parent class - SensorInfo
         super().__init__(hwid) 
         self.port = port

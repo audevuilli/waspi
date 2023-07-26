@@ -12,15 +12,11 @@ HWID = 'weight_scale'
 
 def main():
         
-        """Create the sensor object."""
-        #hwid_ws = SensorInfo(hwid=HWID)  
-        hwid_ws = SensorReporter(hwid=HWID)
-        
         """Create the sensor reporter object."""
-        #ws_report = SensorReporter(hwid_ws)     
+        ws_reporter = SensorReporter(hwid=HWID)
         
         """Create the Serial_Rx object."""
-        serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE)        
+        serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid=HWID)        
         
         """Initialise the MQTT Messenger."""
         mqtt_messenger = MQTTMessenger(
@@ -36,7 +32,6 @@ def main():
 
                 # Get the sensor values from serial port
                 ws_values = serial_rx.get_SerialRx()
-                print("")
                 print(f"WS Serial Rx: {ws_values}")
 
                 # Send sensor values to  MQTT
