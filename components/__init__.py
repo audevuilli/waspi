@@ -1,9 +1,11 @@
 """Waspi components."""
-from components.sensor_manager import WeightSensor
+from components.sensor_manager import SensorInfo, SensorReporter, SerialReceiver
 from components.messengers import MQTTMessenger
-from components.waspi_serial import *
+from components.waspi_util import *
 
 __all__ = [
-    MQTTMessenger,
-    WeightSensor
+    SensorInfo,
+    SensorReporter, 
+    SerialReceiver, 
+    MQTTMessenger
 ]
