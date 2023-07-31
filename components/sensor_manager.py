@@ -5,6 +5,7 @@ import json
 from time import sleep
 
 from pySerialTransfer import pySerialTransfer as txfr
+from compoments.messengers import MQTTMessenger
 from components.waspi_util import *
 
 class SensorReporter:
@@ -69,6 +70,11 @@ class SerialReceiver(SensorReporter):
 
                 while True:
                     link.tick() #parse incoming packets
+                    reading = link.get_data()
+                    print(f"READING DATA: {reading}")
+
+                    if reading is not None:
+                        break
                     sleep(5)
                 link.close()
     
