@@ -5,7 +5,7 @@ import json
 from time import sleep
 
 from pySerialTransfer import pySerialTransfer as txfr
-from compoments.messengers import MQTTMessenger
+from components.messengers import MQTTMessenger
 from components.waspi_util import *
 
 class SensorReporter:
