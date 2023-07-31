@@ -70,15 +70,20 @@ class SerialReceiver(SensorReporter):
 
                 while True:
                     link.tick() #parse incoming packets
-                    reading = link.get_data()
+                    reading = link.available()
                     print(f"READING DATA: {reading}")
 
-                    if reading is not None:
+                    if reading > 0:
+                        link.unpack_packet(reading)
+                        data_received = link.rx_obj(list)
+                        print(f"DATA RECEIVED: {data_received}")
                         break
                     sleep(5)
                 link.close()
+
+                return data_received
     
             except Exception as e:
                 print(e) 
         
-        return 
+        return None
