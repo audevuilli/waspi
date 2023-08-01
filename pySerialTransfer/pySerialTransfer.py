@@ -577,8 +577,7 @@ class SerialTransfer(object):
                             self.bytesRead = 0
                             self.state = find_start_byte
                             self.status = CRC_ERROR
-                            # return self.bytesRead,
-                            return self.bytesRead,  self.rxBuff[4:self.bytesToRec + 4]
+                            return self.bytesRead,
 
                     elif self.state == find_end_byte:
                         self.state = find_start_byte
@@ -603,12 +602,11 @@ class SerialTransfer(object):
                 self.bytesRead = 0
                 self.status = NO_DATA
                 # return self.bytesRead
-                return self.bytesRead, None
+                return self.bytesRead
 
         self.bytesRead = 0
         self.status = CONTINUE
-        #return self.bytesRead
-        return self.bytesRead, None
+        return self.bytesRead
     
     def tick(self):
         '''
