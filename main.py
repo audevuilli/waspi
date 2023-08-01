@@ -4,7 +4,7 @@ import asyncio
 from components.sensor_manager import SensorReporter, SerialReceiver
 from components.messengers import MQTTMessenger
 
-from config_mqtt import *
+import config_mqtt
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
