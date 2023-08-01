@@ -1,6 +1,7 @@
 """Messengers for the acoupi package."""
 import datetime
 from typing import Optional
+import asyncio
 
 import paho.mqtt.client as mqtt
 
@@ -42,7 +43,7 @@ class MQTTMessenger(Messenger):
         self.client.username_pw_set(username, password)
         self.client.connect(host, port=port)
 
-    def send_message(self, message: data.Message) -> data.Response:
+    async def send_message(self, message: data.Message) -> data.Response:
         """Send a measurement message."""
         status = data.ResponseStatus.SUCCESS
 

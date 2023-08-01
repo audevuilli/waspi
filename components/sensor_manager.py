@@ -2,7 +2,8 @@
 
 import arrow
 import json
-from time import sleep
+import asyncio
+#from time import sleep
 
 from pySerialTransfer import pySerialTransfer as txfr
 from components.messengers import MQTTMessenger
@@ -56,7 +57,7 @@ class SerialReceiver(SensorReporter):
         self.port = port
         self.baud = baud
   
-    def get_SerialRx(self):           
+    async def get_SerialRx(self):           
         while True:
             try:
                 global link
@@ -71,12 +72,14 @@ class SerialReceiver(SensorReporter):
 
                 while True:
                     link.tick() #parse incoming packets
+                    sleep_duration = 5 #frequency of data reading
+                    await asyncio.sleep(sleep_duration)
                     #reading, payload_data = link.available()
                     #print(f"READING DATA: {reading}")
                     #print(f"PAYLOAD DATA: {payload_data}")
                     #if reading > 0:
                     #    break
-                    sleep(5)
+                    #sleep(5)
                 link.close()
 
                 #data_received = struct.unpack(f"{reading}B", payload_data)
@@ -84,6 +87,7 @@ class SerialReceiver(SensorReporter):
                 #return data_received
     
             except Exception as e:
-                print(e) 
+                print(e)
+                break # Exit the loop if there's an exception
         
         return 

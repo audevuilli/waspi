@@ -1,5 +1,6 @@
 import datetime
-import config_mqtt
+import asyncio
+
 from components.sensor_manager import SensorReporter, SerialReceiver
 from components.messengers import MQTTMessenger
 
@@ -29,22 +30,22 @@ def main():
                 topic=config_mqtt.DEFAULT_TOPIC
         )
 
-        def process():
+        async def process():
 
                 print(f"START PROCESS - {datetime.datetime.now()}")
 
                 # Get the sensor values from serial port
-                ws_values = serial_rx.get_SerialRx()
+                ws_values = await serial_rx.get_SerialRx()
                 ## LOOK WHAT HAPPENING HERE
                 ## HOW TO STOP get_SerialRx() in order to send dat via MQTT?
                 print(f"WS Serial Rx: {ws_values}")
 
                 # Send sensor values to  MQTT
-                response = mqtt_messenger.send_message(ws_values)       
+                response = await mqtt_messenger.send_message(ws_values)       
                 print(f"MQTT Response: {response}")
         
         # Start processing
-        process()
+        asyncio.run(process())
 
 
 if __name__ == "__main__":
