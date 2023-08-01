@@ -56,38 +56,51 @@ class SerialReceiver(SensorReporter):
         super().__init__(hwid) 
         self.port = port
         self.baud = baud
-  
-    async def get_SerialRx(self):           
-        while True:
-            try:
-                global link
-                link = txfr.SerialTransfer(self.port, self.baud, restrict_ports=False)
-                link.debug = True
-                link.open()
 
-                # Set callbacks_list 
-                callbacks = [self.get_PeriodicReport]
-                print(f"CALLBACKS: {callbacks}")
-                link.set_callbacks(callbacks)
+    async def get_SerialRx(self, stop_event):           
+        try:
+            global link
+            link = txfr.SerialTransfer(self.port, self.baud, restrict_ports=False)
+            link.debug = True
+            link.open()
 
-                while True:
-                    link.tick() #parse incoming packets
-                    sleep_duration = 5 #frequency of data reading
-                    await asyncio.sleep(sleep_duration)
-                    #reading, payload_data = link.available()
-                    #print(f"READING DATA: {reading}")
-                    #print(f"PAYLOAD DATA: {payload_data}")
-                    #if reading > 0:
-                    #    break
-                    #sleep(5)
-                link.close()
+            # Set callbacks_list 
+            callbacks = [self.get_PeriodicReport]
+            print(f"CALLBACKS: {callbacks}")
+            link.set_callbacks(callbacks)
 
-                #data_received = struct.unpack(f"{reading}B", payload_data)
-                #print(f"DATA RECEIVED: {data_received}")
-                #return data_received
-    
-            except Exception as e:
-                print(e)
-                break # Exit the loop if there's an exception
+            while not stop_event.is_set():
+                link.tick() #parse incoming packets
+                sleep_duration = 5 #frequency of data reading
+                await asyncio.sleep(sleep_duration)
+            
+        except Exception as e:
+            print(e)
+
+        link.close()
         
         return 
+  
+    #def get_SerialRx(self):           
+    #    while True:
+    #        try:
+    #            global link
+    #            link = txfr.SerialTransfer(self.port, self.baud, restrict_ports=False)
+    #            link.debug = True
+    #            link.open()
+#
+    #            # Set callbacks_list 
+    #            callbacks = [self.get_PeriodicReport]
+    #            print(f"CALLBACKS: {callbacks}")
+    #            link.set_callbacks(callbacks)
+#
+    #            while not stop_event.is_set():
+    #                link.tick() #parse incoming packets
+    #                sleep(5)
+    #            link.close()
+#
+    #        except Exception as e:
+    #            print(e)
+    #            break # Exit the loop if there's an exception
+    #    
+    #    return 

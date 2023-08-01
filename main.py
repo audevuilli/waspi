@@ -34,15 +34,27 @@ def main():
 
                 print(f"START PROCESS - {datetime.datetime.now()}")
 
-                # Get the sensor values from serial port
-                ws_values = await serial_rx.get_SerialRx()
-                ## LOOK WHAT HAPPENING HERE
-                ## HOW TO STOP get_SerialRx() in order to send dat via MQTT?
-                print(f"WS Serial Rx: {ws_values}")
+                # Use asyncio.Event() to stop serial port from reading
+                stop_event = asyncio.Event()
 
-                # Send sensor values to  MQTT
-                response = await mqtt_messenger.send_message(ws_values)       
-                print(f"MQTT Response: {response}")
+                # Create task to read data from the serial port
+                serial_task = asyncio.create_task(serial_rx.get_SerialRx(stop_event))
+
+                try: 
+                        # Get the sensor values from the serial port
+                        ws_values = await serial.rx.get_PeriodicReport()    
+                        print(f"WS Serial Rx: {ws_values}")
+
+                        # Send sensor values to  MQTT
+                        response = await mqtt_messenger.send_message(ws_values)       
+                        print(f"MQTT Response: {response}")
+                
+                finally:
+                        # Set tue stop event to stop the serial port from reading
+                        stop_event.set()
+
+                        # Wait for serial task to complete
+                        await serial_task
         
         # Start processing
         asyncio.run(process())
