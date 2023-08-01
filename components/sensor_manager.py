@@ -70,20 +70,20 @@ class SerialReceiver(SensorReporter):
 
                 while True:
                     link.tick() #parse incoming packets
-                    reading, payload_data = link.available()
-                    print(f"READING DATA: {reading}")
-                    print(f"PAYLOAD DATA: {payload_data}")
+                    #reading, payload_data = link.available()
+                    #print(f"READING DATA: {reading}")
+                    #print(f"PAYLOAD DATA: {payload_data}")
 
                     if reading > 0:
                         break
                     sleep(5)
                 link.close()
 
-                data_received = struct.unpack(f"{reading}B", payload_data)
-                print(f"DATA RECEIVED: {data_received}")
-                return data_received
+                #data_received = struct.unpack(f"{reading}B", payload_data)
+                #print(f"DATA RECEIVED: {data_received}")
+                #return data_received
     
             except Exception as e:
                 print(e) 
         
-        return None
+        return 
