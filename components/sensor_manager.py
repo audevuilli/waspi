@@ -43,7 +43,7 @@ class SensorReporter:
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(data)
         json_sensorinfo = json.dumps(sensor_info)
-        print(json_sensorinfo)
+        print(f"JSON Sensor Report: {json_sensorinfo}")
         return json_sensorinfo
 
 
@@ -66,6 +66,7 @@ class SerialReceiver(SensorReporter):
 
                 # Set callbacks_list 
                 callbacks = [self.get_PeriodicReport]
+                print(f"CALLBACKS: {callbacks}")
                 link.set_callbacks(callbacks)
 
                 while True:
