@@ -73,9 +73,8 @@ class SerialReceiver(SensorReporter):
                     #reading, payload_data = link.available()
                     #print(f"READING DATA: {reading}")
                     #print(f"PAYLOAD DATA: {payload_data}")
-
-                    if reading > 0:
-                        break
+                    #if reading > 0:
+                    #    break
                     sleep(5)
                 link.close()
 
