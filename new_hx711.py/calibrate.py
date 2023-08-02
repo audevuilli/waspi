@@ -1,24 +1,9 @@
 #!/usr/bin/env python3
 
-# example run command assuming SCK pin 1, DOut pin 2 and known weights 5,10,50,100: 
-#   `python3 calibrate.py 1 2 5 10 50 100`
-
-# try to import hx711, first from src dir, second from src dir after adding parent to path, last from pip
-try:
-    from src.hx711_multi import HX711
-except:
-    try:
-        # try after inserting parent folder in path
-        import sys
-        import pathlib
-        from os.path import abspath
-        sys.path.insert(0, str(pathlib.Path(abspath(__file__)).parents[1]))
-        from src.hx711_multi import HX711
-    except:
-        from hx711_multi import HX711
-
+from hx711 import HX711
+import sys
 from statistics import mean, stdev
-import RPi.GPIO as GPIO  # import GPIO
+import RPi.GPIO as GPIO  
 
 # init GPIO (should be done outside HX711 module in case you are using other GPIO functionality)
 GPIO.setmode(GPIO.BCM)  # set GPIO pin mode to BCM numbering
