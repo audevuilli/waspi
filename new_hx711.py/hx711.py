@@ -6,7 +6,7 @@ This file holds HX711 class and ADC class which is used within HX711 in order to
 import RPi.GPIO as GPIO
 from time import sleep, perf_counter
 from statistics import mean, median, stdev
-from .utils import convert_to_list
+from utils import convert_to_list
 from logging import getLogger, Logger, StreamHandler
 from typing import List
 
