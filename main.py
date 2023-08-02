@@ -42,7 +42,7 @@ def main():
 
                 try: 
                         # Get the sensor values from the serial port
-                        ws_values = await serial.rx.get_PeriodicReport()    
+                        ws_values = await serial_rx.get_PeriodicReport()    
                         print(f"WS Serial Rx: {ws_values}")
 
                         # Send sensor values to  MQTT
