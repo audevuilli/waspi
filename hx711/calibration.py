@@ -28,7 +28,7 @@ DOUT_Pin = 5
 SCK_Pin = 6
 
 # Create the HX711 object
-hx = HX711(DOUT_Pin, SCK_Pin, gain=128)
+hx = HX711(dout=DOUT_Pin, pd_sck=SCK_Pin, gain=128)
 
 
 def cleanAndExit():
