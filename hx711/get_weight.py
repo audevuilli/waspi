@@ -1,5 +1,4 @@
-#! /usr/bin/python2
-
+import RPi.GPIO as GPIO
 import time
 import sys
 from hx711 import HX711
@@ -38,7 +37,6 @@ hx.set_reading_format("MSB", "MSB")
 hx.set_reference_unit(referenceUnit)
 
 hx.reset()
-
 hx.tare()
 
 print("Tare done! Add weight now...")
