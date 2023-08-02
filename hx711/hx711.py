@@ -23,6 +23,10 @@ class HX711:
         # software try to access get values from the class at the same time.
         self.readLock = threading.Lock()
 
+        # Set the pin numbers
+        self.PD_SCK = pd_sck
+        self.DOUT = dout
+
         # Setup the gpio pin numbering system
         GPIO.setmode(GPIO.BCM)
         
@@ -31,10 +35,6 @@ class HX711:
 
         # Setup the GPIO Pin as input
         GPIO.setup(self.DOUT, GPIO.IN)
-
-        # Set the pin numbers
-        self.PD_SCK = pd_sck
-        self.DOUT = dout
 
         self.GAIN = 0
 
