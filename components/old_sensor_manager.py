@@ -55,9 +55,10 @@ class SensorReporter:
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(data)
-        json_sensorinfo = json.dumps(sensor_info)
-        print(f"JSON Sensor Report: {json_sensorinfo}")
-        return json_sensorinfo
+        print(f"Sensor Info: {sensor_info}")
+        #json_sensorinfo = json.dumps(sensor_info)
+        #print(f"JSON Sensor Report: {json_sensorinfo}")
+        return sensor_info
 
 
 class SerialReceiver(SensorReporter):
