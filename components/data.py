@@ -39,9 +39,6 @@ class Sensor:
 @dataclass
 class SensorValue:
     """A reading from a sensor."""
-    
-    datetime: datetime.datetime
-    """The datetime when the reading was made."""
 
     hwid: str
     """The sensor hardware id to identify the sensor."""
@@ -49,8 +46,23 @@ class SensorValue:
     value: float
     """The value of the sensor reading."""
 
+    timestamp: datetime.timestamp
+    """The datetime when the reading was made."""
+
     deployment: Optional[Deployment]
     """The deployment that the sensor readings belong to."""
+
+
+class SerialOutput:
+    """The serial output."""
+
+    content: List[SensorValue] = Field(default_factory=list)
+    """The message to be sent. Usually a JSON string."""
+
+    created_on: datetime.datetime = Field(
+        default_factory=datetime.datetime.now
+    )
+    """The datetime when the message was created."""
 
 
 class Message:
