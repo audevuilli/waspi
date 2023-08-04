@@ -20,7 +20,7 @@ def main():
         serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid_list=HWID_LIST)
 
         """Create the message factories object."""
-        message_factories = [MessageBuilder()]
+        message_factories = MessageBuilder()
 
         """Initialise the MQTT Messenger."""
         mqtt_messenger = MQTTMessenger(
@@ -38,6 +38,7 @@ def main():
                 # Get the sensor values from serial port
                 serial_output = await serial_rx.get_SerialRx()
                 print(f"JSON MESSAGE PROCESS: {serial_output}")
+                print("")
 
                 # Create the messages from the serial output (sensor values)
                 #mqtt_messages = [message_factory.build_message(serial_output) for message_factory in message_factories]
@@ -47,6 +48,7 @@ def main():
                 # Send sensor values to  MQTT
                 response = await mqtt_messenger.send_message(mqtt_message)       
                 print(f"MQTT Response: {response}")
+                print("")
         
         # Start processing
         asyncio.run(process())
