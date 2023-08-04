@@ -3,6 +3,7 @@
 import arrow
 import json
 import asyncio
+from typing import List
 #from time import sleep
 
 from pySerialTransfer import pySerialTransfer as txfr
