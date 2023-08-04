@@ -53,9 +53,9 @@ class SensorReporter:
 class SerialReceiver(SensorReporter):
     """Get the sensor values from the Serial Port. -> Parent class SensorReporter."""
 
-    def __init__(self, port, baud, hwid):
+    def __init__(self, port, baud, hwid_list):
         # Call the __init__ method of the parent class - SensorInfo
-        super().__init__(hwid) 
+        super().__init__(hwid_list) 
         self.port = port
         self.baud = baud
 

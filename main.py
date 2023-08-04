@@ -19,7 +19,7 @@ def main():
         ws_reporter = SensorReporter(hwid_list=hwid_list)
         
         """Create the Serial_Rx object."""
-        serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid=HWID)        
+        serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid=hwid_list)        
         print(serial_rx)
         
         """Initialise the MQTT Messenger."""
