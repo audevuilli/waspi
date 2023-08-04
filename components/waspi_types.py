@@ -4,9 +4,8 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 from uuid import UUID
 
-#from data import Deployment, Sensor, SensorValue, Message
 from components import data
-#from data import *
+
 
 class SerialReader(ABC):
     """ Read value from the sensor using pySerialTransfer."""

@@ -3,7 +3,7 @@ import datetime
 from enum import IntEnum
 from typing import List, Optional, Tuple
 from uuid import UUID, uuid4
-from pydantic import Field
+from pydantic import Field, BaseModel
 from dataclasses import dataclass
 
 class Deployment:
@@ -36,8 +36,8 @@ class Sensor:
     unit: Optional[str]
     """The unit of the sensor reading."""
 
-@dataclass
-class SensorValue:
+
+class SensorValue(BaseModel):
     """A reading from a sensor."""
 
     hwid: str
@@ -49,23 +49,15 @@ class SensorValue:
     timestamp: float
     """The datetime when the reading was made."""
 
-    #deployment: Optional[Deployment]
-    """The deployment that the sensor readings belong to."""
 
-
-class SerialOutput:
+class SerialOutput(BaseModel):
     """The serial output."""
 
     content: List[SensorValue] = Field(default_factory=list)
     """The message to be sent. Usually a JSON string."""
 
-    created_on: datetime.datetime = Field(
-        default_factory=datetime.datetime.now
-    )
-    """The datetime when the message was created."""
 
-
-class Message:
+class Message(BaseModel):
     """The message to be sent to remote server."""
     id: UUID = Field(default_factory=uuid4)
     """The unique ID of the message."""
@@ -95,7 +87,7 @@ class ResponseStatus(IntEnum):
     """The message timed out."""
 
 
-class Response():
+class Response(BaseModel):
     """The response from sending a message."""
 
     status: ResponseStatus
