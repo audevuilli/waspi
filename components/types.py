@@ -72,6 +72,22 @@ class Store(ABC):
             deployment: The deployment to store the sensor values under.
         """
 
+
+class SerialOutputMessageBuilder(ABC):
+    """Build a message from the serial output. 
+    
+    The SerialOutput MessageBuilder is responsible for formatting the messages 
+    to be sent over MQTT. 
+    """
+
+    @abstractmethod
+    def build_message(
+        self, 
+        serial_output: data.SerialOutput, 
+    ) -> List[data.Message]:
+         """Build a message from the serial output."""
+
+
 class Messenger(ABC):
     """Send messages to a remote server.
 

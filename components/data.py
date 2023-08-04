@@ -46,10 +46,10 @@ class SensorValue:
     value: float
     """The value of the sensor reading."""
 
-    timestamp: datetime.timestamp
+    timestamp: float
     """The datetime when the reading was made."""
 
-    deployment: Optional[Deployment]
+    #deployment: Optional[Deployment]
     """The deployment that the sensor readings belong to."""
 
 

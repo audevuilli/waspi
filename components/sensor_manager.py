@@ -6,6 +6,7 @@ import asyncio
 #from time import sleep
 
 from pySerialTransfer import pySerialTransfer as txfr
+from components import data
 from components.messengers import MQTTMessenger
 from components.waspi_util import *
 

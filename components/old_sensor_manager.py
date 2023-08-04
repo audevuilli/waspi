@@ -7,7 +7,9 @@ from typing import List
 #from time import sleep
 
 from pySerialTransfer import pySerialTransfer as txfr
+from components import data
 from components.waspi_util import *
+
 
 class SensorReporter:
     """Get the sensor report for a given sensor HWID."""
@@ -17,7 +19,6 @@ class SensorReporter:
 
     def get_SensorInfo(self, n):
         """Create an sensor object."""
-
 
         sensor_values = [
             data.SensorValue(
@@ -68,7 +69,7 @@ class SerialReceiver(SensorReporter):
         self.port = port
         self.baud = baud
 
-    async def get_SerialRx(self, stop_event):           
+    async def get_SerialRx(self):           
         try:
             global link
             link = txfr.SerialTransfer(self.port, self.baud, restrict_ports=False)
@@ -99,29 +100,3 @@ class SerialReceiver(SensorReporter):
             print(e)
 
         link.close()
-        
-        return 
-  
-    #def get_SerialRx(self):           
-    #    while True:
-    #        try:
-    #            global link
-    #            link = txfr.SerialTransfer(self.port, self.baud, restrict_ports=False)
-    #            link.debug = True
-    #            link.open()
-#
-    #            # Set callbacks_list 
-    #            callbacks = [self.get_PeriodicReport]
-    #            print(f"CALLBACKS: {callbacks}")
-    #            link.set_callbacks(callbacks)
-#
-    #            while not stop_event.is_set():
-    #                link.tick() #parse incoming packets
-    #                sleep(5)
-    #            link.close()
-#
-    #        except Exception as e:
-    #            print(e)
-    #            break # Exit the loop if there's an exception
-    #    
-    #    return 
