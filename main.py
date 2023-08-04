@@ -1,20 +1,22 @@
 import datetime
 import asyncio
 
-from components.sensor_manager import SensorReporter, SerialReceiver
+#from components.sensor_manager import SensorReporter, SerialReceiver
+from components.sensor_manager_list import SensorReporter, SerialReceiver
 from components.messengers import MQTTMessenger
 
 import config_mqtt
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
-HWID = 'weight_scale'
-
+#HWID = 'weight_scale'
+hwid_list = ['weight_scale', 'temperature', 'humidity']
 
 def main():
         
         """Create the sensor reporter object."""
-        ws_reporter = SensorReporter(hwid=HWID)
+        #ws_reporter = SensorReporter(hwid=HWID)
+        ws_reporter = SensorReporter(hwid_list=hwid_list)
         
         """Create the Serial_Rx object."""
         serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid=HWID)        
