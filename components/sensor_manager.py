@@ -32,16 +32,18 @@ class SensorReporter:
     def get_PeriodicReport(self):
         """Create a report based on the sensor object."""
         
-        data = {}
+        idx_value = {}
         idx = 0
 
         # 1/ Format Sensor Values
         for hwid in self.hwid_list:
-            idx, data[hwid] = get_float(link, idx)
-            data[hwid] = round(data[hwid], 3)
+            idx, idx_value[hwid] = get_float(link, idx)
+            idx_value[hwid] = round(idx_value[hwid], 3)
 
         # 2/ Format Sensor Report
-        sensor_info = self.get_SensorInfo(data)
+        sensor_info = self.get_SensorInfo(idx_value)
+        print(sensor_info)
+        print(data.SerialOutput(content=sensor_info,))
 
         return data.SerialOutput(content=sensor_info,)
 

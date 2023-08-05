@@ -37,7 +37,7 @@ def main():
                 
                 # Get the sensor values from serial port
                 sensors_values = await serial_rx.get_SerialRx()
-                print(f"JSON MESSAGE PROCESS: {serial_output}")
+                print(f"JSON MESSAGE PROCESS: {sensors_values}")
                 print("")
 
                 # Create the messages from the serial output (sensor values)
