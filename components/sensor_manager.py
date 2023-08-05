@@ -42,9 +42,7 @@ class SensorReporter:
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(idx_value)
-        print(sensor_info)
-        print(data.SerialOutput(content=sensor_info,))
-
+        
         return data.SerialOutput(content=sensor_info,)
 
 
