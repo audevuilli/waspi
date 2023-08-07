@@ -1,0 +1,14 @@
+[Unit]
+Description=Waspi - Monitor, Save and Send Results of IoT Wasp Nest.
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/waspi/
+ExecStart=/usr/bin/python3 /home/pi/waspi/main.py
+Restart=always
+RestartSec=3
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target

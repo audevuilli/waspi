@@ -38,11 +38,11 @@ class SensorReporter:
         # 1/ Format Sensor Values
         for hwid in self.hwid_list:
             idx, idx_value[hwid] = get_float(link, idx)
-            idx_value[hwid] = round(idx_value[hwid], 3)
+            idx_value[hwid] = round(idx_value[hwid], 2)
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(idx_value)
-        
+
         return data.SerialOutput(content=sensor_info,)
 
 
