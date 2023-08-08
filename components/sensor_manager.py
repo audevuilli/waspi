@@ -16,16 +16,16 @@ class SensorReporter:
         self.hwid_list = hwid_list
 
     def get_SensorInfo(self, n):
-        """Create an sensor object."""
+        """Create an sensor dict object."""
 
-        sensor_values = [
-            data.SensorValue(
-                hwid=hwid, 
-                value=n[hwid],
+        sensor_values = {}
+
+        for hwid in self.hwid_list:
+            sensor_values[hwid] = data.SensorValue(
+                hwid=hwid,
+                value=n[hwid], 
                 timestamp=arrow.utcnow().datetime.timestamp()
             )
-            for hwid in self.hwid_list
-        ]
 
         return sensor_values
 
@@ -42,6 +42,7 @@ class SensorReporter:
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(idx_value)
+        print(sensor_info)
 
         return data.SerialOutput(content=sensor_info,)
 

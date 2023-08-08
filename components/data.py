@@ -1,7 +1,7 @@
 """Data objects for waspi system.py"""
 import datetime
 from enum import IntEnum
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional
 from uuid import UUID, uuid4
 from pydantic import Field, BaseModel
 from dataclasses import dataclass
@@ -53,7 +53,7 @@ class SensorValue(BaseModel):
 class SerialOutput(BaseModel):
     """The serial output."""
 
-    content: List[SensorValue] = Field(default_factory=list)
+    content: Dict[str, SensorValue] = Field(default_factory=dict)
     """The message to be sent. Usually a JSON string."""
 
 
