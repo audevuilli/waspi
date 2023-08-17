@@ -16,7 +16,7 @@ from scipy.io.wavfile import write
 
 # The file path to the data folder on the local machine
 #outputFolder = '/home/pi/Documents/A_Up_Wasps/nest1/accelOutput/'
-outputFolder = '/waspi/accelOutput'
+outputFolder = '/waspi/components/accelOutput'
 
 # How often does a recording start, in seconds?
 checkInterval = 120
@@ -44,6 +44,7 @@ def main():
         while True:
             dateTimeNow = datetime.now()
             filename = "accelAudio_%02d%02d%04d_%02d%02d%02d" % (dateTimeNow.day, dateTimeNow.month, dateTimeNow.year, dateTimeNow.hour, dateTimeNow.minute, dateTimeNow.second)
+            
             fullFilePath = outputFolder + filename
         
             recordAudioFile(fullFilePath)

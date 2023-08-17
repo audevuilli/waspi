@@ -53,23 +53,3 @@ while True:
                 picam2.stop_encoder(encoder)
                 encoding = False
     prev = cur
-
-
-# def get_file_path():
-#     timestamp = arrow.utcnow().datetime.timestamp()
-#     time_now = datetime.datetime.now()
-#     file_name = time_now.strftime("%Y%m%d_%H%M%S")
-# 
-#     return file_name
-# 
-# def capture_image():
-# 
-#     # Define photo name
-#     timestamp = arrow.utcnow().datetime.timestamp()
-#     time_now = datetime.datetime.now()
-#     file_name = time_now.strftime("%Y%m%d_%H%M%S")
-# 
-#     file_path = file_name + '.jpg'
-#     print(file_path)
-
-
