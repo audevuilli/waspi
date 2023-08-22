@@ -10,7 +10,7 @@ import wave
 import array
 
 # Define the ADC (channel and bit depth) define recording sampling rate (in HZ)
-adc_channel = 0
+spi_channel = 0
 adc_bitdepth = 10
 sampling_rate = 16000
 sampling_duration = 30  #30 seconds
