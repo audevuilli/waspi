@@ -61,15 +61,19 @@ def record_file(sampling_rate, sampling_duration, adc_bitdepth):
 
     # Get the time
     time_now = datetime.datetime.now()
-    #file_name = time_now.strftime("%Y%m%d_%H%M%S")
     file_path = f'{time_now.strftime("%Y%m%d_%H%M%S")}.wav'
+
     # Empty array to store the values
     accel_values = []
 
-    for _ in range(sampling_duration):
-        data_accl0, _  = read_adc(adc_channel = adc_channel0, vref=vref)
+    # Get the start time 
+    start_time = time.time()  # Get the start time
+
+    while time.time() - start_time < sampling_duration:
+        ata_accl0, _  = read_adc(adc_channel=adc_channel0, vref=vref)
         accel_values.append(data_accl0)
-    
+        #time.sleep(1/sampling_rate)
+
     # Create a WAV file to write the acceleromter values
     with wave.open(file_path, "wb") as accel_wavfile:
         accel_wavfile.setnchannels(1)
@@ -81,10 +85,8 @@ def record_file(sampling_rate, sampling_duration, adc_bitdepth):
         #data_array = struct.pack('<h', scaled_adc)
         accel_wavfile.writeframes(data_array.tobytes())
         accel_wavfile.close()
-    
-    #time.sleep(1/sampling_rate)
 
-    return 
+    #return 
 
 record_file(sampling_rate, sampling_duration, adc_bitdepth)
 spi.close()
