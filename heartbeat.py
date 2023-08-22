@@ -3,7 +3,7 @@ import datetime
 import time
 import logging
 
-from acoupi import config_mqtt
+import config_mqtt
 
 
 # Setup the main logger
