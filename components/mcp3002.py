@@ -14,7 +14,7 @@ vref = 3.3
 
 # ADC (channel and bit depth) define recording sampling rate (in HZ)
 adc_channel0 = 0
-adc_channel0 = 1
+adc_channel1 = 1
 adc_bitdepth = 10
 sampling_rate = 22000
 sampling_duration = 30  #30 seconds
@@ -42,9 +42,7 @@ def read_adc(adc_channel, vref):
     reply = spi.xfer2(msg)
 
     # Construct single integer out of the reply (2 bytes)
-    adc = 0
-    for n in reply:
-        adc = (adc << 8) + n
+    adc = (reply[0] << 8) + reply[1]
 
     # Last bit (0) is not part of ADC value, shift to remove it
     adc = adc >> 1
@@ -54,21 +52,6 @@ def read_adc(adc_channel, vref):
 
     return voltage
 
-    #adc_accl0 = spi.xfer2([1, (8 + adc_channel) << 4, 0])
-    #data_accl0 = ((adc_accl0[1] & 3 << 8) + adc_accl0[2])
-    #print(f"Data Accel0: {data_accl0}")
-
-    #adc_accl1 = spi.xfer2([1, (8 + self.adc_channel) << 4, 0])
-    #data_accl1 = ((adc_accl1[1] & 3 << 8) + adc_accl1[2])
-    #print(f"Data Accel1: {data_accl1}")
-
-    # Calculate voltage form ADC value
-    #voltage_accl0 = (vref * data_accl0) / 1024 # 2**10 -> MCP3002 is a 10-bit ADC
-    #print(f"Voltage Accel0: {round(voltage_accl0, 3)}")
-    #voltage_accl1 = (vref * adc_accl1) / 1024 # 2**10 -> MCP3002 is a 10-bit ADC
-    #print(f"Voltage Accel1: {round(voltage_accl1, 3)}")
-
-    #return data_accl0, voltage_accl0
 
 def record_file(sampling_rate, sampling_duration, adc_bitdepth):
 
@@ -83,9 +66,8 @@ def record_file(sampling_rate, sampling_duration, adc_bitdepth):
     start_time = time.time()  # Get the start time
 
     while time.time() - start_time < sampling_duration:
-        data_accl0, _  = read_adc(adc_channel=adc_channel0, vref=vref)
+        data_accl0 = read_adc(adc_channel=adc_channel0, vref=vref)
         accel_values.append(data_accl0)
-        #time.sleep(1/sampling_rate)
 
     # Create a WAV file to write the acceleromter values
     with wave.open(file_path, "wb") as accel_wavfile:
@@ -97,9 +79,8 @@ def record_file(sampling_rate, sampling_duration, adc_bitdepth):
         #scaled_adc = int((adc_0 / 5.0) * 32767) 
         #data_array = struct.pack('<h', scaled_adc)
         accel_wavfile.writeframes(data_array.tobytes())
-        accel_wavfile.close()
+        #accel_wavfile.close()
 
-    #return 
 
 record_file(sampling_rate, sampling_duration, adc_bitdepth)
 spi.close()
