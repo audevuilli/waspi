@@ -36,26 +36,39 @@ def read_adc(adc_channel, vref):
         4. MSBF: Enable LSB format first 
     """
 
-    #msg = 0b11
-    #msg = ((msg << 1) + adc_channel0) << 5
-    #msg = [msg, 0b00000000]
-    #reply = spi.xfer2(msg)
+    msg = 0b11
+    msg = ((msg << 1) + adc_channel) << 5
+    msg = [msg, 0b00000000]
+    reply = spi.xfer2(msg)
 
-    adc_accl0 = spi.xfer2([1, (8 + adc_channel) << 4, 0])
-    data_accl0 = ((adc_accl0[1] & 3 << 8) + adc_accl0[2])
-    print(f"Data Accel0: {data_accl0}")
+    # Construct single integer out of the reply (2 bytes)
+    adc = 0
+    for n in reply:
+        adc = (adc << 8) + n
+
+    # Last bit (0) is not part of ADC value, shift to remove it
+    adc = adc >> 1
+
+    # Calculate voltage form ADC value
+    voltage = (vref * adc) / 1024
+
+    return voltage
+
+    #adc_accl0 = spi.xfer2([1, (8 + adc_channel) << 4, 0])
+    #data_accl0 = ((adc_accl0[1] & 3 << 8) + adc_accl0[2])
+    #print(f"Data Accel0: {data_accl0}")
 
     #adc_accl1 = spi.xfer2([1, (8 + self.adc_channel) << 4, 0])
     #data_accl1 = ((adc_accl1[1] & 3 << 8) + adc_accl1[2])
     #print(f"Data Accel1: {data_accl1}")
 
     # Calculate voltage form ADC value
-    voltage_accl0 = (vref * data_accl0) / 1024 # 2**10 -> MCP3002 is a 10-bit ADC
-    print(f"Voltage Accel0: {round(voltage_accl0, 3)}")
+    #voltage_accl0 = (vref * data_accl0) / 1024 # 2**10 -> MCP3002 is a 10-bit ADC
+    #print(f"Voltage Accel0: {round(voltage_accl0, 3)}")
     #voltage_accl1 = (vref * adc_accl1) / 1024 # 2**10 -> MCP3002 is a 10-bit ADC
     #print(f"Voltage Accel1: {round(voltage_accl1, 3)}")
 
-    return data_accl0, voltage_accl0
+    #return data_accl0, voltage_accl0
 
 def record_file(sampling_rate, sampling_duration, adc_bitdepth):
 
@@ -70,7 +83,7 @@ def record_file(sampling_rate, sampling_duration, adc_bitdepth):
     start_time = time.time()  # Get the start time
 
     while time.time() - start_time < sampling_duration:
-        ata_accl0, _  = read_adc(adc_channel=adc_channel0, vref=vref)
+        data_accl0, _  = read_adc(adc_channel=adc_channel0, vref=vref)
         accel_values.append(data_accl0)
         #time.sleep(1/sampling_rate)
 
