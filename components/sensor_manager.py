@@ -42,7 +42,8 @@ class SensorReporter:
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(idx_value)
-        print(sensor_info)
+        print(f"SENSOR INFO {sensor_info}")
+        print("")
 
         return data.SerialOutput(content=sensor_info,)
 
@@ -70,19 +71,22 @@ class SerialReceiver(SensorReporter):
             stop_event = asyncio.Event()
 
             async def stop_after_timeout():
-                 await asyncio.sleep(10)  # Adjust the timeout value as needed
-                 stop_event.set()
+                await asyncio.sleep(10) 
+                stop_event.set()
 
             asyncio.create_task(stop_after_timeout())
 
             while not stop_event.is_set():
                 await asyncio.sleep(1)  # Give some time for callbacks to be executed
                 link.tick() 
-
+            
+            # Collect and return the data after the loop
             return self.get_PeriodicReport()
          
             
         except Exception as e:
             print(e)
+            return None  # Return None in case of an exception
 
-        link.close()
+        finally:
+            link.close()
