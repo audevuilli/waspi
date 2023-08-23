@@ -16,9 +16,13 @@ vref = 3.3
 adc_channel0 = 0
 adc_channel1 = 1
 adc_bitdepth = 10
+
 sampling_rate = 22000
 sampling_duration = 30  #30 seconds
-sampling_interval = 180  #30 minutes in sec. 
+sampling_number = sampling_duration * sampling_rate
+
+#sampling_interval = 180  #30 minutes in sec. 
+
 
 
 spi = spidev.SpiDev()
@@ -65,7 +69,11 @@ def record_file(sampling_rate, sampling_duration, adc_bitdepth):
     # Get the start time 
     start_time = time.time()  # Get the start time
 
-    while time.time() - start_time < sampling_duration:
+    #while time.time() - start_time < sampling_duration:
+    #    data_accl0 = read_adc(adc_channel=adc_channel0, vref=vref)
+    #    accel_values.append(data_accl0)
+    
+    while len(accel_values) < number_of_samples:
         data_accl0 = read_adc(adc_channel=adc_channel0, vref=vref)
         accel_values.append(data_accl0)
 
@@ -75,7 +83,7 @@ def record_file(sampling_rate, sampling_duration, adc_bitdepth):
         accel_wavfile.setsampwidth(adc_bitdepth // 8)
         accel_wavfile.setframerate(sampling_rate)
 
-        data_array = array.array('h', accel_values)
+        data_array = array.array('f', accel_values)
         #scaled_adc = int((adc_0 / 5.0) * 32767) 
         #data_array = struct.pack('<h', scaled_adc)
         accel_wavfile.writeframes(data_array.tobytes())
