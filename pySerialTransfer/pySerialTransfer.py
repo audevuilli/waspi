@@ -155,6 +155,7 @@ class SerialTransfer(object):
         self.debug        = debug
         self.idByte       = 0
         self.bytesRead    = 0
+        self.bytesTotal   = None # EDIT
         self.status       = 0
         self.overheadByte = 0xFF
         self.callbacks    = []
@@ -341,9 +342,15 @@ class SerialTransfer(object):
             buff = bytes(self.rxBuff[start_pos:(start_pos + STRUCT_FORMAT_LENGTHS[format_str])])
             
         elif obj_type == int:
-            format_str = 'i'
-            buff = bytes(self.rxBuff[start_pos:(start_pos + STRUCT_FORMAT_LENGTHS[format_str])])
-            
+            # EDIT
+            if byte_format:
+                buff = bytes(self.rxBuff[start_pos:(start_pos + obj_byte_size)])
+                format_str = ''
+            else:
+                format_str = 'i'
+                buff = bytes(self.rxBuff[start_pos:(start_pos + STRUCT_FORMAT_LENGTHS[format_str])])
+            # EDIT
+
         elif obj_type == bool:
             format_str = '?'
             buff = bytes(self.rxBuff[start_pos:(start_pos + STRUCT_FORMAT_LENGTHS[format_str])])
@@ -621,7 +628,8 @@ class SerialTransfer(object):
         '''
         
         if self.available():
-            if self.idByte < len(self.callbacks):
+            # EDIT
+            if self.idByte < len(self.callbacks) and self.callbacks[self.idByte]:
                 self.callbacks[self.idByte]()
             elif self.debug:
                 print('ERROR: No callback available for packet ID {}'.format(self.idByte))
