@@ -1,4 +1,9 @@
+"""
+    Script to collect data from the Accelerometers 805M1. 
+    Read Analog Input on the RPi using the MCP3002 ADC Chip. 
+    SparkFun Article: https://learn.sparkfun.com/tutorials/python-programming-tutorial-getting-started-with-the-raspberry-pi/experiment-3-spi-and-analog-input
 
+"""
 import time
 import datetime
 import spidev
@@ -23,10 +28,7 @@ sampling_number = sampling_duration * sampling_rate
 
 #sampling_interval = 180  #30 minutes in sec. 
 
-
-
-spi = spidev.SpiDev()
-spi.open(0, spi_channel)
+spi = spidev.SpiDev(0, spi_channel)
 spi.max_speed_hz = spi_max_speed_hz
 
 
@@ -39,6 +41,9 @@ def read_adc(adc_channel, vref):
         3. ODD/SIGN: Select input channel
         4. MSBF: Enable LSB format first 
     """
+    # Make sure ADC channel is 0 or 1
+    if adc_channel != 0:
+        adc_channel = 1
 
     msg = 0b11
     msg = ((msg << 1) + adc_channel) << 5
@@ -73,9 +78,9 @@ def record_file(sampling_rate, sampling_duration, adc_bitdepth):
     #    data_accl0 = read_adc(adc_channel=adc_channel0, vref=vref)
     #    accel_values.append(data_accl0)
     
-    while len(accel_values) < number_of_samples:
-        data_accl0 = read_adc(adc_channel=adc_channel0, vref=vref)
-        accel_values.append(data_accl0)
+    while len(accel_values) < sampling_number:
+        data_accl = read_adc(adc_channel=adc_channel, vref=vref)
+        accel_values.append(data_accl)
 
     # Create a WAV file to write the acceleromter values
     with wave.open(file_path, "wb") as accel_wavfile:
