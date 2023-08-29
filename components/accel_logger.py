@@ -67,10 +67,12 @@ class AccelLogger():
         spi = spidev.SpiDev(0, self.spi_channel)
         spi.max_speed_hz = self.spi_max_speed_hz
 
+        output_folder = 'recordings/accelOutput/'
+
         # Get the time
         time_now = datetime.datetime.now()
         file_path = f'{time_now.strftime("%Y%m%d_%H%M%S")}.wav'
-        print(f"File Path: {file_path}")
+        final_file_path = output_folder + file_path
 
         # Empty array to store the values
         accel_values = []
@@ -94,8 +96,8 @@ class AccelLogger():
         #    accel_values.append(data_accl)
 
         # Create a WAV file to write the acceleromter values
-        with wave.open(file_path, "wb") as accel_wavfile:
-
+        #with wave.open(file_path, "wb") as accel_wavfile:
+        with wave.open(final_file_path, "wb") as accel_wavfile:
             accel_wavfile.setnchannels(1)
             accel_wavfile.setsampwidth(self.adc_bitdepth // 8)
             accel_wavfile.setframerate(self.sampling_rate)
