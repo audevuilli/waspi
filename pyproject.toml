@@ -1,0 +1,18 @@
+[project]
+name = "Waspi"
+version = "0.1.0"
+description = "A python package to monitor wasps."
+authors = [
+    {name = "Aude Vuilliomenet", email = "aude.vuilliomenet.18@ucl.ac.uk"},
+]
+dependencies = [
+    "arrow>=1.2.3",
+    "pyserial>=3.5",
+]
+requires-python = ">=3.9"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
