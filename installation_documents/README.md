@@ -43,12 +43,13 @@ pdn add arrow pyserial pydantic paho-mqtt
 pip install .
 ```
 
-7. Install influxdb and grafana
+9. Install and setup InfluxDB 
 
-    1. Documentation InfluxDB Installation: [Click here for docs.](https://docs.ainfluxdata.com/influxdb/v2.7/install/?t=Linux)
-    2. Start influxDB instance on RPi.
-    3. Connect to influxDB via web broswer --> Web address *http://USERNAME_PI:8086*
-
+    1. Documentation InfluxDB Installation: [Click here for docs.](https://docs.influxdata.com/influxdb/v2.7/install/?t=Linux)
+    2. Start influxDB instance on RPi. 
+    3. Connect to influxDB via web broswer --> Web address *http://USERNAME_PI.local:8086*
+    4. Setup influxDB --> chose a username, organisation name, bucket name
+    5. Naviguate to "Load Data" -> "Telegraf". Select "+ Create Configuration". Chose the bucket and find the configuration file template "MQTT Consumer".
 ``` 
 wget https://dl.influxdata.com/influxdb/releases/influxdb2-2.7.0-arm64.deb
 sudo dpkg -i influxdb2-2.7.0-arm64.deb
@@ -56,30 +57,43 @@ sudo dpkg -i influxdb2-2.7.0-arm64.deb
 sudo service influxdb start
 ```
 
-8. Install dependencies with pip in acoupi folder
+10. Install telegraf - Get data from RPi into InfluxDB
+
+    1. Documentation Telegraf Installation: [Click here for docs.](https://docs.influxdata.com/telegraf/v1.27/)
+    2. Move the original telegraf configuration file and create a new telegraf conf file based on MQTT Consumer Template
+    3. Start telegraf 
 ```
-cd acoupi
-pip install update -U pip
-pip install -e .
-pip install batdetect2
+wget -q https://repos.influxdata.com/influxdata-archive_compat.key
+echo '393e8779c89ac8d958f81f942f9ad7fb82a25e133faddaf92e15b16e6ac9ce4c influxdata-archive_compat.key' | sha256sum -c && cat influxdata-archive_compat.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive_compat.gpg > /dev/null
+echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive_compat.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
+sudo apt-get update && sudo apt-get install telegraf
+
+sudo mv /etc/telegraf/telegraf.conf /etc/telegraf/telegraf-original.conf
+sudo nano /etc/telegraf/telegraf.conf
+sudo systemctl start telegraf.service
 ```
 
-9. Install run_acoupi.service
+11. Install grafana 
+
+    1. Documentation Grafana Installation: [Click here for docs.](https://grafana.com/grafana/download?platform=arm)
+    2. Add grafana to systemd - start grafana service.
+    3. Login into grafana at the address: http://localhost:3000 -> Default username and password: admin admin
+    4. Setup Grafana -> Add Data to dashboard. Add DataSources -> Flux Query -> HTTP URL -> Basic Auth Details -> InfluxDB Details 
+
 ```
-cd ~/acoupi/
-bash src/acoupi/scripts/batdetect2_setup_service.sh
-bash src/acoupi/scripts/setup_heartbeat.sh
+sudo apt-get install -y adduser libfontconfig1
+wget https://dl.grafana.com/enterprise/release/grafana-enterprise_10.1.0_arm64.deb
+sudo dpkg -i grafana-enterprise_10.1.0_arm64.deb
+
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable grafana-server
+sudo /bin/systemctl start grafana-server
 ```
 
-10. Setup cronjob for routine system cleaning.
+12. Install waspi services
 ```
-crontab -e
-0 17 * * * /bin/bash /home/pi/acoupi/src/acoupi/clean_system/recordings_folder.sh
-0 0 * * 0 /bin/bash /home/pi/acoupi/src/acoupi/clean_system/clean_log.sh
-0 0 1 * * /bin/bash /home/pi/acoupi/src/acoupi/clean_system/rename_acoupidb.sh
+cd ~/waspi
+
+bash waspi/scripts/start_waspi.sh
+bash waspi/scripts/setup_heartbeat.sh
 ```
-
-10. Test if batdetect2 main.py work. 
-
-10. Start service to run acoupi-batdetect2
-bash $HOME/acoupi/src/acoupi/scripts/setup_service.sh
