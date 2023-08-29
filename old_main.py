@@ -30,25 +30,31 @@ mqtt_messenger = MQTTMessenger(
         topic=config_mqtt.DEFAULT_TOPIC
 )
 
-
 async def process_serial():
-    while True:  # Infinite loop to keep the process running        
+    while True:  # Infinite loop to keep the process running
         print(" --- START PROCESS FUNCTION --- ")
         print(f" TIME: {time.asctime()}")
-        
+
         # Get the sensor values from serial port
+        #try:
         sensors_values = await serial_rx.get_SerialRx()
         print(f"JSON MESSAGE PROCESS: {sensors_values}")
-        print("")
+        #    print("")
+        #except Exception as e:
+        #    print(f"Error fetching sensor values: {e}")
+        #    continue
+
         # Create the messages from the serial output (sensor values)
         mqtt_message = await message_factories.build_message(sensors_values)
         print(f"MQTT Message: {mqtt_message}")
+        print("")
+
         # Send sensor values to MQTT
         response = await mqtt_messenger.send_message(mqtt_message)
         print(f"MQTT Response: {response}")
         print("")
 
-        print(f"END LOOP - TIME: {time.asctime()}")  
+        print(f"END LOOP - TIME: {time.asctime()}")
         print("")
 
 # Run asyncio event loop
