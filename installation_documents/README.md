@@ -31,6 +31,18 @@ git config --global core.excludesfile ~/.gitignore_global
 nano ~/.gitignore_global
 ```
 
+7. Install pdm - package manager [introduction to pdm](https://pdm.fming.dev/latest/)
+```
+curl -sSL https://pdm.fming.dev/install-pdm.py | python3 -
+export PATH=/home/pi/.local/bin:$PATH
+```
+
+8. Install all dependencies 
+```
+pdn add arrow serial 
+pip install .
+```
+
 7. Install influxdb and grafana
 
     1. Documentation InfluxDB Installation: [Click here for docs.](https://docs.ainfluxdata.com/influxdb/v2.7/install/?t=Linux)
