@@ -1,4 +1,5 @@
 import datetime
+import logging
 import asyncio
 import time
 
@@ -47,6 +48,7 @@ async def process_serial():
         # Get the sensor values from serial port
         try:
             sensors_values = await serial_rx.get_SerialRx()
+            logging.info(sensors_values)
             print(f"JSON MESSAGE PROCESS: {sensors_values}")
             print("")
         except Exception as e:
@@ -61,6 +63,7 @@ async def process_serial():
         # Send sensor values to MQTT
         response = await mqtt_messenger.send_message(mqtt_message)
         print(f"MQTT Response: {response}")
+        logging.info(response)
         print("")
 
         print(f"END LOOP - TIME: {time.asctime()}")
