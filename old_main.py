@@ -7,9 +7,18 @@ from components.message_factories import MessageBuilder
 from components.messengers import MQTTMessenger
 import config_mqtt
 
+# Setup the main logger
+logging.basicConfig(
+    filename="acoupi.log",
+    filemode="w",
+    format="%(levelname)s - %(message)s",
+    level=logging.INFO,
+)
+
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
-HWID_LIST = ["weight_scale", "temperature", "humidity"]
+#HWID_LIST = ["weight_scale", "temperature", "humidity"]
+HWID_LIST = ["weight_scale", "temperature_0", "humidity_0", "temperature_1", "humidity_1"]
 
 """Create the sensor object."""
 ws_reporter = SensorReporter(hwid_list=HWID_LIST)

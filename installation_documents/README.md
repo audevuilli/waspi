@@ -94,6 +94,6 @@ sudo /bin/systemctl start grafana-server
 ```
 cd ~/waspi
 
-bash waspi/scripts/start_waspi.sh
-bash waspi/scripts/setup_heartbeat.sh
+bash scripts/start_waspi.sh
+bash scripts/setup_heartbeat.sh
 ```
