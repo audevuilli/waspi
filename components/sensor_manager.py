@@ -21,9 +21,6 @@ class SensorReporter:
         sensor_values = {}
 
         for hwid in self.hwid_list:
-            print(f"HWID: {hwid}")
-            print("Check Type of value")
-            print(f"VALUE: {type(n[hwid])}")
             sensor_values[hwid] = data.SensorValue(
                 hwid=hwid,
                 value=n[hwid],
@@ -40,14 +37,11 @@ class SensorReporter:
 
         # 1/ Format Sensor Values
         for hwid in self.hwid_list:
-            print("Check Type of value")
             idx, idx_value[hwid] = get_float(link, idx)
             idx_value[hwid] = round(idx_value[hwid], 3)
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(idx_value)
-        print(f"Sensor Info: {sensor_info}")
-
         return data.SerialOutput(content=sensor_info,)
 
 
@@ -68,8 +62,7 @@ class SerialReceiver(SensorReporter):
             link.open()
 
             # Set callbacks_list
-            callbacks = [self.get_PeriodicReport()]
-            print(f"Callbakcs: {callbacks}")
+            callbacks = [self.get_PeriodicReport]
             link.set_callbacks(callbacks)
 
             stop_event = asyncio.Event()
