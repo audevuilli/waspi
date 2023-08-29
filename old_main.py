@@ -36,7 +36,6 @@ async def process_serial():
         print(f" TIME: {time.asctime()}")
 
         # Get the sensor values from serial port
-<<<<<<< HEAD
         #try:
         sensors_values = await serial_rx.get_SerialRx()
         print(f"JSON MESSAGE PROCESS: {sensors_values}")
@@ -45,16 +44,6 @@ async def process_serial():
         #    print(f"Error fetching sensor values: {e}")
         #    continue
 
-=======
-        try: 
-            sensors_values = await serial_rx.get_SerialRx()
-            print(f"JSON MESSAGE PROCESS: {sensors_values}")
-            print("")
-        except Exception as e:
-            print(f"Error fetching sensor values: {e}")
-            continue
-        
->>>>>>> 6e09ba38dba5ce6a711450b6eb23cafdbbb39ec0
         # Create the messages from the serial output (sensor values)
         mqtt_message = await message_factories.build_message(sensors_values)
         print(f"MQTT Message: {mqtt_message}")
