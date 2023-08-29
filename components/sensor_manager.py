@@ -23,7 +23,7 @@ class SensorReporter:
         for hwid in self.hwid_list:
             sensor_values[hwid] = data.SensorValue(
                 hwid=hwid,
-                value=n[hwid], 
+                value=n[hwid],
                 timestamp=arrow.utcnow().datetime.timestamp()
             )
 
@@ -38,13 +38,10 @@ class SensorReporter:
         # 1/ Format Sensor Values
         for hwid in self.hwid_list:
             idx, idx_value[hwid] = get_float(link, idx)
-            idx_value[hwid] = round(idx_value[hwid], 2)
+            idx_value[hwid] = round(idx_value[hwid], 3)
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(idx_value)
-        print(f"SENSOR INFO {sensor_info}")
-        print("")
-
         return data.SerialOutput(content=sensor_info,)
 
 
@@ -53,37 +50,36 @@ class SerialReceiver(SensorReporter):
 
     def __init__(self, port, baud, hwid_list):
         # Call the __init__ method of the parent class - SensorInfo
-        super().__init__(hwid_list) 
+        super().__init__(hwid_list)
         self.port = port
         self.baud = baud
 
-    async def get_SerialRx(self):           
+    async def get_SerialRx(self):
         try:
             global link
             link = txfr.SerialTransfer(self.port, self.baud, restrict_ports=False)
             link.debug = True
             link.open()
 
-            # Set callbacks_list 
+            # Set callbacks_list
             callbacks = [self.get_PeriodicReport]
             link.set_callbacks(callbacks)
 
             stop_event = asyncio.Event()
 
             async def stop_after_timeout():
-                await asyncio.sleep(10) 
+                await asyncio.sleep(10)
                 stop_event.set()
 
             asyncio.create_task(stop_after_timeout())
 
             while not stop_event.is_set():
                 await asyncio.sleep(1)  # Give some time for callbacks to be executed
-                link.tick() 
-            
+                link.tick()
+
             # Collect and return the data after the loop
             return self.get_PeriodicReport()
-         
-            
+
         except Exception as e:
             print(e)
             return None  # Return None in case of an exception
