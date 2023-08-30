@@ -38,14 +38,6 @@ ws_reporter = SensorReporter(hwid_list=HWID_LIST)
 """Create the Serial_Rx object."""
 serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid_list=HWID_LIST)
 
-"""Create the Accelerometer_Logger object."""
-accel_logger = AccelLogger(
-    adc_channel = ADC_CHANNEL_ACCEL0,
-    adc_bitdepth = ADC_BITS, 
-    sampling_rate = ACCEL_SAMPLERATE,
-    sampling_duration = ACCEL_SAMPLEDURATION, 
-)
-
 """Create the message factories object."""
 message_factories = MessageBuilder()
 

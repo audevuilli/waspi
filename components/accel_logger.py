@@ -40,7 +40,6 @@ class AccelLogger():
         if self.adc_channel != 0:
             self.adc_channel = 1
 
-        #print(f"ADC_CHANNEL: {self.adc_channel}")
         msg = 0b11
         msg = ((msg << 1) + self.adc_channel) << 5
         msg = [msg, 0b00000000]
