@@ -8,6 +8,7 @@ import time
 import spidev
 import wave
 import array
+import asyncio
 
 from pathlib import Path
 
@@ -67,7 +68,8 @@ class AccelLogger():
         # Create the file path usint the start time. 
         time_now = datetime.datetime.now()
         file_path = f'{time_now.strftime("%Y%m%d_%H%M%S")}.wav'
-        final_file_path = output_folder + file_path
+        final_file_path = output_folder + "accel"+str(self.adc_channel)+"_"+ file_path 
+        print(final_file_path)
 
         # Empty array to store the values
         accel_values = []
@@ -89,9 +91,6 @@ class AccelLogger():
         print(f"End Time -- {datetime.datetime.now()}")
         print("")
 
-        print(f"Close SPI Channel")
-        spi.close()
-
         # Create a WAV file to write the acceleromter values
         with wave.open(final_file_path, "wb") as accel_wavfile:
             accel_wavfile.setnchannels(1)
@@ -104,4 +103,5 @@ class AccelLogger():
             # normalised_data = (normalised_data * (2**(self.adc_bitdepth))).astype(np.int16)
             accel_wavfile.writeframes(data_array.tobytes())
 
-        return 
+        return
+        spi.close()
