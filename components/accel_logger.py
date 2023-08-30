@@ -1,6 +1,5 @@
 """
-    Script to collect data from the Accelerometers 805M1. 
-    Read Analog Input on the RPi using the MCP3002 ADC Chip. 
+    Collect data from the Accelerometers 805M1. Use the MCP3002 ADC Chip.
     SparkFun Article: https://learn.sparkfun.com/tutorials/python-programming-tutorial-getting-started-with-the-raspberry-pi/experiment-3-spi-and-analog-input
 
 """
@@ -13,7 +12,6 @@ import array
 from pathlib import Path
 
 from components import data
-#from components.waspi_types import Recording
 
 
 class AccelLogger():
@@ -50,13 +48,11 @@ class AccelLogger():
 
         # Construct single integer out of the reply (2 bytes)
         adc = (reply[0] << 8) + reply[1]
-
         # Last bit (0) is not part of ADC value, shift to remove it
         adc = adc >> 1
 
         # Calculate voltage form ADC value
         voltage = (self.vref * adc) / (2**self.adc_bitdepth)
-        #print(f"Voltage: {voltage}")
 
         return voltage
 
@@ -69,7 +65,7 @@ class AccelLogger():
 
         output_folder = 'recordings/accelOutput/'
 
-        # Get the time
+        # Create the file path usint the start time. 
         time_now = datetime.datetime.now()
         file_path = f'{time_now.strftime("%Y%m%d_%H%M%S")}.wav'
         final_file_path = output_folder + file_path
@@ -77,42 +73,36 @@ class AccelLogger():
         # Empty array to store the values
         accel_values = []
 
-        # Get the number of samples to collect
-        sampling_number = self.sampling_duration * self.sampling_rate
-
         # Get the start time 
         start_time = time.time()  # Get the start time
 
         print(f"ADC Channel: {self.adc_channel}")
         print(f"Start Time -- {datetime.datetime.now()}")
+
         while time.time() - start_time < self.sampling_duration:
-             data_accl = self.read_adc(spi)
-             accel_values.append(data_accl)
+            data_accl = self.read_adc(spi)
+            accel_values.append(data_accl)
+
+        # for _ in range(self.sampling_duration * self.sampling_rate):
+        #   data_accl = self.read_adc(spi)
+        #   accel_values.append(data_accl)
+
         print(f"End Time -- {datetime.datetime.now()}")
         print("")
 
-        #while len(accel_values) < sampling_number:
-        #    data_accl = self.read_adc(spi)
-        #    accel_values.append(data_accl)
+        print(f"Close SPI Channel")
+        spi.close()
 
         # Create a WAV file to write the acceleromter values
-        #with wave.open(file_path, "wb") as accel_wavfile:
         with wave.open(final_file_path, "wb") as accel_wavfile:
             accel_wavfile.setnchannels(1)
-            accel_wavfile.setsampwidth(self.adc_bitdepth // 8)
+            accel_wavfile.setsampwidth(self.adc_bitdepth // 8) #Convert bit to bytes (1bit = 8bytes)
             accel_wavfile.setframerate(self.sampling_rate)
 
             data_array = array.array('f', accel_values)
+            # Other method for array conversion - numpy
+            # normalised_data = (accel_values - np.min(accel_values))/(np.max(accel_values) - np.min(accel_values))
+            # normalised_data = (normalised_data * (2**(self.adc_bitdepth))).astype(np.int16)
             accel_wavfile.writeframes(data_array.tobytes())
-            #accel_wavfile.close()
-        
-        # Create a Recording object and return it
-        #return data.Recording(
-        #    path=Path(file_name),
-        #    duration=self.sampling_duration,
-        #    samplerate=self.sampling_rate,
-        #    adc_channel=self.adc_channel,
-        #)
-        return accel_wavfile
 
-        spi.close()
+        return 

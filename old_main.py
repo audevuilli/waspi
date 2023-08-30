@@ -3,6 +3,7 @@ import logging
 import asyncio
 import time
 
+from components.accel_logger import AccelLogger
 from components.sensor_manager import SensorReporter, SerialReceiver
 from components.message_factories import MessageBuilder
 from components.messengers import MQTTMessenger
@@ -18,8 +19,18 @@ logging.basicConfig(
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
-#HWID_LIST = ["weight_scale", "temperature", "humidity"]
 HWID_LIST = ["weight_scale", "temperature_0", "humidity_0", "temperature_1", "humidity_1"]
+
+SPI_CHANNEL = 0
+SPI_MAX_SPEED_HZ = 1200000
+VREF = 3.3
+
+ADC_CHANNEL_0 = 0
+ADC_CHANNEL_1 = 1
+ADC_BITDEPTH = 10
+ACCEL_SAMPLERATE = 20000 #16KHz
+ACCEL_SAMPLEDURATION = 30 #30 seconds 
+
 
 """Create the sensor object."""
 ws_reporter = SensorReporter(hwid_list=HWID_LIST)
@@ -39,6 +50,27 @@ mqtt_messenger = MQTTMessenger(
         clientid=config_mqtt.DEFAULT_CLIENTID, 
         topic=config_mqtt.DEFAULT_TOPIC
 )
+
+"""Create the Accelerometer objects."""
+accel0_logger = AccelLogger(
+    spi_channel = SPI_CHANNEL,
+    spi_max_speed_hz = SPI_MAX_SPEED_HZ,
+    vref = VREF,
+    adc_channel = ADC_CHANNEL_0, 
+    adc_bitdepth = ADC_BITDEPTH, 
+    sampling_rate = ACCEL_SAMPLERATE, 
+    sampling_duration = ACCEL_SAMPLEDURATION
+    )
+
+accel1_logger = AccelLogger(
+    spi_channel = SPI_CHANNEL,
+    spi_max_speed_hz = SPI_MAX_SPEED_HZ,
+    vref = VREF,
+    adc_channel = ADC_CHANNEL_1,
+    adc_bitdepth = ADC_BITDEPTH,
+    sampling_rate = ACCEL_SAMPLERATE, 
+    sampling_duration = ACCEL_SAMPLEDURATION
+    )
 
 async def process_serial():
     while True:  # Infinite loop to keep the process running
@@ -77,3 +109,4 @@ try:
     loop.run_forever()
 finally:
     loop.close()
+

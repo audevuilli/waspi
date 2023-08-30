@@ -1,4 +1,5 @@
 import datetime
+import logging
 import asyncio
 import time
 
@@ -8,14 +9,27 @@ from components.message_factories import MessageBuilder
 from components.messengers import MQTTMessenger
 import config_mqtt
 
+# Setup the main logger
+logging.basicConfig(
+    filename="acoupi.log",
+    filemode="w",
+    format="%(levelname)s - %(message)s",
+    level=logging.INFO,
+)
+
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
-HWID_LIST = ["weight_scale", "temperature", "humidity"]
+HWID_LIST = ["weight_scale", "temperature_0", "humidity_0", "temperature_1", "humidity_1"]
 
-ADC_CHANNEL_ACCEL0 = 0
-ADC_BITS = 10
-ACCEL_SAMPLERATE = 16000 #16KHz
-ACCEL_SAMPLEDURATION = 30 #30 seconds
+SPI_CHANNEL = 0
+SPI_MAX_SPEED_HZ = 1200000
+VREF = 3.3
+
+ADC_CHANNEL_0 = 0
+ADC_CHANNEL_1 = 1
+ADC_BITDEPTH = 10
+ACCEL_SAMPLERATE = 20000 #16KHz
+ACCEL_SAMPLEDURATION = 30 #30 seconds 
 
 
 """Create the sensor object."""
@@ -37,13 +51,34 @@ message_factories = MessageBuilder()
 
 """Initialise the MQTT Messenger."""
 mqtt_messenger = MQTTMessenger(
-        host=config_mqtt.DEFAULT_HOST, 
-        username=config_mqtt.DEFAULT_MQTTCLIENT_USER, 
-        password=config_mqtt.DEFAULT_MQTTCLIENT_PASS, 
-        port=config_mqtt.DEFAULT_PORT, 
-        clientid=config_mqtt.DEFAULT_CLIENTID, 
-        topic=config_mqtt.DEFAULT_TOPIC
-)
+    host=config_mqtt.DEFAULT_HOST, 
+    username=config_mqtt.DEFAULT_MQTTCLIENT_USER, 
+    password=config_mqtt.DEFAULT_MQTTCLIENT_PASS, 
+    port=config_mqtt.DEFAULT_PORT, 
+    clientid=config_mqtt.DEFAULT_CLIENTID, 
+    topic=config_mqtt.DEFAULT_TOPIC
+    )
+
+"""Create the Accelerometer objects."""
+accel0_logger = AccelLogger(
+    spi_channel = SPI_CHANNEL,
+    spi_max_speed_hz = SPI_MAX_SPEED_HZ,
+    vref = VREF,
+    adc_channel = ADC_CHANNEL_0, 
+    adc_bitdepth = ADC_BITDEPTH, 
+    sampling_rate = ACCEL_SAMPLERATE, 
+    sampling_duration = ACCEL_SAMPLEDURATION
+    )
+
+accel1_logger = AccelLogger(
+    spi_channel = SPI_CHANNEL,
+    spi_max_speed_hz = SPI_MAX_SPEED_HZ,
+    vref = VREF,
+    adc_channel = ADC_CHANNEL_1,
+    adc_bitdepth = ADC_BITDEPTH,
+    sampling_rate = ACCEL_SAMPLERATE, 
+    sampling_duration = ACCEL_SAMPLEDURATION
+    )
 
 
 async def process_serial():
@@ -52,9 +87,15 @@ async def process_serial():
         print(f" TIME: {time.asctime()}")
         
         # Get the sensor values from serial port
-        sensors_values = await serial_rx.get_SerialRx()
-        print(f"JSON MESSAGE PROCESS: {sensors_values}")
-        print("")
+        try:
+            sensors_values = await serial_rx.get_SerialRx()
+            logging.info(sensors_values)
+            print(f"JSON MESSAGE PROCESS: {sensors_values}")
+            print("")
+        except Exception as e:
+            print(f"Error fetching sensor values: {e}")
+            continue
+
         # Create the messages from the serial output (sensor values)
         mqtt_message = await message_factories.build_message(sensors_values)
         print(f"MQTT Message: {mqtt_message}")
@@ -68,22 +109,24 @@ async def process_serial():
 
 
 #async def process_accel():
-def process_accel():
-    
-    if time.localtime().tm_min % 30 == 0:
-        accel_values = accel_logger.get_AccelData()
-        print(f"Accel Values: {accel_values}")
-        #await asyncio.get_event_loop().run_in_executor(None, accel_values)
-        # accel_values = await accel_logger.get_AccelData()
+async def process_accel():
+    while True: # Infinite loop to keep the process running  
+        if time.localtime().tm_min % 30 == 0:
+            print(f"Start Recording Accel 0")
+            record_accel0 = await accel0_logger.record_file()
+            print(f"End Recording Accel 0: {record_accel0}")
+            print("")
+            
+            print(f"Start Recording Accel 1")
+            record_accel1 = await accel1_logger.record_file()
+            print(f"End Recording Accel 1: {record_accel1}")
+            print("")
 
 
 # Run asyncio event loop
 loop = asyncio.get_event_loop()
 loop.create_task(process_serial())
-
-# Run asyncio event loop - Add run_in_executor for multithreading.
-#loop = asyncio.get_event_loop(create_task(process_serial()))
-#loop.get_event_loop().run_in_executor(None, process_accel())
+loop.create_task(process_accel())
 
 try:
     loop.run_forever()
