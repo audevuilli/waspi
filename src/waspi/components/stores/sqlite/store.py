@@ -7,7 +7,7 @@ from uuid import UUID
 
 from pony import orm
 
-from waspi.components import data
+from waspi import data
 from waspi.components import types
 
 from . import types as db_types
