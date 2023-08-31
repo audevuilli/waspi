@@ -10,7 +10,7 @@ from waspi.components.message_factories import MessageBuilder
 from waspi.components.messengers import MQTTMessenger
 from waspi.components.message_stores.sqlite import SqliteMessageStore
 from waspi.components.stores.sqlite import SqliteStore
-import config_mqtt
+from waspi import config_mqtt
 
 # Setup the main logger
 logging.basicConfig(
