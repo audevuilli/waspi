@@ -51,7 +51,7 @@ Example:
 
 """
 # TODO: Update sqlite store documentation
-from acoupi.components.stores.sqlite.store import SqliteStore
+from waspi.components.stores.sqlite.store import SqliteStore
 
 __all__ = [
     "SqliteStore",
