@@ -6,7 +6,7 @@ from typing import List
 
 from pySerialTransfer import pySerialTransfer as txfr
 from waspi import data
-from waspi_util import *
+from waspi.components.waspi_util import *
 
 
 class SensorReporter:
