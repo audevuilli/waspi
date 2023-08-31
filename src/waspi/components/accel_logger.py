@@ -64,11 +64,11 @@ class AccelLogger():
         spi = spidev.SpiDev(0, self.spi_channel)
         spi.max_speed_hz = self.spi_max_speed_hz
 
-        output_folder = 'recordings/accelOutput/'
+        output_folder = 'recordings/accelRecordings/'
 
         # Create the file path usint the start time. 
         recording_starttime = datetime.datetime.now()
-        file_path = f'{time_now.strftime("%Y%m%d_%H%M%S")}.wav'
+        file_path = f'{recording_starttime.strftime("%Y%m%d_%H%M%S")}.wav'
         hwid_accel = "accel"+str(self.adc_channel)
         final_file_path = output_folder + hwid_accel + "_" + file_path 
         print(final_file_path)
