@@ -34,6 +34,19 @@ class Deployment(core.EntityMeta):
     """Longitude of the deployment site. Can be None if unknown."""
 
 
+class SensorValue(core.EntityMeta):
+    """A reading from a sensor."""
+
+    hwid: str
+    """The sensor hardware id to identify the sensor."""
+
+    value: float
+    """The value of the sensor reading."""
+
+    timestamp: float
+    """The datetime when the reading was made."""
+
+
 class SerialOutput(core.EntityMeta):
     """Recording ORM model."""
 
@@ -43,7 +56,7 @@ class SerialOutput(core.EntityMeta):
     datetime: datetime
     """Datetime of the sensor value. Should be unique"""
 
-    content: Dict[str]
+    content: Dict[str, SensorValue]
     """The sensor hardware id to identify the sensor."""
 
     datetime: datetime.datetime
@@ -70,5 +83,6 @@ class BaseModels(NamedTuple):
     """Container for models."""
 
     Deployment: Deployment
+    SensorValue: SensorValue
     SerialOutput: SerialOutput
     AccelRecording: AccelRecording
