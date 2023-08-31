@@ -14,7 +14,7 @@ import config_mqtt
 
 # Setup the main logger
 logging.basicConfig(
-    filename="acoupi.log",
+    filename="waspi.log",
     filemode="w",
     format="%(levelname)s - %(message)s",
     level=logging.INFO,
