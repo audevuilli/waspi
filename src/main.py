@@ -66,7 +66,7 @@ accel1_logger = AccelLogger(
 
 """Sqlite DB configuration parameters."""
 dbstore = SqliteStore(db_path=DEFAULT_DB_PATH)
-dbstore_message = components.SqliteMessageStore(
+dbstore_message = SqliteMessageStore(
     db_path=DEFAULT_DB_PATH
     )
 
