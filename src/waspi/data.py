@@ -57,6 +57,9 @@ class SerialOutput(BaseModel):
     content: Dict[str, SensorValue] = Field(default_factory=dict)
     """The message to be sent. Usually a JSON string."""
 
+    datetime: datetime.datetime
+    """The datetime when the recording was made"""
+
 
 class AccelRecording(BaseModel):
     """A reading from a sensor."""

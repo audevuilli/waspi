@@ -93,7 +93,7 @@ class SqliteStore(types.Store):
         self._get_or_create_deployment(deployment)
 
     @orm.db_session
-    def store_sensor_value(self, sensor_value: data.SensorValue) -> None:
+    def store_sensor_value(self, sensor_value: data.SerialOutput) -> None:
     #async def store_sensor_value(self, sensor_value: data.SensorValue) -> None:
         """Store the sensor values locally.
 
@@ -139,13 +139,12 @@ class SqliteStore(types.Store):
     @orm.db_session
     def _create_sensor_value(
         self,
-        sensor_value: data.SensorValue,
+        sensor_value: data.SerialOutput,
     ) -> db_types.SensorValue:
         """Create a sensor value."""
         db_sensor_value = self.models.SensorValue(
             id=sensor_value.id,
-            hwid=sensor_value.hwid,
-            value=sensor_value.value,
+            content=sensor_value.content,
             datetime=sensor_value.datetime,
         )
         orm.commit()
@@ -154,8 +153,8 @@ class SqliteStore(types.Store):
     @orm.db_session
     def _get_or_create_sensor_value(
         self,
-        sensor_value: data.SensorValue,
-    ) -> db_types.SensorValue:
+        sensor_value: data.SerialOutput,
+    ) -> db_types.SerialOutput:
         """Get or create a recording."""
         try:
             return self._get_sensor_value_by_id(sensor_value.id)
@@ -163,9 +162,9 @@ class SqliteStore(types.Store):
             return self._create_sensor_value(sensor_value)
 
     @orm.db_session
-    def _get_sensor_value_by_id(self, id: UUID) -> db_types.SensorValue:
+    def _get_sensor_value_by_id(self, id: UUID) -> db_types.SerialOutput:
         """Get the sensor value by the id."""
-        sensor_value: Optional[db_types.SensorValue] = self.models.SensorValue.get(
+        sensor_value: Optional[db_types.SerialOutput] = self.models.SerialOutput.get(
             id=id
         )
         if sensor_value is None:

@@ -1,6 +1,7 @@
 """Implementation of a SensorReporter for waspi."""
 import arrow
 import json
+import datetime
 import asyncio
 from typing import List
 
@@ -43,7 +44,7 @@ class SensorReporter:
 
         # 2/ Format Sensor Report
         sensor_info = self.get_SensorInfo(idx_value)
-        return data.SerialOutput(content=sensor_info,)
+        return data.SerialOutput(content=sensor_info, datetime=datetime.datetime.now())
 
 
 class SerialReceiver(SensorReporter):

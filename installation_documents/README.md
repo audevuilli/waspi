@@ -39,7 +39,7 @@ export PATH=/home/pi/.local/bin:$PATH
 
 8. Install all dependencies 
 ```
-pdn add arrow pyserial pydantic paho-mqtt
+pdm add arrow pyserial pydantic paho-mqtt pony
 pip install .
 ```
 

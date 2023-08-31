@@ -9,7 +9,7 @@ from pony.orm import Json, core
 __all__ = [
     "BaseModels",
     "Deployment",
-    "SensorValue",
+    "SerialOutput",
     "AccelRecording",
     "ModelOutput",
 ]
@@ -34,7 +34,7 @@ class Deployment(core.EntityMeta):
     """Longitude of the deployment site. Can be None if unknown."""
 
 
-class SensorValue(core.EntityMeta):
+class SerialOutput(core.EntityMeta):
     """Recording ORM model."""
 
     id: UUID
@@ -43,14 +43,11 @@ class SensorValue(core.EntityMeta):
     datetime: datetime
     """Datetime of the sensor value. Should be unique"""
 
-    hwid: str
+    content: Dict[str]
     """The sensor hardware id to identify the sensor."""
 
-    value: float
-    """The value of the sensor value."""
-
-    timestamp: float
-    """The datetime when the value was made."""
+    datetime: datetime.datetime
+    """The datetime when the recording was made"""
 
 
 class AccelRecording(core.EntityMeta):
@@ -73,5 +70,5 @@ class BaseModels(NamedTuple):
     """Container for models."""
 
     Deployment: Deployment
-    SensorValue: SensorValue
+    SerialOutput: SerialOutput
     AccelRecording: AccelRecording

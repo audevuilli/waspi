@@ -33,7 +33,7 @@ def create_base_models(database: orm.Database) -> BaseModels:
         longitude = orm.Optional(float)
         """Longitude of the deployment site. Can be None if unknown."""
 
-    class SensorValue(BaseModel):  # type: ignore
+    class SerialOutput(BaseModel):  # type: ignore
         _table_ = "sensors_reading"
 
         id = orm.PrimaryKey(UUID, auto=True)
@@ -42,14 +42,9 @@ def create_base_models(database: orm.Database) -> BaseModels:
         datetime = orm.Required(datetime, unique=True)
         """Datetime of the recording. Should be unique."""
 
-        hwid = orm.Required(str)
+        content = orm.Required(str)
         """Hwid of the sensor."""
 
-        value = orm.Required(float)
-        """Values of the sensor recording."""
-
-        timestamp = orm.Required(float)
-        """Timestamp of the sensor recording."""
 
     class AccelRecording(BaseModel):  # type: ignore
         _table_ = "accel_recording"
