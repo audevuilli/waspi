@@ -24,7 +24,7 @@ class Store(ABC):
         """Store the deployment locally."""
 
     @abstractmethod
-    def store_sensor_value(self, sensor_value: data.SensorValue) -> None:
+    def store_sensor_value(self, sensor_value: data.SerialOutput) -> None:
         """Store the sensor values locally."""
 
     @abstractmethod
