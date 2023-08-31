@@ -1,7 +1,7 @@
 """Types for waspi ORM models."""
 
 from datetime import datetime
-from typing import List, NamedTuple, Optional
+from typing import Dict, List, NamedTuple, Optional
 from uuid import UUID
 
 from pony.orm import Json, core

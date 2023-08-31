@@ -42,7 +42,7 @@ def create_base_models(database: orm.Database) -> BaseModels:
         datetime = orm.Required(datetime, unique=True)
         """Datetime of the recording. Should be unique."""
 
-        content = orm.Required(str)
+        content = orm.Required(dict)
         """Hwid of the sensor."""
 
 
