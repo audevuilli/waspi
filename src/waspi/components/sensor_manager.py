@@ -5,7 +5,7 @@ import asyncio
 from typing import List
 
 from pySerialTransfer import pySerialTransfer as txfr
-from components import data
+from waspi import data
 from components.waspi_util import *
 
 

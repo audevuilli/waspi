@@ -12,7 +12,8 @@ import asyncio
 
 from pathlib import Path
 
-from components import data
+from waspi import data
+
 
 
 class AccelLogger():
@@ -66,9 +67,10 @@ class AccelLogger():
         output_folder = 'recordings/accelOutput/'
 
         # Create the file path usint the start time. 
-        time_now = datetime.datetime.now()
+        recording_starttime = datetime.datetime.now()
         file_path = f'{time_now.strftime("%Y%m%d_%H%M%S")}.wav'
-        final_file_path = output_folder + "accel"+str(self.adc_channel)+"_"+ file_path 
+        hwid_accel = "accel"+str(self.adc_channel)
+        final_file_path = output_folder + hwid_accel + "_" + file_path 
         print(final_file_path)
 
         # Empty array to store the values
@@ -103,5 +105,9 @@ class AccelLogger():
             # normalised_data = (normalised_data * (2**(self.adc_bitdepth))).astype(np.int16)
             accel_wavfile.writeframes(data_array.tobytes())
 
-        return
+        return data.AccelRecording(
+            datetime=recording_starttime,
+            hwid=hwid_accel,
+            path=Path(final_file_path),
+        )
         spi.close()

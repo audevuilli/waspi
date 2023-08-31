@@ -3,12 +3,13 @@ import logging
 import asyncio
 import time
 
-from concurrent.futures import ThreadPoolExecutor
-
-from components.accel_logger import AccelLogger
-from components.sensor_manager import SensorReporter, SerialReceiver
-from components.message_factories import MessageBuilder
-from components.messengers import MQTTMessenger
+from waspi import data
+from waspi.components.accel_logger import AccelLogger
+from waspi.components.sensor_manager import SensorReporter, SerialReceiver
+from waspi.components.message_factories import MessageBuilder
+from waspi.components.messengers import MQTTMessenger
+from waspi.components.message_stores.sqlite import SqliteMessageStore
+from waspi.components.stores.sqlite import SqliteStore
 import config_mqtt
 
 # Setup the main logger
@@ -18,6 +19,8 @@ logging.basicConfig(
     format="%(levelname)s - %(message)s",
     level=logging.INFO,
 )
+
+DEFAULT_DB_PATH = "waspi.db"
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
@@ -40,19 +43,6 @@ ws_reporter = SensorReporter(hwid_list=HWID_LIST)
 """Create the Serial_Rx object."""
 serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid_list=HWID_LIST)
 
-"""Create the message factories object."""
-message_factories = MessageBuilder()
-
-"""Initialise the MQTT Messenger."""
-mqtt_messenger = MQTTMessenger(
-    host=config_mqtt.DEFAULT_HOST, 
-    username=config_mqtt.DEFAULT_MQTTCLIENT_USER, 
-    password=config_mqtt.DEFAULT_MQTTCLIENT_PASS, 
-    port=config_mqtt.DEFAULT_PORT, 
-    clientid=config_mqtt.DEFAULT_CLIENTID, 
-    topic=config_mqtt.DEFAULT_TOPIC
-    )
-
 """Create the Accelerometer objects."""
 accel0_logger = AccelLogger(
     spi_channel = SPI_CHANNEL,
@@ -74,6 +64,25 @@ accel1_logger = AccelLogger(
     sampling_duration = ACCEL_SAMPLEDURATION
     )
 
+"""Sqlite DB configuration parameters."""
+dbstore = SqliteStore(db_path=config.DEFAULT_DB_PATH)
+dbstore_message = components.SqliteMessageStore(
+    db_path=config.DEFAULT_DB_PATH
+    )
+
+"""Create the message factories object."""
+message_factories = MessageBuilder()
+
+"""Initialise the MQTT Messenger."""
+mqtt_messenger = MQTTMessenger(
+    host=config_mqtt.DEFAULT_HOST, 
+    username=config_mqtt.DEFAULT_MQTTCLIENT_USER, 
+    password=config_mqtt.DEFAULT_MQTTCLIENT_PASS, 
+    port=config_mqtt.DEFAULT_PORT, 
+    clientid=config_mqtt.DEFAULT_CLIENTID, 
+    topic=config_mqtt.DEFAULT_TOPIC
+    )
+
 
 async def process_serial():
     while True:  # Infinite loop to keep the process running        
@@ -89,12 +98,20 @@ async def process_serial():
         except Exception as e:
             print(f"Error fetching sensor values: {e}")
             continue
+        
+        # SqliteDB Store Sensor Value 
+        dbstore.store_sensor_value(sensors_values)
+        logging.info(f"Sensor Values saved in db: {sensors_values}")
 
         # Create the messages from the serial output (sensor values)
         mqtt_message = await message_factories.build_message(sensors_values)
         print(f"MQTT Message: {mqtt_message}")
+        # Store Messages in DB
+        message_store = dbstore_message.store_message(mqtt_message)
+
         # Send sensor values to MQTT
         response = await mqtt_messenger.send_message(mqtt_message)
+        #response = await [mqtt_messenger.send_message(message) for message in dbstore_message.get_unsent_messages()]
         print(f"MQTT Response: {response}")
         print("")
 
@@ -111,10 +128,18 @@ def process_accel():
             print(f"End Recording Accel 0: {record_accel0}")
             print("")
             
+            # SqliteDB Store Accelerometer Recordings Path 
+            dbstore.store_accel_recording(record_accel0)
+            logging.info(f"Accel 0 Recording Path saved in db: {record_accel0}")
+            
             print(f"Start Recording Accel 1")
             record_accel1 = accel1_logger.record_file()
             print(f"End Recording Accel 1: {record_accel1}")
             print("")
+
+            # SqliteDB Store Accelerometer Recordings Path 
+            dbstore.store_accel_recording(record_accel1)
+            logging.info(f"Accel 1 Recording Path saved in db: {record_accel1}")
 
 # Run asyncio main loop
 async def main():

@@ -5,7 +5,7 @@ import asyncio
 
 import paho.mqtt.client as mqtt
 
-from components import data
+from waspi import data
 from components.waspi_types import Messenger
 #from components.types import Messenger
 #from components import waspi_types

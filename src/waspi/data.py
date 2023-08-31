@@ -57,6 +57,19 @@ class SerialOutput(BaseModel):
     """The message to be sent. Usually a JSON string."""
 
 
+class AccelRecording(BaseModel):
+    """A reading from a sensor."""
+
+    datetime: datetime.datetime
+    """The datetime when the recording was made"""
+
+    hwid: str
+    """The sensor hardware id to identify the sensor."""
+
+    path: Optional[Path] = None
+    """The path to the audio file in the local filesystem"""
+
+
 class Message(BaseModel):
     """The message to be sent to remote server."""
     id: UUID = Field(default_factory=uuid4)

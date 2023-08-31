@@ -4,7 +4,7 @@ import json
 import arrow
 import asyncio
 
-from components import data
+from waspi import data
 from components.waspi_types import SerialOutputMessageBuilder
 
 
