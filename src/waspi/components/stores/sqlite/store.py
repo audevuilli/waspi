@@ -107,7 +107,7 @@ class SqliteStore(types.Store):
         Args:
             accel_recording: The accel_recording path to store.
         """
-        db_accelrecording = = self._get_or_create_accel_recording(accel_recording)
+        db_accelrecording = self._get_or_create_accel_recording(accel_recording)
 
 
     @orm.db_session
@@ -180,7 +180,7 @@ class SqliteStore(types.Store):
         """Create a sensor value."""
         db_accel_recording = self.models.AccelRecording(
             id=accel_recording.id,
-            hwid=accel_recording.hwid
+            hwid=accel_recording.hwid,
             path=str(accel_recording.path),
             datetime=accel_recording.datetime,
         )
