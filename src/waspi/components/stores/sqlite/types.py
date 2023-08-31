@@ -57,7 +57,7 @@ class SerialOutput(core.EntityMeta):
     datetime: datetime
     """Datetime of the sensor value. Should be unique"""
 
-    content: Dict[str, SensorValue]
+    content: str
     """The sensor hardware id to identify the sensor."""
 
     datetime: datetime
