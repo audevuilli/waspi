@@ -78,5 +78,6 @@ def create_base_models(database: orm.Database) -> BaseModels:
     return BaseModels(
         Deployment=Deployment,  # type: ignore
         SensorValue=SensorValue, # type: ignore
+        SerialOutput=SerialOutput, # type: ignore
         AccelRecording=AccelRecording,  # type: ignore
     )

@@ -9,6 +9,7 @@ from pony.orm import Json, core
 __all__ = [
     "BaseModels",
     "Deployment",
+    "SensorValue",
     "SerialOutput",
     "AccelRecording",
     "ModelOutput",
