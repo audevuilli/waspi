@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import List, Optional, Tuple
 from uuid import UUID
+import asyncio
 
 from pony import orm
 
@@ -93,6 +94,7 @@ class SqliteStore(types.Store):
 
     @orm.db_session
     def store_sensor_value(self, sensor_value: data.SensorValue) -> None:
+    #async def store_sensor_value(self, sensor_value: data.SensorValue) -> None:
         """Store the sensor values locally.
 
         Args:

@@ -1,7 +1,7 @@
 """Message store Sqlite implementation."""
-
 from pathlib import Path
 from typing import List
+import asyncio
 
 from pony import orm
 
@@ -46,6 +46,7 @@ class SqliteMessageStore(types.MessageStore):
 
     @orm.db_session
     def store_message(
+    #async def store_message(
         self,
         message: data.Message,
     ) -> None:
@@ -71,6 +72,7 @@ class SqliteMessageStore(types.MessageStore):
 
     @orm.db_session
     def store_response(
+    #async def store_response(
         self,
         response: data.Response,
     ) -> None:

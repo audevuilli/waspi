@@ -16,6 +16,7 @@ class SensorReporter:
         self.hwid_list = hwid_list
 
     def get_SensorInfo(self, n):
+    #async def get_SensorInfo(self, n):
         """Create an sensor dict object."""
 
         sensor_values = {}

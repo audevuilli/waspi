@@ -91,6 +91,10 @@ async def process_serial():
         
         # Get the sensor values from serial port
         try:
+            sensor_info = ws_reporter.get_SensorInfo()
+            #sensor_info = await ws_reporter.get_SensorInfo()
+            print(f"Sensor Info: {sensor_info}")
+            print("")
             sensors_values = await serial_rx.get_SerialRx()
             logging.info(sensors_values)
             print(f"JSON MESSAGE PROCESS: {sensors_values}")
@@ -100,19 +104,31 @@ async def process_serial():
             continue
         
         # SqliteDB Store Sensor Value 
+        # await dbstore.store_sensor_value(sensors_values)
         dbstore.store_sensor_value(sensors_values)
+        print("Sensor Values saved in DB")
         logging.info(f"Sensor Values saved in db: {sensors_values}")
 
         # Create the messages from the serial output (sensor values)
         mqtt_message = await message_factories.build_message(sensors_values)
         print(f"MQTT Message: {mqtt_message}")
-        # Store Messages in DB
-        message_store = dbstore_message.store_message(mqtt_message)
+        print("")
+
+        # Store MQTT Message in DB
+        mqtt_message_store = dbstore_message.store_message(mqtt_message)
+        #mqtt_message_store = await dbstore_message.store_message(mqtt_message)
+        print(f"Reponse store in db")
+        print("")
 
         # Send sensor values to MQTT
         response = await mqtt_messenger.send_message(mqtt_message)
-        #response = await [mqtt_messenger.send_message(message) for message in dbstore_message.get_unsent_messages()]
         print(f"MQTT Response: {response}")
+        print("")
+
+        # Store Response in DB
+        response_store = dbstore_message.store_response(response)
+        #response_store = await dbstore_message.store_response(response)
+        print(f"Reponse store in db")
         print("")
 
         print(f"END LOOP - TIME: {time.asctime()}")  
