@@ -5,7 +5,7 @@ import arrow
 import asyncio
 
 from waspi import data
-from components.waspi_types import SerialOutputMessageBuilder
+from waspi.types import SerialOutputMessageBuilder
 
 
 class MessageBuilder(SerialOutputMessageBuilder):
