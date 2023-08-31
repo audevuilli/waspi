@@ -59,7 +59,7 @@ class SerialOutput(core.EntityMeta):
     content: Dict[str, SensorValue]
     """The sensor hardware id to identify the sensor."""
 
-    datetime: datetime.datetime
+    datetime: datetime
     """The datetime when the recording was made"""
 
 
