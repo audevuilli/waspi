@@ -8,7 +8,7 @@ from waspi.components.accel_logger import AccelLogger
 from waspi.components.sensor_manager import SensorReporter, SerialReceiver
 from waspi.components.message_factories import MessageBuilder
 from waspi.components.messengers import MQTTMessenger
-#from waspi.components.message_stores.sqlite import SqliteMessageStore
+from waspi.components.message_stores.sqlite import SqliteMessageStore
 #from waspi.components.stores.sqlite import SqliteStore
 from waspi import config_mqtt
 
@@ -19,6 +19,9 @@ logging.basicConfig(
     format="%(levelname)s - %(message)s",
     level=logging.INFO,
 )
+
+DEFAULT_DB_PATH = "waspi_data.db"
+DEFAULT_DB_PATH_MESSAGE = "waspi_message.db"
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
@@ -71,6 +74,10 @@ mqtt_messenger = MQTTMessenger(
     topic=config_mqtt.DEFAULT_TOPIC
     )
 
+"""Sqlite DB configuration parameters."""
+#dbstore = SqliteStore(db_path=DEFAULT_DB_PATH)
+dbstore_message = SqliteMessageStore(db_path=DEFAULT_DB_PATH_MESSAGE)
+
 
 async def process_serial():
     while True:  # Infinite loop to keep the process running        
@@ -94,6 +101,12 @@ async def process_serial():
         # Send sensor values to MQTT
         response = await mqtt_messenger.send_message(mqtt_message)
         print(f"MQTT Response: {response}")
+        print("")
+
+        # Store Response in DB
+        response_store = dbstore_message.store_response(response)
+        #response_store = await dbstore_message.store_response(response)
+        print(f"Reponse store in db")
         print("")
 
         print(f"END LOOP - TIME: {time.asctime()}")  
