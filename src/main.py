@@ -87,43 +87,37 @@ async def process_serial():
             continue
         
         # Create the messages from the serial output (sensor values)
-        mqtt_message = await message_factories.build_message(sensors_values)
-        print(f"MQTT Message: {mqtt_message}")
-        print("")
+        #mqtt_message = await message_factories.build_message(sensors_values)
+        #print(f"MQTT Message: {mqtt_message}")
+        #print("")
 
         # Send sensor values to MQTT
-        response = await mqtt_messenger.send_message(mqtt_message)
-        print(f"MQTT Response: {response}")
-        print("")
+        #response = await mqtt_messenger.send_message(mqtt_message)
+        #print(f"MQTT Response: {response}")
+        #print("")
 
         print(f"END LOOP - TIME: {time.asctime()}")  
         print("")
 
 
 # Run the process_accel() synchronously every 30 minutes
-def process_accel():
-    while True: # Infinite loop to keep the process running  
-        if time.localtime().tm_min % 30 == 0:
-            print(f"Start Recording Accel 0")
-            record_accel0 = accel0_logger.record_file()
-            print(f"End Recording Accel 0: {record_accel0}")
-            print("")
-            
-            print(f"Start Recording Accel 1")
-            record_accel1 = accel1_logger.record_file()
-            print(f"End Recording Accel 1: {record_accel1}")
-            print("")
+# def process_accel():
+#     while True: # Infinite loop to keep the process running  
+#         if time.localtime().tm_min % 30 == 0:
+#             print(f"Start Recording Accel 0")
+#             record_accel0 = accel0_logger.record_file()
+#             print(f"End Recording Accel 0: {record_accel0}")
+#             print("")
+#             
+#             print(f"Start Recording Accel 1")
+#             record_accel1 = accel1_logger.record_file()
+#             print(f"End Recording Accel 1: {record_accel1}")
+#             print("")
+
 
 # Run asyncio main loop
-# create the event loop
 loop = asyncio.get_event_loop()
-
-# Add task process_serial()
 loop.create_task(process_serial())
-
-# Add task process_accel with run_in_exector - another thread. 
-#accel_task = loop.run_in_executor(None, process_accel)
-#end_accel = await accel_task
 
 try:
     loop.run_forever()
