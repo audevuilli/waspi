@@ -53,8 +53,8 @@ def create_base_models(database: orm.Database) -> BaseModels:
     class SerialOutput(BaseModel):  # type: ignore
         _table_ = "sensors_reading"
 
-        id = orm.PrimaryKey(UUID, auto=True)
-        """Unique ID of the recording."""
+        #id = orm.PrimaryKey(UUID, auto=True)
+        #"""Unique ID of the recording."""
 
         datetime = orm.Required(datetime, unique=True)
         """Datetime of the recording. Should be unique."""
