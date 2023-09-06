@@ -25,7 +25,7 @@ class MessageBuilder(SerialOutputMessageBuilder):
         print(serial_output.dict())
         print("")
         print(" -- JSON DUMPS -- ")
-        print(json.dumps())
+        print(json.dumps(serial_output.dict()))
         print("")
         json_string = json.dumps(serial_output.dict())
         return data.Message(content=json_string)
