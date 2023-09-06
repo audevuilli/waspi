@@ -67,6 +67,5 @@ class MQTTMessenger(Messenger):
         return data.Response(
             message=message,
             status=status,
-            content=message.content,
             received_on=received_on,
         )
