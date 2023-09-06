@@ -69,6 +69,9 @@ def create_base_models(database: orm.Database) -> BaseModels:
         id = orm.PrimaryKey(UUID, auto=True)
         """Unique ID of the recording."""
 
+        hwid = orm.Optional(str, unique=True)
+        """HWID of the recording file."""
+
         path = orm.Optional(str, unique=True)
         """Path to the recording file."""
 

@@ -123,8 +123,8 @@ async def process_serial():
 # Run the process_accel() synchronously every 30 minutes
 def process_accel():
     while True: # Infinite loop to keep the process running  
-        #if time.localtime().tm_min % 30 == 0:
-        if time.localtime().tm_min % 2 == 0:
+        if time.localtime().tm_min % 30 == 0:
+        #if time.localtime().tm_min % 2 == 0:
             print(f"Start Recording Accel 0")
             record_accel0 = accel0_logger.record_file()
             print(f"End Recording Accel 0: {record_accel0}")
