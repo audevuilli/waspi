@@ -93,13 +93,6 @@ class SqliteStore(types.Store):
         self._get_or_create_deployment(deployment)
 
     @orm.db_session
-    def get_current_sensor_values(self) -> data.SerialOutput:
-        sensor_values = self._get_current_sensor_value()
-        return data.SerialOutput(
-            content=sensor_values.content,
-        )
-
-    @orm.db_session
     def store_sensor_value(self, sensor_value: data.SerialOutput) -> None:
     #async def store_sensor_value(self, sensor_value: data.SensorValue) -> None:
         """Store the sensor values locally.
@@ -107,7 +100,7 @@ class SqliteStore(types.Store):
         Args:
             sensor_value: The sensor_value to store.
         """
-        self._get_or_create_sensor_value(sensor_value)
+        db_sensorvalue = self._get_or_create_sensor_value(sensor_value)
 
     @orm.db_session
     def store_accel_recording(self, accel_recording: data.AccelRecording) -> None:
@@ -120,26 +113,6 @@ class SqliteStore(types.Store):
 
 
     #   -------------- FUNCTIONS RELATED to SENSOR_VALUE --------------   #
-     @orm.db_session
-    def _get_current_sensor_value(self) -> db_types.SerialOutput:
-        """Get the current sensor values in the database."""
-        db_sensor_value = (
-            orm.select(d for d in self.models.SerialOutput)
-            .order_by(orm.desc(self.models.SerialOutput.datetime))
-            .first()
-        )
-
-        if db_sensor_value is None:
-            now = datetime.datetime.now()
-            name = f'Sensor Value {now.strftime("%Y-%m-%d %H:%M:%S")}'
-            db_sensor_value = self.models.SerialOutput(
-                datetime=now,
-                content=name,
-            )
-            orm.commit()
-
-        return db_sensor_value
-
     @orm.db_session
     def _create_sensor_value(
         self,
