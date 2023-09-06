@@ -140,9 +140,9 @@ class SqliteStore(types.Store):
     def _create_sensor_value(
         self,
         sensor_value: data.SerialOutput,
-    ) -> db_types.SensorValue:
+    ) -> db_types.SerialOutput:
         """Create a sensor value."""
-        db_sensor_value = self.models.SensorValue(
+        db_sensor_value = self.models.SerialOutput(
             id=sensor_value.id,
             content=sensor_value.content,
             datetime=sensor_value.datetime,
@@ -177,7 +177,7 @@ class SqliteStore(types.Store):
     def _create_accel_recording(
         self,
         accel_recording: data.AccelRecording,
-    ) -> db_types.SensorValue:
+    ) -> db_types.AccelRecording:
         """Create a sensor value."""
         db_accel_recording = self.models.AccelRecording(
             id=accel_recording.id,
