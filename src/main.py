@@ -105,15 +105,11 @@ async def process_serial():
 
         # Store MQTT Message in DB
         mqtt_message_store = dbstore_message.store_message(mqtt_message)
-        #mqtt_message_store = await dbstore_message.store_message(mqtt_message)
-        print(f"Message store in db: {mqtt_message_store}")
-        print("")
+        logging.info(f"Message store in db.")
 
         # Store Response in DB
         response_store = dbstore_message.store_response(response)
-        #response_store = await dbstore_message.store_response(response)
-        print(f"Reponse store in db: {response_store.status}")
-        print("")
+        logging.info(f"Reponse store in db.")
 
         print(f"END LOOP - TIME: {time.asctime()}")  
         print("")
