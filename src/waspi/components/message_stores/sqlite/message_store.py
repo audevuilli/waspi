@@ -77,10 +77,13 @@ class SqliteMessageStore(types.MessageStore):
         response: data.Response,
     ) -> None:
         """Store a response to a message."""
+        print("-- STORE RESPONSE --")
         try:
             db_message = self.models.Message[response.message.id]
+            print(db_message)
         except orm.ObjectNotFound:
             db_message = self._create_message(response.message)
+            print(db_message)
 
         self.models.Response(
             message=db_message,
