@@ -93,6 +93,13 @@ class SqliteStore(types.Store):
         self._get_or_create_deployment(deployment)
 
     @orm.db_session
+    def get_current_sensor_values(self) -> data.SerialOutput:
+        sensor_values = self._get_current_sensor_value()
+        return data.SerialOutput(
+            content=sensor_values.content,
+        )
+
+    @orm.db_session
     def store_sensor_value(self, sensor_value: data.SerialOutput) -> None:
     #async def store_sensor_value(self, sensor_value: data.SensorValue) -> None:
         """Store the sensor values locally.
@@ -112,30 +119,27 @@ class SqliteStore(types.Store):
         db_accelrecording = self._get_or_create_accel_recording(accel_recording)
 
 
-    @orm.db_session
-    def _get_current_deployment(self) -> db_types.Deployment:
-        """Get the current deployment in the database."""
-        db_deployment = (
-            orm.select(d for d in self.models.Deployment)
-            .order_by(orm.desc(self.models.Deployment.started_on))
+    #   -------------- FUNCTIONS RELATED to SENSOR_VALUE --------------   #
+     @orm.db_session
+    def _get_current_sensor_value(self) -> db_types.SerialOutput:
+        """Get the current sensor values in the database."""
+        db_sensor_value = (
+            orm.select(d for d in self.models.SerialOutput)
+            .order_by(orm.desc(self.models.SerialOutput.datetime))
             .first()
         )
 
-        if db_deployment is None:
+        if db_sensor_value is None:
             now = datetime.datetime.now()
-            name = f'Deployment {now.strftime("%Y-%m-%d %H:%M:%S")}'
-            db_deployment = self.models.Deployment(
-                started_on=now,
-                name=name,
-                latitude=None,
-                longitude=None,
+            name = f'Sensor Value {now.strftime("%Y-%m-%d %H:%M:%S")}'
+            db_sensor_value = self.models.SerialOutput(
+                datetime=now,
+                content=name,
             )
             orm.commit()
 
-        return db_deployment
+        return db_sensor_value
 
-
-    #   -------------- FUNCTIONS RELATED to SENSOR_VALUE --------------   #
     @orm.db_session
     def _create_sensor_value(
         self,
@@ -212,6 +216,28 @@ class SqliteStore(types.Store):
 
 
     #   -------------- FUNCTIONS RELATED to DEPLOYMENT --------------   #
+    @orm.db_session
+    def _get_current_deployment(self) -> db_types.Deployment:
+        """Get the current deployment in the database."""
+        db_deployment = (
+            orm.select(d for d in self.models.Deployment)
+            .order_by(orm.desc(self.models.Deployment.started_on))
+            .first()
+        )
+
+        if db_deployment is None:
+            now = datetime.datetime.now()
+            name = f'Deployment {now.strftime("%Y-%m-%d %H:%M:%S")}'
+            db_deployment = self.models.Deployment(
+                started_on=now,
+                name=name,
+                latitude=None,
+                longitude=None,
+            )
+            orm.commit()
+
+        return db_deployment
+
     @orm.db_session
     def _get_deployment_by_started_on(
         self, started_on: datetime.datetime
