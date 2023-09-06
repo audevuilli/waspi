@@ -113,8 +113,8 @@ class Response(BaseModel):
     message: Message
     """The message that was sent."""
 
-    content: Optional[str] = None
-    """The content of the response."""
+    #content: Optional[str] = None
+    #"""The content of the response."""
 
     received_on: datetime.datetime = Field(
         default_factory=datetime.datetime.now

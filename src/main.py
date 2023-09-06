@@ -106,7 +106,7 @@ async def process_serial():
         # Store Response in DB
         response_store = dbstore_message.store_response(response)
         #response_store = await dbstore_message.store_response(response)
-        print(f"Reponse store in db")
+        print(f"Reponse store in db: {response_store}")
         print("")
 
         print(f"END LOOP - TIME: {time.asctime()}")  
