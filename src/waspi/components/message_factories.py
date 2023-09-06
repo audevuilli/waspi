@@ -22,4 +22,5 @@ class MessageBuilder(SerialOutputMessageBuilder):
 
         """Build a message from a list of sensor values (Serial Output)."""
         json_string = json.dumps(serial_output.dict())
+        print(data.Message(content=json_string))
         return data.Message(content=json_string)
