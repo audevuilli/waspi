@@ -9,7 +9,7 @@ from waspi.components.sensor_manager import SensorReporter, SerialReceiver
 from waspi.components.message_factories import MessageBuilder
 from waspi.components.messengers import MQTTMessenger
 from waspi.components.message_stores.sqlite import SqliteMessageStore
-#from waspi.components.stores.sqlite import SqliteStore
+from waspi.components.stores.sqlite import SqliteStore
 from waspi import config_mqtt
 
 # Setup the main logger
@@ -75,7 +75,7 @@ mqtt_messenger = MQTTMessenger(
     )
 
 """Sqlite DB configuration parameters."""
-#dbstore = SqliteStore(db_path=DEFAULT_DB_PATH)
+dbstore = SqliteStore(db_path=DEFAULT_DB_PATH)
 dbstore_message = SqliteMessageStore(db_path=DEFAULT_DB_PATH_MESSAGE)
 
 
@@ -103,6 +103,11 @@ async def process_serial():
         print(f"MQTT Response: {response}")
         print("")
 
+        # SqliteDB Store Sensor Value 
+        dbstore.store_sensor_value(sensors_values)
+        print("Sensor Values saved in DB")
+        #logging.info(f"Sensor Values saved in db: {sensors_values}")
+
         # Store MQTT Message in DB
         mqtt_message_store = dbstore_message.store_message(mqtt_message)
         logging.info(f"Message store in db.")
@@ -118,16 +123,25 @@ async def process_serial():
 # Run the process_accel() synchronously every 30 minutes
 def process_accel():
     while True: # Infinite loop to keep the process running  
-        if time.localtime().tm_min % 30 == 0:
+        #if time.localtime().tm_min % 30 == 0:
+        if time.localtime().tm_min % 2 == 0:
             print(f"Start Recording Accel 0")
             record_accel0 = accel0_logger.record_file()
             print(f"End Recording Accel 0: {record_accel0}")
             print("")
+
+            # SqliteDB Store Accelerometer Recordings Path 
+            dbstore.store_accel_recording(record_accel0)
+            logging.info(f"Accel 0 Recording Path saved in db: {record_accel0}")
             
             print(f"Start Recording Accel 1")
             record_accel1 = accel1_logger.record_file()
             print(f"End Recording Accel 1: {record_accel1}")
             print("")
+
+            # SqliteDB Store Accelerometer Recordings Path 
+            dbstore.store_accel_recording(record_accel1)
+            logging.info(f"Accel 0 Recording Path saved in db: {record_accel1}")
 
 
 # Run asyncio main loop
