@@ -58,7 +58,7 @@ class AccelRecordingMessageBuilder(ABC):
     def build_message(
         self,
         accel_recording: data.AccelRecording,
-    ) -> Message:
+    ) -> data.Message:
         """Build a message from the recording."""
 
 

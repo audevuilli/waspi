@@ -5,7 +5,7 @@ import arrow
 import asyncio
 
 from waspi import data
-from waspi.components.types import SerialOutputMessageBuilder
+from waspi.components.waspi_types import SerialOutputMessageBuilder
 
 
 class MessageBuilder(SerialOutputMessageBuilder):
@@ -25,7 +25,7 @@ class MessageBuilder(SerialOutputMessageBuilder):
         print(serial_output.dict())
         print("")
         print(" -- JSON DUMPS -- ")
-        print(json.dumps(serial_output.dict()))
+        print(json.dumps())
         print("")
         json_string = json.dumps(serial_output.dict())
         return data.Message(content=json_string)
