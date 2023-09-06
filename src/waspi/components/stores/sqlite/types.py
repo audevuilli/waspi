@@ -11,7 +11,6 @@ __all__ = [
     "SensorValue",
     "SerialOutput",
     "AccelRecording",
-    "ModelOutput",
 ]
 
 
