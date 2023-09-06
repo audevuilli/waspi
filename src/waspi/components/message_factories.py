@@ -21,5 +21,11 @@ class MessageBuilder(SerialOutputMessageBuilder):
     async def build_message(self, serial_output: data.SerialOutput) -> List[data.Message]:
 
         """Build a message from a list of sensor values (Serial Output)."""
+        print(" -- BUILD MESSAGE FUNCTION -- ")
+        print(serial_output.dict())
+        print("")
+        print(" -- JSON DUMPS -- ")
+        print(json.dumps(serial_output.dict()))
+        print("")
         json_string = json.dumps(serial_output.dict())
         return data.Message(content=json_string)
