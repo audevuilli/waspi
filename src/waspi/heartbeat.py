@@ -5,7 +5,7 @@ import logging
 
 import config_mqtt
 
-MQTT_TOPIC = 'UCL/OPS/Garden/wasps_4/heartbeat/'
+MQTT_TOPIC = 'UCL/OPS/Garden/wasps/heartbeat/'
 
 # Setup the main logger
 logging.basicConfig(
