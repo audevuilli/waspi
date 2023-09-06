@@ -105,6 +105,8 @@ class AccelLogger():
             # normalised_data = (normalised_data * (2**(self.adc_bitdepth))).astype(np.int16)
             accel_wavfile.writeframes(data_array.tobytes())
 
+            print(f"Accel File saved: {accel_wavfile}")
+
         return data.AccelRecording(
             datetime=recording_starttime,
             hwid=hwid_accel,
