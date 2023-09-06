@@ -6,7 +6,7 @@ groups = ["default"]
 cross_platform = true
 static_urls = false
 lock_version = "4.3"
-content_hash = "sha256:09732479fcc42df2b016f8c795584290cc98c5541fd0a0d0186c62af7748f2db"
+content_hash = "sha256:f2c57ec83bd14ae19c222e2d417d47bb5ed81320b129db0d44151cbf1bce3537"
 
 [[package]]
 name = "annotated-types"
@@ -31,14 +31,6 @@ files = [
     {file = "arrow-1.2.3.tar.gz", hash = "sha256:3934b30ca1b9f292376d9db15b19446088d12ec58629bc3f0da28fd55fb633a1"},
 ]
 
-[[package]]
-name = "influxdb2"
-version = "0.0.0"
-url = "https://dl.influxdata.com/influxdb/releases/influxdb2-2.7.0-linux-arm64.tar.gz"
-summary = ""
-files = [
-    {file = "influxdb2-2.7.0-linux-arm64.tar.gz", hash = "sha256:92fb46391b76009aa36f08ecdd26d2c408d3a11f73a7926556bfe400705451b8"},
-]
 
 [[package]]
 name = "paho-mqtt"
@@ -46,6 +38,15 @@ version = "1.6.1"
 summary = "MQTT version 5.0/3.1.1 client class"
 files = [
     {file = "paho-mqtt-1.6.1.tar.gz", hash = "sha256:2a8291c81623aec00372b5a85558a372c747cbca8e9934dfe218638b8eefc26f"},
+]
+
+[[package]]
+name = "pony"
+version = "0.7.16"
+summary = "Pony Object-Relational Mapper"
+files = [
+    {file = "pony-0.7.16-py3-none-any.whl", hash = "sha256:608a1c1d662983bad2590e650f2bbc1cd6ed48558894ad8f50da4739ff98f614"},
+    {file = "pony-0.7.16.tar.gz", hash = "sha256:5f45fc67587f4520c560a57148cc573b097d42f82f5cb200d72c957b5708198d"},
 ]
 
 [[package]]
@@ -177,15 +178,6 @@ summary = "Python 2 and 3 compatibility utilities"
 files = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
-]
-
-[[package]]
-name = "telegraf"
-version = "0.0.0"
-url = "https://dl.influxdata.com/telegraf/releases/telegraf-1.27.4_linux_arm64.tar.gz"
-summary = ""
-files = [
-    {file = "telegraf-1.27.4_linux_arm64.tar.gz", hash = "sha256:cbfe69b2f76f892e403bf0ce897f58272b84a5783e024b4b127b72b5f2b3e154"},
 ]
 
 [[package]]

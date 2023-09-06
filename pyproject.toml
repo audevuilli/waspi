@@ -9,9 +9,9 @@ dependencies = [
     "arrow>=1.2.3",
     "pydantic>=2.3.0",
     "paho-mqtt>=1.6.1",
-    "influxdb2 @ https://dl.influxdata.com/influxdb/releases/influxdb2-2.7.0-linux-arm64.tar.gz",
-    "telegraf @ https://dl.influxdata.com/telegraf/releases/telegraf-1.27.4_linux_arm64.tar.gz",
+    "pony>=0.7.16",
 ]
+
 requires-python = ">=3.9"
 readme = "README.md"
 license = {text = "MIT"}
