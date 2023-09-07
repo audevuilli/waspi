@@ -71,16 +71,12 @@ class AccelLogger():
         file_path = f'{recording_starttime.strftime("%Y%m%d_%H%M%S")}.wav'
         hwid_accel = "accel"+str(self.adc_channel)
         final_file_path = output_folder + hwid_accel + "_" + file_path 
-        print(final_file_path)
 
         # Empty array to store the values
         accel_values = []
 
         # Get the start time 
         start_time = time.time()  # Get the start time
-
-        print(f"ADC Channel: {self.adc_channel}")
-        print(f"Start Time -- {datetime.datetime.now()}")
 
         while time.time() - start_time < self.sampling_duration:
             data_accl = self.read_adc(spi)
@@ -89,9 +85,6 @@ class AccelLogger():
         # for _ in range(self.sampling_duration * self.sampling_rate):
         #   data_accl = self.read_adc(spi)
         #   accel_values.append(data_accl)
-
-        print(f"End Time -- {datetime.datetime.now()}")
-        print("")
 
         # Create a WAV file to write the acceleromter values
         with wave.open(final_file_path, "wb") as accel_wavfile:
