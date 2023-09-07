@@ -107,7 +107,7 @@ async def process_serial():
         # SqliteDB Store Sensor Value 
         dbstore.store_sensor_value(sensors_values)
         print("Sensor Values saved in DB")
-        #logging.info(f"Sensor Values saved in db: {sensors_values}")
+        logging.info(f"Sensor Values saved in db: {sensors_values}")
 
         # Store MQTT Message in DB
         mqtt_message_store = dbstore_message.store_message(mqtt_message)

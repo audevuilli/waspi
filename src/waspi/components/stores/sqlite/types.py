@@ -52,9 +52,6 @@ class SerialOutput(core.EntityMeta):
     id: UUID
     """Unique ID of the sensor value"""
 
-    datetime: datetime
-    """Datetime of the sensor value. Should be unique"""
-
     content: str
     """The sensor hardware id to identify the sensor."""
 

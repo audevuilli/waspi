@@ -94,7 +94,6 @@ class SqliteStore(types.Store):
 
     @orm.db_session
     def store_sensor_value(self, sensor_value: data.SerialOutput) -> None:
-    #async def store_sensor_value(self, sensor_value: data.SensorValue) -> None:
         """Store the sensor values locally.
 
         Args:
@@ -122,9 +121,7 @@ class SqliteStore(types.Store):
         db_sensor_value = self.models.SerialOutput(
             id=sensor_value.id,
             content=str(sensor_value.content),
-            datetime=sensor_value.datetime,
         )
-        print(db_sensor_value)
         orm.commit()
         return db_sensor_value
 
@@ -156,7 +153,7 @@ class SqliteStore(types.Store):
         self,
         accel_recording: data.AccelRecording,
     ) -> db_types.AccelRecording:
-        """Create a sensor value."""
+        """Create an accel recording."""
         db_accel_recording = self.models.AccelRecording(
             id=accel_recording.id,
             hwid=accel_recording.hwid,

@@ -37,9 +37,6 @@ def create_base_models(database: orm.Database) -> BaseModels:
     class SensorValue(BaseModel):  # type: ignore
         _table_ = "sensors_value"
 
-        id = orm.PrimaryKey(UUID, auto=True)
-        """Unique ID of the recording."""
-
         hwid = orm.Required(str)
         """The sensor hardware id to identify the sensor."""
 
@@ -55,9 +52,6 @@ def create_base_models(database: orm.Database) -> BaseModels:
 
         id = orm.PrimaryKey(UUID, auto=True)
         """Unique ID of the recording."""
-
-        datetime = orm.Required(datetime, unique=True)
-        """Datetime of the recording. Should be unique."""
 
         content = orm.Required(str)
         """Hwid of the sensor."""

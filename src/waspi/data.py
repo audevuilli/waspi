@@ -57,6 +57,9 @@ class SerialOutput(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     """The unique ID of the message."""
 
+    datetime: datetime.datetime
+    """The datetime when the recording was made"""
+
     content: Dict[str, SensorValue] = Field(default_factory=dict)
     """The message to be sent. Usually a JSON string."""
 
