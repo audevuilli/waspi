@@ -20,7 +20,7 @@ starttime=time.time()
 while True:
   payload = "" + datetime.datetime.now().strftime("%Y-%m-%d") + "T" + datetime.datetime.now().strftime("%X")
   #sleeper = 360.0 - ((time.time() - starttime) % 360.0)
-  sleeper = 10
+  sleeper = 600
   time.sleep(sleeper)
   try:
     mqtt_auth = { 'username': config_mqtt.DEFAULT_MQTTCLIENT_USER, 'password': config_mqtt.DEFAULT_MQTTCLIENT_PASS }
