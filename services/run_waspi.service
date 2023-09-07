@@ -4,7 +4,7 @@ Description=Waspi - Monitor, Save and Send Results of IoT Wasp Nest.
 [Service]
 Type=simple
 User=pi
-WorkingDirectory=/home/pi/waspi/
+WorkingDirectory=/home/pi/waspi/src/
 ExecStart=/usr/bin/python3 /home/pi/waspi/src/main.py
 Restart=always
 RestartSec=3
