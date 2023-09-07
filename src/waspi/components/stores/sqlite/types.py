@@ -49,8 +49,8 @@ class SensorValue(core.EntityMeta):
 class SerialOutput(core.EntityMeta):
     """Recording ORM model."""
 
-    #id: UUID
-    #"""Unique ID of the sensor value"""
+    id: UUID
+    """Unique ID of the sensor value"""
 
     datetime: datetime
     """Datetime of the sensor value. Should be unique"""

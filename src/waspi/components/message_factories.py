@@ -5,8 +5,7 @@ import arrow
 import asyncio
 
 from waspi import data
-from waspi.components.types import SerialOutputMessageBuilder, 
-
+from waspi.components.types import SerialOutputMessageBuilder, AccelRecordingMessageBuilder 
 class SensorValue_MessageBuilder(SerialOutputMessageBuilder):
 
     """A SerialOutput MessageBuilder that builds message from serial outputs.  
@@ -20,7 +19,8 @@ class SensorValue_MessageBuilder(SerialOutputMessageBuilder):
     async def build_message(self, serial_output: data.SerialOutput) -> List[data.Message]:
 
         """Build a message from a list of sensor values (Serial Output)."""
-        json_string = json.dumps(serial_output.dict())
+        #json_string = json.dumps(serial_output.dict())
+        json_string = serial_output.model_dump_json()
         return data.Message(content=json_string)
 
 
@@ -38,8 +38,5 @@ class AccelLogger_MessageBuilder(AccelRecordingMessageBuilder):
     def build_message(self, accel_logger: data.AccelRecording) -> List[data.Message]:
 
         """Build a message from a list of sensor values (Serial Output)."""
-        print(accel_logger)
-        print(accel_logger.dict())
-        print(accel_logger.model_dump_json())
-        json_string = json.dumps(accel_logger.dict())
+        json_string = accel_logger.model_dump_json()
         return data.Message(content=json_string)

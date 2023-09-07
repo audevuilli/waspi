@@ -105,8 +105,8 @@ async def process_serial():
         print("")
 
         # SqliteDB Store Sensor Value 
-        #dbstore.store_sensor_value(sensors_values)
-        #print("Sensor Values saved in DB")
+        dbstore.store_sensor_value(sensors_values)
+        print("Sensor Values saved in DB")
         #logging.info(f"Sensor Values saved in db: {sensors_values}")
 
         # Store MQTT Message in DB
@@ -132,9 +132,14 @@ def process_accel():
             print("")
 
             # Create the messages from the accellogger
-            mqtt_message = accellogger_mfactory.build_message(record_accel0)
-            print(f"MQTT Message: {mqtt_message}")
-            print("")
+            #mqtt_message = accellogger_mfactory.build_message(record_accel0)
+            #print(f"MQTT Message: {mqtt_message}")
+            #print("")
+
+            # Send accel logger to MQTT
+            #response = mqtt_messenger.accellogger_send_message(mqtt_message)
+            #print(f"MQTT Response: {response}")
+            #print("")
 
             # SqliteDB Store Accelerometer Recordings Path 
             dbstore.store_accel_recording(record_accel0)
