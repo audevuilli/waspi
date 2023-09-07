@@ -6,7 +6,7 @@ import time
 from waspi import data
 from waspi.components.accel_logger import AccelLogger
 from waspi.components.sensor_manager import SensorReporter, SerialReceiver
-from waspi.components.message_factories import MessageBuilder
+from waspi.components.message_factories import SensorValue_MessageBuilder, AccelLogger_MessageBuilder
 from waspi.components.messengers import MQTTMessenger
 from waspi.components.message_stores.sqlite import SqliteMessageStore
 from waspi.components.stores.sqlite import SqliteStore
@@ -62,7 +62,8 @@ accel1_logger = AccelLogger(
     )
 
 """Create the message factories object."""
-message_factories = MessageBuilder()
+sensorvalue_mfactory = SensorValue_MessageBuilder()
+accellogger_mfactory = AccelLogger_MessageBuilder()
 
 """Initialise the MQTT Messenger."""
 mqtt_messenger = MQTTMessenger(
@@ -94,7 +95,7 @@ async def process_serial():
             continue
         
         # Create the messages from the serial output (sensor values)
-        mqtt_message = await message_factories.build_message(sensors_values)
+        mqtt_message = await sensorvalue_mfactory.build_message(sensors_values)
         print(f"MQTT Message: {mqtt_message}")
         print("")
 
@@ -128,6 +129,11 @@ def process_accel():
             print(f"Start Recording Accel 0")
             record_accel0 = accel0_logger.record_file()
             print(f"End Recording Accel 0: {record_accel0}")
+            print("")
+
+            # Create the messages from the accellogger
+            mqtt_message = accellogger_mfactory.build_message(record_accel0)
+            print(f"MQTT Message: {mqtt_message}")
             print("")
 
             # SqliteDB Store Accelerometer Recordings Path 
