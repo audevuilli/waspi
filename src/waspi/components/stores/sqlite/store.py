@@ -121,9 +121,10 @@ class SqliteStore(types.Store):
         """Create a sensor value."""
         db_sensor_value = self.models.SerialOutput(
             id=sensor_value.id,
-            content=sensor_value.content,
+            content=str(sensor_value.content),
             datetime=sensor_value.datetime,
         )
+        print(db_sensor_value)
         orm.commit()
         return db_sensor_value
 
