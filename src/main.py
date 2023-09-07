@@ -83,31 +83,27 @@ dbstore_message = SqliteMessageStore(db_path=DEFAULT_DB_PATH_MESSAGE)
 async def process_serial():
     while True:  # Infinite loop to keep the process running        
         print(" --- START PROCESS FUNCTION --- ")
-        print(f" TIME: {time.asctime()}")
+        logging.info(f" --- SERIAL READ TIME: {time.asctime()}")
         
         # Get the sensor values from serial port
         try:
             sensors_values = await serial_rx.get_SerialRx()
             print(f"JSON MESSAGE PROCESS: {sensors_values}")
-            print("")
         except Exception as e:
-            print(f"Error fetching sensor values: {e}")
+            logging.info(f"Error fetching sensor values: {e}")
             continue
         
         # Create the messages from the serial output (sensor values)
         mqtt_message = await sensorvalue_mfactory.build_message(sensors_values)
-        print(f"MQTT Message: {mqtt_message}")
-        print("")
+        logging.info(f"MQTT Message: {mqtt_message}")
 
         # Send sensor values to MQTT
         response = await mqtt_messenger.send_message(mqtt_message)
-        print(f"MQTT Response: {response}")
-        print("")
+        logging.info(f"MQTT Response: {response}")
 
         # SqliteDB Store Sensor Value 
         dbstore.store_sensor_value(sensors_values)
-        print("Sensor Values saved in DB")
-        logging.info(f"Sensor Values saved in db: {sensors_values}")
+        logging.info(f"Sensor Values saved in db.")
 
         # Store MQTT Message in DB
         mqtt_message_store = dbstore_message.store_message(mqtt_message)
@@ -116,20 +112,21 @@ async def process_serial():
         # Store Response in DB
         response_store = dbstore_message.store_response(response)
         logging.info(f"Reponse store in db.")
-
-        print(f"END LOOP - TIME: {time.asctime()}")  
-        print("")
+        logging.info("")
 
 
 # Run the process_accel() synchronously every 30 minutes
 def process_accel():
     while True: # Infinite loop to keep the process running  
-        #if time.localtime().tm_min % 30 == 0:
-        if time.localtime().tm_min % 2 == 0:
-            print(f"Start Recording Accel 0")
+        if time.localtime().tm_min % 30 == 0:
+            print(" --- START ACCEL FUNCTION --- ")
+            logging.info(f" --- ACCEL1 START RECORDING: {time.asctime()}")
             record_accel0 = accel0_logger.record_file()
-            print(f"End Recording Accel 0: {record_accel0}")
-            print("")
+
+            # SqliteDB Store Accelerometer Recordings Path 
+            dbstore.store_accel_recording(record_accel0)
+            logging.info(f"Accel 0 Recording Path saved in db: {record_accel0}")
+            logging.info("")
 
             # Create the messages from the accellogger
             #mqtt_message = accellogger_mfactory.build_message(record_accel0)
@@ -140,19 +137,14 @@ def process_accel():
             #response = mqtt_messenger.accellogger_send_message(mqtt_message)
             #print(f"MQTT Response: {response}")
             #print("")
-
-            # SqliteDB Store Accelerometer Recordings Path 
-            dbstore.store_accel_recording(record_accel0)
-            logging.info(f"Accel 0 Recording Path saved in db: {record_accel0}")
             
-            print(f"Start Recording Accel 1")
+            logging.info(f" --- ACCEL1 START RECORDING: {time.asctime()}")
             record_accel1 = accel1_logger.record_file()
-            print(f"End Recording Accel 1: {record_accel1}")
-            print("")
 
             # SqliteDB Store Accelerometer Recordings Path 
             dbstore.store_accel_recording(record_accel1)
-            logging.info(f"Accel 0 Recording Path saved in db: {record_accel1}")
+            logging.info(f"Accel 1 Recording Path saved in db: {record_accel1}")
+            logging.info("")
 
 
 # Run asyncio main loop
