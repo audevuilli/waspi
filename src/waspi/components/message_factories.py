@@ -5,10 +5,9 @@ import arrow
 import asyncio
 
 from waspi import data
-from waspi.components.types import SerialOutputMessageBuilder
+from waspi.components.types import SerialOutputMessageBuilder, AccelRecordingMessageBuilder 
 
-
-class MessageBuilder(SerialOutputMessageBuilder):
+class SensorValue_MessageBuilder(SerialOutputMessageBuilder):
 
     """A SerialOutput MessageBuilder that builds message from serial outputs.  
     Format Result for with the following arguments:
@@ -21,9 +20,25 @@ class MessageBuilder(SerialOutputMessageBuilder):
     async def build_message(self, serial_output: data.SerialOutput) -> List[data.Message]:
 
         """Build a message from a list of sensor values (Serial Output)."""
-        json_string = json.dumps(serial_output.dict())
-        print(json_string)
-        print("")
-        print("Build MQTT Message")
-        print(data.Message(content=json_string))
+        #json_string = json.dumps(serial_output.dict())
+        json_string = serial_output.model_dump_json()
         return data.Message(content=json_string)
+
+
+class AccelLogger_MessageBuilder(AccelRecordingMessageBuilder):
+
+    """A AccelLogger MessageBuilder that builds message when an accelerometer recording
+    has been made. Format Result for with the following arguments:
+       { 
+            'datetime': recording datetime of the accelerometer,
+            'hwid': hardware sensor id,
+            'path': path to the recordings,
+        }
+    """
+    #async def build_message(self, accel_logger: data.AccelRecording) -> List[data.Message]:
+    def build_message(self, accel_logger: data.AccelRecording) -> List[data.Message]:
+
+        """Build a message from a list of sensor values (Serial Output)."""
+        json_string = accel_logger.model_dump_json()
+        return data.Message(content=json_string)
+
