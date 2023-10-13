@@ -32,7 +32,7 @@ class AccelLogger():
         self.vref = vref
         self.adc_channel = adc_channel
         self.adc_bitdepth = adc_bitdepth
-        self.sampling_rate = sampling_rate
+        self.sampling_rate = sampling_rate  #8000 Hz - maximum of 8000Hz 
         self.sampling_duration = sampling_duration
         #self.sampling_interval = sampling_interval
 
@@ -78,6 +78,7 @@ class AccelLogger():
         # Get the start time 
         start_time = time.time()  # Get the start time
 
+        #while time.time() - start_time < (self.sampling_duration * self.sampling_rate):
         while time.time() - start_time < self.sampling_duration:
             data_accl = self.read_adc(spi)
             accel_values.append(data_accl)
@@ -91,6 +92,8 @@ class AccelLogger():
             accel_wavfile.setnchannels(1)
             accel_wavfile.setsampwidth(self.adc_bitdepth // 8) #Convert bit to bytes (1bit = 8bytes)
             accel_wavfile.setframerate(self.sampling_rate)
+            #accel_wavfile.setframerate(self.sampling_rate*self.sampling_duration)
+
 
             data_array = array.array('f', accel_values)
             # Other method for array conversion - numpy
