@@ -10,6 +10,7 @@ Overview of the system
 
 <img src="images/electronics_top_01.jpeg" width="159"> <img src="images/waspi_system_overview.png" width="290"> <img src="images/setup_top_02.jpeg" width="159">
 
+<img src="images/electronics_top_01.jpeg" width="50%"> <img src="images/waspi_system_overview.png" width="50%"> <img src="images/setup_top_02.jpeg" width="50%">
 
 ## Wasp Nest Env. Sensor Nodes
 
