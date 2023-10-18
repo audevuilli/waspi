@@ -9,7 +9,7 @@ The following diagram illustrates the different components of Waspi.
 Overview of the system
 
 <img src="images/waspi_system_overview.png" width="90%">
-<img src="images/electronics_top_01.jpeg" width="44.5%"> <img src="images/setup_top_02.jpeg" width="44.5%">
+<img src="images/electronics_top_01.jpeg" width="136"> <img src="images/setup_top_02.jpeg" width="136">
 
 ## Wasp Nest Env. Sensor Nodes
 
