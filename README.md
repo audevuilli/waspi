@@ -6,7 +6,12 @@ WasPi is a real-time monitoring system used to study the activity of wasp nests.
 
 The following diagram illustrates the different components of Waspi. 
 
-*(Add Diagram of the System)*
+Overview of the system
+
+<img src="images/electronics_top_01.jpeg" width="120">
+<img src="images/waspi_system_overview.png" width="220">
+<img src="images/setup_top_02.jpeg" width="120">
+
 
 ## Wasp Nest Env. Sensor Nodes
 
