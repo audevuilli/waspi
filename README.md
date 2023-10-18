@@ -6,10 +6,11 @@ WasPi is a real-time monitoring system used to study the activity of wasp nests.
 
 The following diagram illustrates the different components of Waspi. 
 
-Overview of the system
+Overview of the system:
 
 <img src="images/waspi_system_overview.png" width="90%">
-<img src="images/electronics_top_01.jpeg" width="136"> <img src="images/setup_top_02.jpeg" width="136">
+
+<img src="images/electronics_top_01.jpeg" width="44%"> <img src="images/setup_top_02.jpeg" width="44%">
 
 ## Wasp Nest Env. Sensor Nodes
 
@@ -39,6 +40,16 @@ To be implemented
 - Current & Power Sensor: [INA260 Adafruit Board](https://cdn-learn.adafruit.com/downloads/pdf/adafruit-ina260-current-voltage-power-sensor-breakout.pdf), [PAC1932 Microchip Datasheet](https://tinyurl.com/yxxvpz79) 
 
 ### Software
-- [arduino_waspi.ino](/arduino/arduino_waspi/arduino_waspi.ino)
+- Arduino Sensors Script [Arduino_waspi.ino](/arduino/arduino_waspi/arduino_waspi.ino)
+- RaspberryPi IoT Scripts [src/waspi/components](/src/waspi/components)
+
+### Enclosure
+- Drawing and dimensions
+- List of Materials (wood, insect mesh, garden wire)
+
+### Setup
+- Waspi Installation Note
+- MQTT - InfluxDB, Grafana Configuration 
+- Audio and Images File Transfer
 
 
