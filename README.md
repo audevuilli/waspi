@@ -4,9 +4,11 @@ Work in progress. Any questions, suggestions contact aude.vuilliomenet.18@ucl.ac
 
 WasPi is a real-time monitoring system used to study the activity of wasp nests. The system is made of two parts; the environmental sensors node and the audio and vision logging node. 
 
-The following diagram illustrates the different components of Waspi. 
 
-Overview of the system:
+#### Overview of the hardware system:
+WasPi is built as a dual setup. A microcontroller (Arduino Uno) connects and reads the values from the sensors, while a more powerful single-board computer (Raspberry Pi 3B+) handles the communication functions. 
+
+*Note: The diagram below is not an electronic schematic. It does not include the various electronic components needed for the sensors values to be read correctly such as amplifiers, ADC.*
 
 <img src="images/waspi_system_architecture.jpeg" width="90%">
 
@@ -40,6 +42,12 @@ To be implemented
 - Current & Power Sensor: [INA260 Adafruit Board](https://cdn-learn.adafruit.com/downloads/pdf/adafruit-ina260-current-voltage-power-sensor-breakout.pdf), [PAC1932 Microchip Datasheet](https://tinyurl.com/yxxvpz79) 
 
 ### Software
+Due to the dual nature of the wasp nest monitoring system, waspi software is divided in two parts. The first is a single arduino C++ script to read the sensors values. The second part is made of a serie of python scripts to handle sensors' data retrieval, temporary data storage, and data communication. 
+
+#### Overview of the software architecture
+
+<img src="images/waspi_software_architecture.jpeg" width="90%">
+
 - Arduino Sensors Script [Arduino_waspi.ino](/arduino/arduino_waspi/arduino_waspi.ino)
 - RaspberryPi IoT Scripts [src/waspi/components](/src/waspi/components)
 
