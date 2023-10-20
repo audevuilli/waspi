@@ -46,7 +46,7 @@ Due to the dual nature of the wasp nest monitoring system, waspi software is div
 
 #### Overview of the software architecture
 
-<img src="images/waspi_software_architecture.jpeg" width="90%">
+<img src="images/waspi_software_architecture.jpeg" width="100%">
 
 - Arduino Sensors Script [Arduino_waspi.ino](/arduino/arduino_waspi/arduino_waspi.ino)
 - RaspberryPi IoT Scripts [src/waspi/components](/src/waspi/components)
