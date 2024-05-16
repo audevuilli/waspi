@@ -32,7 +32,7 @@ class AccelLogger():
         self.vref = vref
         self.adc_channel = adc_channel
         self.adc_bitdepth = adc_bitdepth
-        self.sampling_rate = sampling_rate
+        self.sampling_rate = sampling_rate  #8000 Hz - maximum of 8000Hz 
         self.sampling_duration = sampling_duration
         #self.sampling_interval = sampling_interval
 

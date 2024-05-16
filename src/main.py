@@ -36,6 +36,8 @@ ADC_CHANNEL_1 = 1
 ADC_BITDEPTH = 10
 ACCEL_SAMPLERATE = 20000 #16KHz
 ACCEL_SAMPLEDURATION = 30 #30 seconds 
+#ACCEL_SAMPLEDURATION = 43200 #12 hours (12*60*60) 
+
 
 """Create the Serial_Rx object."""
 serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid_list=HWID_LIST)
@@ -94,20 +96,20 @@ async def process_serial():
             continue
         
         # Create the messages from the serial output (sensor values)
-        mqtt_message = await sensorvalue_mfactory.build_message(sensors_values)
-        logging.info(f"MQTT Message: {mqtt_message}")
+        #mqtt_message = await sensorvalue_mfactory.build_message(sensors_values)
+        #logging.info(f"MQTT Message: {mqtt_message}")
 
         # Send sensor values to MQTT
-        response = await mqtt_messenger.send_message(mqtt_message)
-        logging.info(f"MQTT Response: {response}")
+        #response = await mqtt_messenger.send_message(mqtt_message)
+        #logging.info(f"MQTT Response: {response}")
 
         # SqliteDB Store Sensor Value 
         dbstore.store_sensor_value(sensors_values)
         logging.info(f"Sensor Values saved in db.")
 
         # Store MQTT Message in DB
-        mqtt_message_store = dbstore_message.store_message(mqtt_message)
-        logging.info(f"Message store in db.")
+        #mqtt_message_store = dbstore_message.store_message(mqtt_message)
+        #logging.info(f"Message store in db.")
 
         # Store Response in DB
         #response_store = dbstore_message.store_response(response)
@@ -144,7 +146,6 @@ def process_accel():
             dbstore.store_accel_recording(record_accel1)
             logging.info(f"Accel 1 Recording Path saved in db: {record_accel1}")
             logging.info("")
-
 
 # Run asyncio main loop
 async def main():

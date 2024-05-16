@@ -7,7 +7,6 @@ import asyncio
 from waspi import data
 from waspi.components.types import SerialOutputMessageBuilder, AccelRecordingMessageBuilder 
 
-
 class SensorValue_MessageBuilder(SerialOutputMessageBuilder):
 
     """A SerialOutput MessageBuilder that builds message from serial outputs.  
@@ -42,3 +41,4 @@ class AccelLogger_MessageBuilder(AccelRecordingMessageBuilder):
         """Build a message from a list of sensor values (Serial Output)."""
         json_string = accel_logger.model_dump_json()
         return data.Message(content=json_string)
+
