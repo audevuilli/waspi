@@ -9,9 +9,9 @@ import spidev
 import wave
 import array
 import asyncio
+import numpy as np
 
 from pathlib import Path
-
 from waspi import data
 
 
@@ -78,11 +78,15 @@ class AccelLogger():
         # Get the start time 
         start_time = time.time()  # Get the start time
 
-        while time.time() - start_time < self.sampling_duration:
-            data_accl = self.read_adc(spi)
-            accel_values.append(data_accl)
+        #while time.time() - start_time < self.sampling_duration:
+        #    data_accl = self.read_adc(spi)
+        #    accel_values.append(data_accl)
 
-        # for _ in range(self.sampling_duration * self.sampling_rate):
+        while len(accel_values) < (int(self.sampling_rate * self.sampling_duration)):
+           data_accl = self.read_adc(spi)
+           accel_values.append(data_accl)
+
+        #for _ in range(self.sampling_duration * self.sampling_rate):
         #   data_accl = self.read_adc(spi)
         #   accel_values.append(data_accl)
 
@@ -91,12 +95,14 @@ class AccelLogger():
             accel_wavfile.setnchannels(1)
             accel_wavfile.setsampwidth(self.adc_bitdepth // 8) #Convert bit to bytes (1bit = 8bytes)
             accel_wavfile.setframerate(self.sampling_rate)
+            #accel_wavfile.setframerate(self.sampling_rate * self.sampling_duration)
 
             data_array = array.array('f', accel_values)
-            # Other method for array conversion - numpy
-            # normalised_data = (accel_values - np.min(accel_values))/(np.max(accel_values) - np.min(accel_values))
-            # normalised_data = (normalised_data * (2**(self.adc_bitdepth))).astype(np.int16)
             accel_wavfile.writeframes(data_array.tobytes())
+            # Other method for array conversion - numpy
+            #normalised_data = (accel_values - np.min(accel_values))/(np.max(accel_values) - np.min(accel_values))
+            #normalised_data = (normalised_data * (2**(self.adc_bitdepth))).astype(np.int16)
+            #accel_wavfile.writeframes(normalised_data.tobytes())
 
         return data.AccelRecording(
             datetime=recording_starttime,

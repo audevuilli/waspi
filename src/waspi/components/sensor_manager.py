@@ -28,7 +28,6 @@ class SensorReporter:
                 value=n[hwid],
                 timestamp=arrow.utcnow().datetime.timestamp()
             )
-
         return sensor_values
 
     def get_PeriodicReport(self):

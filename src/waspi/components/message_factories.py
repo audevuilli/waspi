@@ -6,6 +6,8 @@ import asyncio
 
 from waspi import data
 from waspi.components.types import SerialOutputMessageBuilder, AccelRecordingMessageBuilder 
+
+
 class SensorValue_MessageBuilder(SerialOutputMessageBuilder):
 
     """A SerialOutput MessageBuilder that builds message from serial outputs.  

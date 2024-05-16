@@ -20,7 +20,7 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-DEFAULT_DB_PATH = "waspi_data.db"
+DEFAULT_DB_PATH = "waspi.db"
 DEFAULT_DB_PATH_MESSAGE = "waspi_message.db"
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
@@ -88,7 +88,7 @@ async def process_serial():
         # Get the sensor values from serial port
         try:
             sensors_values = await serial_rx.get_SerialRx()
-            print(f"JSON MESSAGE PROCESS: {sensors_values}")
+            logging.info(f"JSON MESSAGE PROCESS: {sensors_values}")
         except Exception as e:
             logging.info(f"Error fetching sensor values: {e}")
             continue
@@ -110,17 +110,16 @@ async def process_serial():
         logging.info(f"Message store in db.")
 
         # Store Response in DB
-        response_store = dbstore_message.store_response(response)
-        logging.info(f"Reponse store in db.")
-        logging.info("")
+        #response_store = dbstore_message.store_response(response)
+        #logging.info(f"Reponse store in db.")
+        #logging.info("")
 
 
 # Run the process_accel() synchronously every 30 minutes
 def process_accel():
     while True: # Infinite loop to keep the process running  
         if time.localtime().tm_min % 30 == 0:
-            print(" --- START ACCEL FUNCTION --- ")
-            logging.info(f" --- ACCEL1 START RECORDING: {time.asctime()}")
+            logging.info(f" --- ACCEL0 START RECORDING: {time.asctime()}")
             record_accel0 = accel0_logger.record_file()
 
             # SqliteDB Store Accelerometer Recordings Path 
