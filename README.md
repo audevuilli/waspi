@@ -56,8 +56,12 @@ Due to the dual nature of the wasp nest monitoring system, waspi software is div
 - List of Materials (wood, insect mesh, garden wire)
 
 ### Setup
-- Waspi Installation Note
-- MQTT - InfluxDB, Grafana Configuration 
-- Audio and Images File Transfer
+**Audio and Images: Files Transfer**
+- Transfer audio and images to remote cloud storage (Google Drive) using [rclone](https://rclone.org/)
+- Good Documentation about setting up rclone to migrate files to Google Drive:
+    - rclone: [rclone Google Drive Docs](https://rclone.org/drive/), [Configuring rclone on headless machine](https://rclone.org/remote_setup/)
+    - others: [Mounting GDrive on RPi - Medium Tutorial by Artur Klauser](https://medium.com/@artur.klauser/mounting-google-drive-on-raspberry-pi-dd15193d8138), [Github Wiki rclone4pi by Claude Pageau](https://github.com/pageauc/rclone4pi/wiki)
+**MQTT - InfluxDB, Grafana Configuration**
+
 
 
