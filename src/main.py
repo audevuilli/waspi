@@ -2,6 +2,7 @@ import datetime
 import logging
 import asyncio
 import time
+from pathlib import Path
 
 from waspi import data
 from waspi.components.accel_logger import AccelLogger
@@ -20,23 +21,15 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-DEFAULT_DB_PATH = "waspi.db"
-DEFAULT_DB_PATH_MESSAGE = "waspi_message.db"
+DEFAULT_DB_PATH = Path.home() / "storages" / "waspi.db"
+DEFAULT_DB_PATH_MESSAGE = Path.home() / "storages" / "waspi_messages.db"
 
-CONST_SERIAL_PORT = '/dev/ttyACM0'
-CONST_BAUD_RATE = 115200
-HWID_LIST = ["weight_scale", "temperature_0", "humidity_0", "temperature_1", "humidity_1"]
-
-SPI_CHANNEL = 0
-SPI_MAX_SPEED_HZ = 1200000
-VREF = 3.3
-
+VREF = 5.0
 ADC_CHANNEL_0 = 0
 ADC_CHANNEL_1 = 1
 ADC_BITDEPTH = 10
-ACCEL_SAMPLERATE = 20000 #16KHz
-ACCEL_SAMPLEDURATION = 30 #30 seconds 
-#ACCEL_SAMPLEDURATION = 43200 #12 hours (12*60*60) 
+ACCEL_SAMPLERATE = 16000 #16KHz
+ACCEL_SAMPLEDURATION = 10
 
 
 """Create the Serial_Rx object."""
@@ -120,7 +113,7 @@ async def process_serial():
 # Run the process_accel() synchronously every 30 minutes
 def process_accel():
     while True: # Infinite loop to keep the process running  
-        if time.localtime().tm_min % 30 == 0:
+        if time.localtime().tm_min % 2 == 0:
             logging.info(f" --- ACCEL0 START RECORDING: {time.asctime()}")
             record_accel0 = accel0_logger.record_file()
 

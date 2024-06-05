@@ -34,7 +34,6 @@ class AccelLogger():
         self.adc_bitdepth = adc_bitdepth
         self.sampling_rate = sampling_rate  #8000 Hz - maximum of 8000Hz 
         self.sampling_duration = sampling_duration
-        #self.sampling_interval = sampling_interval
 
     def read_adc(self, spi):
 
@@ -64,13 +63,20 @@ class AccelLogger():
         spi = spidev.SpiDev(0, self.spi_channel)
         spi.max_speed_hz = self.spi_max_speed_hz
 
-        output_folder = 'recordings/accelRecordings/'
+        # Check and create folder to store file
+        recording_folder = Path.home() / "recordings" / "accelRecordings"
+        recording_day = datetime.today().strftime('%Y_%m_%d')
+        output_folder = Path(recording_folder / f"{recording_day}"
+        print(f"OUTPUT FOLDER: {output_folder}")
 
-        # Create the file path usint the start time. 
-        recording_starttime = datetime.datetime.now()
-        file_path = f'{recording_starttime.strftime("%Y%m%d_%H%M%S")}.wav'
+        if not output_folder.exists():
+            output_folder.mkdir(parents=True)
+
+        # Create the file path using the recording start time.
         hwid_accel = "accel"+str(self.adc_channel)
-        final_file_path = output_folder + hwid_accel + "_" + file_path 
+        final_file_path = Path(output_folder) / f"{hwid_accel + '_' + {datetime.datime.now().strftime('%Y%m%d_%H%M%S')}.wav"
+        print(f"FINAL FILE PATH: {final_file_path}")
+
 
         # Empty array to store the values
         accel_values = []
@@ -78,35 +84,26 @@ class AccelLogger():
         # Get the start time 
         start_time = time.time()  # Get the start time
 
-        #while time.time() - start_time < self.sampling_duration:
-        #    data_accl = self.read_adc(spi)
-        #    accel_values.append(data_accl)
+        while time.time() - start_time < self.sampling_duration:
+            data_accl = self.read_adc(spi)
+            accel_values.append(data_accl)
 
-        while len(accel_values) < (int(self.sampling_rate * self.sampling_duration)):
-           data_accl = self.read_adc(spi)
-           accel_values.append(data_accl)
-
-        #for _ in range(self.sampling_duration * self.sampling_rate):
-        #   data_accl = self.read_adc(spi)
-        #   accel_values.append(data_accl)
+        # Convert accel_values to int suitable for .wav
+        scaling_factor = (2**(self.adc_bitdepth)-1) / self.vref
+        wav_data = [int(value * scaling_factor) for value in accel_values]
 
         # Create a WAV file to write the acceleromter values
         with wave.open(final_file_path, "wb") as accel_wavfile:
             accel_wavfile.setnchannels(1)
             accel_wavfile.setsampwidth(self.adc_bitdepth // 8) #Convert bit to bytes (1bit = 8bytes)
             accel_wavfile.setframerate(self.sampling_rate)
-            #accel_wavfile.setframerate(self.sampling_rate * self.sampling_duration)
+)
+            accel_wavfile.writeframes(wav_data.tobytes())
 
-            data_array = array.array('f', accel_values)
-            accel_wavfile.writeframes(data_array.tobytes())
-            # Other method for array conversion - numpy
-            #normalised_data = (accel_values - np.min(accel_values))/(np.max(accel_values) - np.min(accel_values))
-            #normalised_data = (normalised_data * (2**(self.adc_bitdepth))).astype(np.int16)
-            #accel_wavfile.writeframes(normalised_data.tobytes())
+        spi.close()
 
         return data.AccelRecording(
             datetime=recording_starttime,
             hwid=hwid_accel,
             path=Path(final_file_path),
         )
-        spi.close()
