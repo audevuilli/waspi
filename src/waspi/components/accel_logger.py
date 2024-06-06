@@ -66,7 +66,7 @@ class AccelLogger():
         # Check and create folder to store file
         recording_folder = Path.home() / "recordings" / "accelRecordings"
         recording_day = datetime.today().strftime('%Y_%m_%d')
-        output_folder = Path(recording_folder / f"{recording_day}"
+        output_folder = Path(recording_folder) / f"{recording_day}"
         print(f"OUTPUT FOLDER: {output_folder}")
 
         if not output_folder.exists():
@@ -74,7 +74,7 @@ class AccelLogger():
 
         # Create the file path using the recording start time.
         hwid_accel = "accel"+str(self.adc_channel)
-        final_file_path = Path(output_folder) / f"{hwid_accel + '_' + {datetime.datime.now().strftime('%Y%m%d_%H%M%S')}.wav"
+        final_file_path = Path(output_folder) / f"{hwid_accel + '_' + datetime.datime.now().strftime('%Y%m%d_%H%M%S')}.wav"
         print(f"FINAL FILE PATH: {final_file_path}")
 
 
