@@ -6,6 +6,7 @@ from pathlib import Path
 
 from waspi import data
 from waspi.components.accel_logger import AccelLogger
+from waspi.components.audio import PyAudioRecorder
 from waspi.components.sensor_manager import SensorReporter, SerialReceiver
 from waspi.components.message_factories import SensorValue_MessageBuilder, AccelLogger_MessageBuilder
 from waspi.components.messengers import MQTTMessenger
@@ -21,19 +22,41 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
+##############################################
+### CONFIGURATION PARAMETERS
+
 DEFAULT_DB_PATH = Path.home() / "storages" / "waspi.db"
 DEFAULT_DB_PATH_MESSAGE = Path.home() / "storages" / "waspi_messages.db"
 
-VREF = 5.0
-ADC_CHANNEL_0 = 0
-ADC_CHANNEL_1 = 1
-ADC_BITDEPTH = 10
-ACCEL_SAMPLERATE = 16000 #16KHz
-ACCEL_SAMPLEDURATION = 10
+AUDIO_SAMPLERATE = 441000
+AUDIO_DURATION = 30
+AUDIO_CHUNKSIZE = 4096
+AUDIO_CHANNEL = 1
+AUDIO_DEVICE_NAME = 'WordForum USB: Audio (hw:2,0)'
+AUDIO_DIR = Path.home() / "recordings" / "audio_mic"
+#VREF = 5.0
+#ADC_CHANNEL_0 = 0
+#ADC_CHANNEL_1 = 1
+#ADC_BITDEPTH = 10
+#ACCEL_SAMPLERATE = 16000 #16KHz
+#ACCEL_SAMPLEDURATION = 10
 
+###############################################
+### CREATE SENSOR OBJECTS
 
 """Create the Serial_Rx object."""
 serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid_list=HWID_LIST)
+
+"""Create the Microhpone object."""
+audio_mic = PyAudioRecorder(
+    duration = AUDIO_DURATION,
+    samplerate = AUDIO_SAMPLERATE,
+    audio_channels = AUDIO_CHANNEL,
+    device_name = AUDIO_DEVICE_NAME,
+    chunksize = AUDIO_CHUNKSIZE,
+    audio_dir = AUDIO_DIR_PATH,
+    )
+
 
 """Create the Accelerometer objects."""
 accel0_logger = AccelLogger(
@@ -110,6 +133,15 @@ async def process_serial():
         #logging.info("")
 
 
+# Audio Microphone Process - Every 15 minutes
+def process_audiomic():
+    while True:
+        if time.localtime().tm_min % 1 == 0:
+            logging.info(f" --- START AUDIO MIC Recording: {time.asctime()}")
+            record_audiomic = audio_mic.record()
+
+            logging.info(f" --- END AUDIO MIC Recording ----")
+
 # Run the process_accel() synchronously every 30 minutes
 def process_accel():
     while True: # Infinite loop to keep the process running  
@@ -121,16 +153,6 @@ def process_accel():
             dbstore.store_accel_recording(record_accel0)
             logging.info(f"Accel 0 Recording Path saved in db: {record_accel0}")
             logging.info("")
-
-            # Create the messages from the accellogger
-            #mqtt_message = accellogger_mfactory.build_message(record_accel0)
-            #print(f"MQTT Message: {mqtt_message}")
-            #print("")
-
-            # Send accel logger to MQTT
-            #response = mqtt_messenger.accellogger_send_message(mqtt_message)
-            #print(f"MQTT Response: {response}")
-            #print("")
             
             logging.info(f" --- ACCEL1 START RECORDING: {time.asctime()}")
             record_accel1 = accel1_logger.record_file()
@@ -148,9 +170,13 @@ async def main():
     # Add task process_serial()
     loop.create_task(process_serial())
 
+    # Add task audio_mic
+    audiomic_task = loop.run_in_executor(None, process_audiomic)
+    end_audiomic = await audiomic_task
+
     # Add task process_accel with run_in_exector - another thread. 
-    accel_task = loop.run_in_executor(None, process_accel)
-    end_accel = await accel_task
+    #accel_task = loop.run_in_executor(None, process_accel)
+    #end_accel = await accel_task
 
 # Run the main loop
 asyncio.run(main())

@@ -8,6 +8,23 @@ from uuid import UUID
 #from data import Deployment, Sensor, SensorValue, Message
 from waspi import data
 
+class AudioRecorder(ABC):
+    """Record audio from the microphone.
+
+    The AudioRecorder is responsible for recording audio from the
+    microphone.
+    """
+
+    @abstractmethod
+    def record(self) -> Recording:
+        """Record audio from the microphone and return the recording.
+
+        The recording should be saved to a temporary file and the path
+        to the file should be returned, along with the datetime, duration,
+        and samplerate of the recording.
+
+        The temporary file should be placed in memory.
+        """
 
 class Store(ABC):
     """The Store is responsible for storing the sensor readings locally.

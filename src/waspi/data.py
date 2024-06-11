@@ -64,6 +64,31 @@ class SerialOutput(BaseModel):
     """The message to be sent. Usually a JSON string."""
 
 
+class Recording(BaseModel):
+    """A Recording is a single audio file recorded from the microphone."""
+
+    datetime: datetime.datetime
+    """The datetime when the recording was made"""
+
+    duration: float
+    """The duration of the recording in seconds"""
+
+    samplerate: int
+    """The samplerate of the recording in Hz"""
+
+    path: Optional[Path] = None
+    """The path to the audio file in the local filesystem"""
+
+    audio_channels: Optional[int] = 1
+    """The number of audio_channels in the recording."""
+
+    chunksize: Optional[int] = 4096
+    """The chunksize of the audio file in bytes. Defaults to 4096."""
+
+    id: UUID = Field(default_factory=uuid4)
+    """The unique ID of the recording"""
+
+
 class AccelRecording(BaseModel):
     """A reading from a sensor."""
     
