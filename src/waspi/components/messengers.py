@@ -4,11 +4,11 @@ from typing import Optional
 import asyncio
 
 import paho.mqtt.client as mqtt
+from paho.mqtt.enums import CallbackAPIVersion
 
 from waspi import data
 from waspi.components.types import Messenger
-#from components.types import Messenger
-#from components import waspi_types
+
 
 __all__ = [
     "MQTTMessenger",
@@ -39,7 +39,10 @@ class MQTTMessenger(Messenger):
         """Initialize the MQTT messenger."""
         self.topic = topic
         self.timeout = timeout
-        self.client = mqtt.Client(client_id=clientid)
+        self.client = mqtt.Client(
+            callback_api_version=CallbackAPIVersion.VERSION2,
+            client_id=clientid,
+        )
         self.client.username_pw_set(username, password)
         self.client.connect(host, port=port)
 

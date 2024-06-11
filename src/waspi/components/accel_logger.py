@@ -97,7 +97,6 @@ class AccelLogger():
             accel_wavfile.setnchannels(1)
             accel_wavfile.setsampwidth(self.adc_bitdepth // 8) #Convert bit to bytes (1bit = 8bytes)
             accel_wavfile.setframerate(self.sampling_rate)
-)
             accel_wavfile.writeframes(wav_data.tobytes())
 
         spi.close()

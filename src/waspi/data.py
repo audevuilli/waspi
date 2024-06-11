@@ -77,7 +77,8 @@ class Recording(BaseModel):
     """The samplerate of the recording in Hz"""
 
     path: Optional[Path] = None
-    """The path to the audio file in the local filesystem"""
+    """The path to :with expression as target:
+        passthe audio file in the local filesystem"""
 
     audio_channels: Optional[int] = 1
     """The number of audio_channels in the recording."""

@@ -1,8 +1,9 @@
 """AudioRecorder using USB Microphone for waspi."""
-
 import datetime
 import wave
 from pathlib import Path
+from typing import Optional
+
 import pyaudio
 
 from waspi import data
@@ -37,7 +38,6 @@ class PyAudioRecorder(AudioRecorder):
         device_name: str,
         chunksize: int,
         audio_dir: Path,
-        logger=None,
     ) -> None:
         """Initialise the AudioRecorder with the audio parameters."""
         # Audio Duration
@@ -53,10 +53,35 @@ class PyAudioRecorder(AudioRecorder):
         self.audio_dir = audio_dir
         self.sample_width = pyaudio.get_sample_size(pyaudio.paInt16)
 
-        if logger is None:
-            logger = get_task_logger(__name__)
-        self.logger = logger
+        if device_index is None:
+            # Get the index of the audio device
+            self.device_index = self.get_device_index()
+        self.device_index = device_index
+
+    def get_device_index(self) -> int:
+        """Get the index of the audio device."""
+        # Create an instance of PyAudio
+        p = pyaudio.PyAudio()
+    
+        # Get the number of audio devices
+        num_devices = p.get_device_count()
         
+        # Loop through the audio devices
+        for i in range(num_devices):
+            # Get the audio device info
+            device_info = p.get_device_info_by_index(i)
+            # Check if the audio device is an input device
+            if not str(device_info["name"]) == self.device_name:
+                continue
+
+            else:
+                # Get the index of the USB audio device
+                device_index = int(device_info["index"])
+
+            return device_index
+
+        raise ValueError("No USB audio device found")
+
     def record(self) -> data.Recording:
         """Record an audio file.
 
@@ -88,15 +113,13 @@ class PyAudioRecorder(AudioRecorder):
 
         p = pyaudio.PyAudio()
 
-        device = self.get_input_device(p)
-
         stream = p.open(
             format=pyaudio.paInt16,
             channels=self.audio_channels,
             rate=self.samplerate,
             input=True,
             frames_per_buffer=self.chunksize,
-            input_device_index=device.index,
+            input_device_index=self.device_index,
         )
 
         frames = []
@@ -121,25 +144,3 @@ class PyAudioRecorder(AudioRecorder):
             audio_file.setframerate(self.samplerate)
             audio_file.writeframes(data)
 
-    def get_input_device(self, p: pyaudio.PyAudio):
-        """Get the input device."""
-        print(self.device_name)
-        print(type(self.device_name))
-        input_devices = get_input_devices(p)
-        device = next(
-            (d for d in input_devices if d.name == self.device_name), None
-        )
-
-        for d in range(get_input_devices(p)):
-            print(d)
-            print(d.name)
-            print(type(d.name))
-
-        if device is None:
-            raise ParameterError(
-                value="device_name",
-                message="The selected input device was not found.",
-                help="Check if the microphone is connected.",
-            )
-
-        return device

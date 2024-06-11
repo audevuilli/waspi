@@ -1,6 +1,6 @@
 """Waspi components."""
 from waspi.components.accel_logger import AccelLogger
-from waspi.compoments.audio import PyAudioRecorder
+from waspi.components.audio import PyAudioRecorder
 from waspi.components.sensor_manager import SerialReceiver
 from waspi.components.message_factories import SensorValue_MessageBuilder, AccelLogger_MessageBuilder
 from waspi.components.messengers import MQTTMessenger

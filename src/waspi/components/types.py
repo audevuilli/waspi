@@ -16,7 +16,7 @@ class AudioRecorder(ABC):
     """
 
     @abstractmethod
-    def record(self) -> Recording:
+    def record(self) -> data.Recording:
         """Record audio from the microphone and return the recording.
 
         The recording should be saved to a temporary file and the path

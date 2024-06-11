@@ -28,18 +28,25 @@ logging.basicConfig(
 DEFAULT_DB_PATH = Path.home() / "storages" / "waspi.db"
 DEFAULT_DB_PATH_MESSAGE = Path.home() / "storages" / "waspi_messages.db"
 
-AUDIO_SAMPLERATE = 441000
-AUDIO_DURATION = 30
+CONST_SERIAL_PORT = '/dev/ttyACM0'
+CONST_BAUD_RATE = 115200
+HWID_LIST = ["weight_scale", "temperature_0", "humidity_0", "temperature_1", "humidity_1"]
+
+AUDIO_SAMPLERATE = 44100
+AUDIO_DURATION = 15
 AUDIO_CHUNKSIZE = 4096
 AUDIO_CHANNEL = 1
 AUDIO_DEVICE_NAME = 'WordForum USB: Audio (hw:2,0)'
-AUDIO_DIR = Path.home() / "recordings" / "audio_mic"
-#VREF = 5.0
-#ADC_CHANNEL_0 = 0
-#ADC_CHANNEL_1 = 1
-#ADC_BITDEPTH = 10
-#ACCEL_SAMPLERATE = 16000 #16KHz
-#ACCEL_SAMPLEDURATION = 10
+AUDIO_DIR_PATH = Path.home() / "storages" / "recordings" / "audio_mic"
+
+SPI_CHANNEL = 0
+SPI_MAX_SPEED_HZ = 1200000
+VREF = 3.3
+ADC_CHANNEL_0 = 0
+ADC_CHANNEL_1 = 1
+ADC_BITDEPTH = 10
+ACCEL_SAMPLERATE = 16000 #16KHz
+ACCEL_SAMPLEDURATION = 10
 
 ###############################################
 ### CREATE SENSOR OBJECTS
@@ -166,13 +173,17 @@ def process_accel():
 async def main():
     # create the event loop
     loop = asyncio.get_event_loop()
-    
+        
     # Add task process_serial()
-    loop.create_task(process_serial())
+    try:
+        loop.create_task(process_serial())
+    except Exception as e:
+        logging.info(f"Error starting process_serial: {e}")
 
     # Add task audio_mic
     audiomic_task = loop.run_in_executor(None, process_audiomic)
-    end_audiomic = await audiomic_task
+    await audiomic_task
+    #end_audiomic = await audiomic_task
 
     # Add task process_accel with run_in_exector - another thread. 
     #accel_task = loop.run_in_executor(None, process_accel)
