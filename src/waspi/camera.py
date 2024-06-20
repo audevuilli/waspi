@@ -7,10 +7,7 @@ import numpy as np
 from pathlib import Path
 
 from picamera2 import Picamera2
-from PIL import Image 
-
-#from picamera2.encoders import H264Encoder
-#from picamera2.outputs import FileOutput
+from PIL import Image
 
 from camera_settings import *
 
@@ -36,7 +33,7 @@ def check_image_dir(images_dir):
 
     if not images_dir.exists():
         try:
-            images_dir.mkdir(parents=True)   
+            images_dir.mkdir(parents=True)
         except OSError as err:
             print("ERROR : Could Not Create Folder %s %s" % (images_dir, err))
             exit(1)
@@ -136,16 +133,6 @@ def get_stream_array():
         print(f"GET STREAM ARRAAY IMAGE: {image}")
 
         return image
-        #camera.capture_single_frame()
-        #with picamera2.array.PiRGBArray(camera) as stream:
-        #    camera.vflip = imageVFlip
-        #    camera.hflip = imageHFlip
-        #    camera.exposure_mode = 'auto'
-        #    camera.awb_mode = 'auto'
-        #    camera.capture(stream, format='rgb')
-        #    camera.close()
-        #    return stream.array
-
 
 #------------------------------------------------------------------------------
 def scan_motion():
