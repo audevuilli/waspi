@@ -4,7 +4,7 @@
 rcloneName="gdrive"
 syncRoot="${HOME}"
 DirImages="images"
-DirRecordingsAccel="storages/recordings/accelRecordings"
+DirRecordingsAccel="storages/recordings/accel_rec"
 DirRecordingsMic="storages/recordings/audio_mic"
 remoteSyncDir="waspi_backup"
 
