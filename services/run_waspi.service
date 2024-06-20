@@ -1,5 +1,5 @@
 [Unit]
-Description=Waspi - Monitor, Save and Send Results of IoT Wasp Nest.
+Description=Main Waspi - Monitor, Save and Send Results of IoT Wasp Nest.
 
 [Service]
 Type=simple

@@ -1,0 +1,14 @@
+[Unit]
+Description=Camera Entrance/Exit Service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/waspi/src/waspi/
+ExecStart=/usr/bin/python3 /home/pi/waspi/src/waspi/camera.py
+Restart=always
+RestartSec=3
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target
