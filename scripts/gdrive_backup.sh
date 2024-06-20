@@ -24,5 +24,5 @@ rclone copy $localSyncRecMic_Path $rcloneName:$remoteSyncDir/$DirRecordingsMic/$
 
 #Delete files saved on gdrive
 #rm -rf "$localSyncImages_Path"
-rm "$localSyncRecAccel_Path/*.wav"
-rm "$localSyncRecMic_Path/*.wav"
+rm "$DirRecordingsAccel/"*.wav
+rm "$DirRecordingsMic/"*.wav
