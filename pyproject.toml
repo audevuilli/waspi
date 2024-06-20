@@ -8,7 +8,7 @@ authors = [
 dependencies = [
     "arrow>=1.2.3",
     "pydantic>=2.3.0",
-    "paho-mqtt>=1.6.1",
+    "paho-mqtt>=2.1.0",
     "pony>=0.7.16",
 ]
 
