@@ -1,5 +1,5 @@
 """Waspi components."""
-from waspi.components.accel_logger import AccelLogger
+from waspi.components.accel_rec import AccelRecorder
 from waspi.components.audio import PyAudioRecorder
 from waspi.components.sensor_manager import SerialReceiver
 from waspi.components.message_factories import SensorValue_MessageBuilder, AccelLogger_MessageBuilder
@@ -9,7 +9,7 @@ from waspi.components.message_stores.sqlite import SqliteMessageStore
 from waspi.components.stores.sqlite import SqliteStore
 
 __all__ = [
-    "AccelLogger",
+    "AccelRecorder",
     "PyAudioRecorder",
     "SerialReceiver", 
     "SensorValue_MessageBuilder",
