@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 
 from waspi import data
-from waspi.components.accel_logger import AccelLogger
+from waspi.components.accel_rec import AccelRecorder
 from waspi.components.audio import PyAudioRecorder
 from waspi.components.sensor_manager import SensorReporter, SerialReceiver
 from waspi.components.message_factories import SensorValue_MessageBuilder, AccelLogger_MessageBuilder
@@ -36,17 +36,14 @@ AUDIO_SAMPLERATE = 44100
 AUDIO_DURATION = 15
 AUDIO_CHUNKSIZE = 4096
 AUDIO_CHANNEL = 1
-AUDIO_DEVICE_NAME = 'WordForum USB: Audio (hw:2,0)'
+AUDIO_DEVICE_NAME = 'WordForum USB: Audio'
 AUDIO_DIR_PATH = Path.home() / "storages" / "recordings" / "audio_mic"
 
-SPI_CHANNEL = 0
-SPI_MAX_SPEED_HZ = 1200000
-VREF = 3.3
-ADC_CHANNEL_0 = 0
-ADC_CHANNEL_1 = 1
-ADC_BITDEPTH = 10
-ACCEL_SAMPLERATE = 16000 #16KHz
-ACCEL_SAMPLEDURATION = 10
+ACCEL_SAMPLERATE = 44100
+ACCEL_DURATION = 15
+ACCEL_CHANNEL = 2
+#ACCEL_DEVICE_NAME = 'snd_rpi_hifiberry_dacplusadc: HiFiBerry DAC+ADC HiFi multicodec-0'
+ACCEL_DIR_PATH = Path.home() / "storages" / "recordings" / "accel_rec"
 
 ###############################################
 ### CREATE SENSOR OBJECTS
@@ -64,31 +61,18 @@ audio_mic = PyAudioRecorder(
     audio_dir = AUDIO_DIR_PATH,
     )
 
-
 """Create the Accelerometer objects."""
-accel0_logger = AccelLogger(
-    spi_channel = SPI_CHANNEL,
-    spi_max_speed_hz = SPI_MAX_SPEED_HZ,
-    vref = VREF,
-    adc_channel = ADC_CHANNEL_0, 
-    adc_bitdepth = ADC_BITDEPTH, 
-    sampling_rate = ACCEL_SAMPLERATE, 
-    sampling_duration = ACCEL_SAMPLEDURATION
-    )
-
-accel1_logger = AccelLogger(
-    spi_channel = SPI_CHANNEL,
-    spi_max_speed_hz = SPI_MAX_SPEED_HZ,
-    vref = VREF,
-    adc_channel = ADC_CHANNEL_1,
-    adc_bitdepth = ADC_BITDEPTH,
-    sampling_rate = ACCEL_SAMPLERATE, 
-    sampling_duration = ACCEL_SAMPLEDURATION
-    )
+accel_rec = AccelRecorder(
+    duration = ACCEL_DURATION,
+    samplerate = ACCEL_SAMPLERATE,
+    audio_channels = ACCEL_CHANNEL,
+    #device_name = ACCEL_DEVICE_NAME,
+    #chunksize = ACCEL_CHUNKSIZE,
+    audio_dir = ACCEL_DIR_PATH,
+)
 
 """Create the message factories object."""
 sensorvalue_mfactory = SensorValue_MessageBuilder()
-accellogger_mfactory = AccelLogger_MessageBuilder()
 
 """Initialise the MQTT Messenger."""
 mqtt_messenger = MQTTMessenger(
@@ -104,6 +88,8 @@ mqtt_messenger = MQTTMessenger(
 dbstore = SqliteStore(db_path=DEFAULT_DB_PATH)
 dbstore_message = SqliteMessageStore(db_path=DEFAULT_DB_PATH_MESSAGE)
 
+##############################################
+### DEFINE RUNNING PROCESSES
 
 async def process_serial():
     while True:  # Infinite loop to keep the process running        
@@ -119,61 +105,54 @@ async def process_serial():
             continue
         
         # Create the messages from the serial output (sensor values)
-        #mqtt_message = await sensorvalue_mfactory.build_message(sensors_values)
-        #logging.info(f"MQTT Message: {mqtt_message}")
+        mqtt_message = await sensorvalue_mfactory.build_message(sensors_values)
+        logging.info(f"MQTT Message: {mqtt_message}")
 
         # Send sensor values to MQTT
-        #response = await mqtt_messenger.send_message(mqtt_message)
-        #logging.info(f"MQTT Response: {response}")
+        response = await mqtt_messenger.send_message(mqtt_message)
+        logging.info(f"MQTT Response: {response}")
 
         # SqliteDB Store Sensor Value 
         dbstore.store_sensor_value(sensors_values)
         logging.info(f"Sensor Values saved in db.")
 
         # Store MQTT Message in DB
-        #mqtt_message_store = dbstore_message.store_message(mqtt_message)
-        #logging.info(f"Message store in db.")
+        mqtt_message_store = dbstore_message.store_message(mqtt_message)
+        logging.info(f"Message store in db.")
 
         # Store Response in DB
-        #response_store = dbstore_message.store_response(response)
-        #logging.info(f"Reponse store in db.")
+        response_store = dbstore_message.store_response(response)
+        logging.info(f"Reponse store in db.")
         #logging.info("")
 
 
 # Audio Microphone Process - Every 15 minutes
 def process_audiomic():
     while True:
-        if time.localtime().tm_min % 1 == 0:
+        if time.localtime().tm_min % 5 == 0:
             logging.info(f" --- START AUDIO MIC Recording: {time.asctime()}")
             record_audiomic = audio_mic.record()
-
             logging.info(f" --- END AUDIO MIC Recording ----")
+        return
+
 
 # Run the process_accel() synchronously every 30 minutes
 def process_accel():
     while True: # Infinite loop to keep the process running  
         if time.localtime().tm_min % 2 == 0:
-            logging.info(f" --- ACCEL0 START RECORDING: {time.asctime()}")
-            record_accel0 = accel0_logger.record_file()
+            logging.info(f" --- ACCEL RECORDING: {time.asctime()}")
+            record_accel = accel_rec.record()
 
             # SqliteDB Store Accelerometer Recordings Path 
-            dbstore.store_accel_recording(record_accel0)
-            logging.info(f"Accel 0 Recording Path saved in db: {record_accel0}")
-            logging.info("")
-            
-            logging.info(f" --- ACCEL1 START RECORDING: {time.asctime()}")
-            record_accel1 = accel1_logger.record_file()
-
-            # SqliteDB Store Accelerometer Recordings Path 
-            dbstore.store_accel_recording(record_accel1)
-            logging.info(f"Accel 1 Recording Path saved in db: {record_accel1}")
-            logging.info("")
+            #dbstore.store_accel_recording(record_accel0)
+            #logging.info(f"Accel 0 Recording Path saved in db: {record_accel0}")
+            #logging.info("")
+        return
 
 # Run asyncio main loop
 async def main():
     # create the event loop
     loop = asyncio.get_event_loop()
-        
     # Add task process_serial()
     try:
         loop.create_task(process_serial())
@@ -183,11 +162,10 @@ async def main():
     # Add task audio_mic
     audiomic_task = loop.run_in_executor(None, process_audiomic)
     await audiomic_task
-    #end_audiomic = await audiomic_task
 
-    # Add task process_accel with run_in_exector - another thread. 
-    #accel_task = loop.run_in_executor(None, process_accel)
-    #end_accel = await accel_task
+    # Add task process_accel with run_in_exector - another thread.
+    accel_task = loop.run_in_executor(None, process_accel)
+    await accel_task
 
 # Run the main loop
 asyncio.run(main())
