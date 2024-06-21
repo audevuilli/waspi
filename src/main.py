@@ -129,7 +129,7 @@ async def process_serial():
 # Audio Microphone Process - Every 15 minutes
 def process_audiomic():
     while True:
-        if time.localtime().tm_min % 5 == 0:
+        if time.localtime().tm_min % 10 == 0:
             logging.info(f" --- START AUDIO MIC Recording: {time.asctime()}")
             record_audiomic = audio_mic.record()
             logging.info(f" --- END AUDIO MIC Recording ----")
@@ -139,14 +139,9 @@ def process_audiomic():
 # Run the process_accel() synchronously every 30 minutes
 def process_accel():
     while True: # Infinite loop to keep the process running  
-        if time.localtime().tm_min % 2 == 0:
+        if time.localtime().tm_min % 10 == 0:
             logging.info(f" --- ACCEL RECORDING: {time.asctime()}")
             record_accel = accel_rec.record()
-
-            # SqliteDB Store Accelerometer Recordings Path 
-            #dbstore.store_accel_recording(record_accel0)
-            #logging.info(f"Accel 0 Recording Path saved in db: {record_accel0}")
-            #logging.info("")
         return
 
 # Run asyncio main loop
