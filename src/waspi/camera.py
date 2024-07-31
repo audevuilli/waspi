@@ -29,16 +29,16 @@ def get_now():
 def check_image_dir(images_dir):
     """ if image_dir does not exist create the folder """
     date_today = datetime.datetime.today().strftime('%Y_%m_%d')
-    images_dir = Path(images_dir) / f"{date_today}"
+    images_dir_date = Path(images_dir) / f"{date_today}"
 
-    if not images_dir.exists():
+    if not images_dir_date.exists():
         try:
-            images_dir.mkdir(parents=True)
+            images_dir_date.mkdir(parents=True)
         except OSError as err:
-            print("ERROR : Could Not Create Folder %s %s" % (images_dir, err))
+            print("ERROR : Could Not Create Folder %s %s" % (images_dir_date, err))
             exit(1)
 
-    return images_dir
+    return images_dir_date
 
 #------------------------------------------------------------------------------
 def get_file_name(images_dir, image_name_prefix, current_count):
@@ -48,7 +48,6 @@ def get_file_name(images_dir, image_name_prefix, current_count):
     if imageNumOn:
         file_path = images_dir+ "/"+image_name_prefix+str(current_count)+".jpg"
     else:
-        #folder_path = check_image_dir(images_dir)
         datetime_now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
         file_path = str(images_dir) + '/' + str(datetime_now) + '.jpg'
     return file_path
@@ -130,7 +129,7 @@ def get_stream_array():
             print(f"Exception: {e}")
 
         camera.stop()
-        print(f"GET STREAM ARRAAY IMAGE: {image}")
+        #print(f"GET STREAM ARRAAY IMAGE: {image}")
 
         return image
 
@@ -142,9 +141,9 @@ def scan_motion():
         data2 = get_stream_array()
         diff_count = 0
         for y in range(0, streamHeight):
-            print(y)
+            #print(y)
             for x in range(0, streamWidth):
-                print(x)
+                #print(x)
                 # get pixel differences. Conversion to int
                 # is required to avoid unsigned short overflow.
                 diff = abs(int(data1[y][x][1]) - int(data2[y][x][1]))
