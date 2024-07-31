@@ -3,7 +3,7 @@
 # rclone sync variables
 rcloneName="gdrive"
 syncRoot="${HOME}"
-DirImages="images"
+DirImages="storages/images"
 DirRecordingsAccel="storages/recordings/accel_rec"
 DirRecordingsMic="storages/recordings/audio_mic"
 remoteSyncDir="waspi_backup"
@@ -12,7 +12,7 @@ remoteSyncDir="waspi_backup"
 date_now=$(date +'%Y_%m_%d')
 
 # Local Directories - RPi files paths to sync
-localSyncImages_Path="${syncRoot}/${DirImages}/"
+localSyncImages_Path="${syncRoot}/${DirImages}/${date_now}"
 localSyncRecAccel_Path="${syncRoot}/${DirRecordingsAccel}/"
 localSyncRecMic_Path="${syncRoot}/${DirRecordingsMic}/"
 #echo "$localSyncRecMic_Path"
@@ -24,5 +24,6 @@ rclone copy $localSyncRecMic_Path $rcloneName:$remoteSyncDir/$DirRecordingsMic/$
 
 #Delete files saved on gdrive
 #rm -rf "$localSyncImages_Path"
+rm -rf "$DirImages"
 rm "$DirRecordingsAccel/"*.wav
 rm "$DirRecordingsMic/"*.wav
