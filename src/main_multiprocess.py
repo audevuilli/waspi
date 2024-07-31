@@ -1,7 +1,8 @@
-import datetime
-import logging
-import asyncio
+import multiprocessing
 import time
+import logging
+from multiprocessing import Queue
+
 from pathlib import Path
 
 from waspi import data
@@ -24,7 +25,6 @@ logging.basicConfig(
 
 ##############################################
 ### CONFIGURATION PARAMETERS
-
 DEFAULT_DB_PATH = Path.home() / "storages" / "waspi.db"
 DEFAULT_DB_PATH_MESSAGE = Path.home() / "storages" / "waspi_messages.db"
 
@@ -47,7 +47,6 @@ ACCEL_DIR_PATH = Path.home() / "storages" / "recordings" / "accel_rec"
 
 ###############################################
 ### CREATE SENSOR OBJECTS
-
 """Create the Serial_Rx object."""
 serial_rx = SerialReceiver(port=CONST_SERIAL_PORT, baud=CONST_BAUD_RATE, hwid_list=HWID_LIST)
 
@@ -88,101 +87,73 @@ mqtt_messenger = MQTTMessenger(
 dbstore = SqliteStore(db_path=DEFAULT_DB_PATH)
 dbstore_message = SqliteMessageStore(db_path=DEFAULT_DB_PATH_MESSAGE)
 
-##############################################
-### DEFINE RUNNING PROCESSES
 
-async def process_serial():
-    while True:  # Infinite loop to keep the process running
-        logging.info(f" --- SERIAL READ TIME: {datetime.datetime.now()}")
-        
-        # Get the sensor values from serial port
+##############################################
+### DEFINE RUNNING processes
+
+def process_serial():
+    while True:
         try:
-            sensors_values = await serial_rx.get_SerialRx()
+            sensors_values = serial_rx.get_SerialRx()  # Assuming get_SerialRx is blocking
             logging.info(f"JSON MESSAGE PROCESS: {sensors_values}")
         except Exception as e:
             logging.info(f"Error fetching sensor values: {e}")
             continue
-        
-        # Create the messages from the serial output (sensor values)
-        mqtt_message = await sensorvalue_mfactory.build_message(sensors_values)
 
-        # Send sensor values to MQTT
-        response = await mqtt_messenger.send_message(mqtt_message)
+        # Create MQTT message and send data
+        mqtt_message = sensorvalue_mfactory.build_message(sensors_values)
+        logging.info(f"MQTT Message: {mqtt_message}")
+        response = mqtt_messenger.send_message(mqtt_message)  
         logging.info(f"MQTT Response: {response}")
 
-        # SqliteDB Store Sensor Value 
+        # Store data in database
         dbstore.store_sensor_value(sensors_values)
-        logging.info("Sensor Values saved in db.")
+        logging.info(f"Sensor Values saved in db.")
 
-        # Store MQTT Message in DB
         mqtt_message_store = dbstore_message.store_message(mqtt_message)
-
-        # Store Response in DB
         response_store = dbstore_message.store_response(response)
 
 
 # Audio Microphone Process - Every 15 minutes
-async def process_audiomic():
+def process_audiomic():
     while True:
-<<<<<<< HEAD
-        if time.localtime().tm_min % 10 == 0:
+        if time.localtime().tm_min % 5 == 0:
             logging.info(f" --- START AUDIO MIC Recording: {time.asctime()}")
-            record_audiomic = audio_mic.record()
-=======
-        if datetime.datetime.now().minute % 15 = 0:
-        #if time.localtime().tm_min % 5 == 0:
-            logging.info(f" --- START AUDIO MIC Recording --- ")
-            await audio_mic.record()
->>>>>>> 4fafb113afe88beb1c52796bf9bd2a367cf2c851
+            audio_mic.record()
             logging.info(f" --- END AUDIO MIC Recording ----")
-        #return
-
+        time.sleep(60)
+        
 
 # Run the process_accel() synchronously every 30 minutes
-async def process_accel():
+def process_accel():
     while True: # Infinite loop to keep the process running  
-<<<<<<< HEAD
-        if time.localtime().tm_min % 10 == 0:
-            logging.info(f" --- ACCEL RECORDING: {time.asctime()}")
-            record_accel = accel_rec.record()
-        return
-=======
-        if datetime.datetime.now().minute % 15 = 0:
-        #if time.localtime().tm_min % 2 == 0:
-            logging.info(f" --- ACCEL RECORDING START --- ")
-            await accel_rec.record()
-            logging.info(f" --- ACCEL RECORDING STOP--- ")
-
-            # SqliteDB Store Accelerometer Recordings Path 
-            #dbstore.store_accel_recording(record_accel0)
-            #logging.info(f"Accel 0 Recording Path saved in db: {record_accel0}")
-            #logging.info("")
+        if time.localtime().tm_min % 2 == 0:
+            logging.info(f" --- ACCEL RECORDING: {time.asctime()}"
+            accel_rec.record()
+            logging.info(f" --- ACCEL RECORDING STOP --- ")
+        time.sleep(60)
         #return
->>>>>>> 4fafb113afe88beb1c52796bf9bd2a367cf2c851
 
-# Run asyncio main loop
-async def main():
-    # create the event loop
-    loop = asyncio.get_event_loop()
-    # Add task process_serial()
-    try:
-        serial_task = loop.create_task(asyncio.to_thread(process_serial()))
-        audiomic_task = loop.create_task(process_audiomic())
-        accel_task = loop.create_task(process_accel())
+##############################################
+### MAIN SCRIPT - RUN processes
 
-        await serial_task
-        await asyncio.gather(audiomic_task, accel_task)
+def main():
 
-    except Exception as e:
-        logging.info(f"Error starting process_serial: {e}")
+    # Create processes
+    process_serial = multiprocessing.Process(target=read_serial, daemon=True)
+    process_audiomic = multiprocessing.Process(target=record_audiomic, deamon=True)
+    process_accel = multiprocessing.Process(target=record_accel, daemon=True)
 
-    # Add task audio_mic
-    #audiomic_task = loop.run_in_executor(None, process_audiomic)
-    #await audiomic_task
+    # Start processes
+    process_serial.start()
+    process_audiomic.start()
+    process_accel.start()
 
-    # Add task process_accel with run_in_exector - another thread.
-    #accel_task = loop.run_in_executor(None, process_accel)
-    #await accel_task
+    # Wait for serial_process to finish (optional)
+    process_serial.join()
+    process_audiomic.join()
+    process_accel.join()
 
-# Run the main loop
-asyncio.run(main())
+
+if __name__ == "__main__":
+    main()
