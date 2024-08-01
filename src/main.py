@@ -88,7 +88,7 @@ dbstore_message = SqliteMessageStore(db_path=DEFAULT_DB_PATH_MESSAGE)
 
 async def process_serial():
     while True:  # Infinite loop to keep the process running
-        logging.info(f" --- SERIAL READ TIME: {datetime.datetime.now()}")
+        logging.info(f" --- SERIAL READ START: {datetime.datetime.now()}")
         
         # Get the sensor values from serial port
         try:
@@ -102,15 +102,13 @@ async def process_serial():
         mqtt_message = await sensorvalue_mfactory.build_message(sensors_values)
         # Send sensor values to MQTT
         response = await mqtt_messenger.send_message(mqtt_message)
-        logging.info(f"MQTT Response: {response}")
-        # SqliteDB Store Sensor Value 
+        # SqliteDB Store Sensor Value
         dbstore.store_sensor_value(sensors_values)
-        logging.info("Sensor Values saved in db.")
         # Store MQTT Message in DB
         mqtt_message_store = dbstore_message.store_message(mqtt_message)
         # Store Response in DB
         response_store = dbstore_message.store_response(response)
-
+        logging.info(" --- END SERIAL ---")
 
 # Audio Microphone Process - Every 15 minutes
 async def process_audio():
@@ -123,7 +121,7 @@ async def process_audio():
 
 
 async def main():
-    """ Run the main loop. 
+    """ Run the main loop.
     1. Run the process_serial().
     2. Run the process_audio() - Record audio and accel for 15 seconds every 10 minutes.
     """
