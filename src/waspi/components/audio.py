@@ -78,9 +78,9 @@ class PyAudioRecorder(AudioRecorder):
 
             else:
                 # Get the index of the USB audio device
-                print(f"DEVICE INDEX: {device_info['index']}")
+                #print(f"DEVICE INDEX: {device_info['index']}")
                 device_index = int(device_info["index"])
-                print(f"RETURN DEVICE_INDEX: {device_index}")
+                #print(f"RETURN DEVICE_INDEX: {device_index}")
             
             return device_index
 
