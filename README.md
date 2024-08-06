@@ -12,7 +12,7 @@ WasPi is built as a dual setup. A microcontroller (Arduino Uno) connects and rea
 
 <img src="docs/images/waspi_system_architecture.jpeg" width="90%">
 
-<img src="docs/images/electronics_top_01.jpeg" width="44%"> <img src="docs/images/setup_top_02.jpeg" width="44%">
+<img src="docs/images/electronics_top_01.jpeg" width="44%"> <img src="docs/images/wasp_enclosure.JPEG" width="44%">
 
 ## Wasp Nest Env. Sensor Nodes
 
