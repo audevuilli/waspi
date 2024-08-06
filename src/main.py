@@ -28,7 +28,8 @@ DEFAULT_DB_PATH_MESSAGE = Path.home() / "storages" / "waspi_messages.db"
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
-HWID_LIST = ["weight_scale", "temperature_0", "humidity_0", "temperature_1", "humidity_1"]
+HWID_LIST = ["weight_scale", "temp_sht45_0", "hum_sht45_0", "temp_sht45_1", "hum_sht45_1"]
+HWID_LIST = ["weight_scale", "temp_sht45_0", "hum_sht45_0", "temp_sht45_1", "hum_sht45_1", "temp_scd41", "hum_scd41", "co2ppm_scd41"]
 
 AUDIO_SAMPLERATE = 44100
 AUDIO_DURATION = 15
@@ -71,11 +72,11 @@ sensorvalue_mfactory = SensorValue_MessageBuilder()
 
 """Initialise the MQTT Messenger."""
 mqtt_messenger = MQTTMessenger(
-    host=config_mqtt.DEFAULT_HOST, 
-    username=config_mqtt.DEFAULT_MQTTCLIENT_USER, 
-    password=config_mqtt.DEFAULT_MQTTCLIENT_PASS, 
-    port=config_mqtt.DEFAULT_PORT, 
-    clientid=config_mqtt.DEFAULT_CLIENTID, 
+    host=config_mqtt.DEFAULT_HOST,
+    username=config_mqtt.DEFAULT_MQTTCLIENT_USER,
+    password=config_mqtt.DEFAULT_MQTTCLIENT_PASS,
+    port=config_mqtt.DEFAULT_PORT,
+    clientid=config_mqtt.DEFAULT_CLIENTID,
     topic=config_mqtt.DEFAULT_TOPIC
     )
 
@@ -93,6 +94,7 @@ async def process_serial():
         # Get the sensor values from serial port
         try:
             sensors_values = await serial_rx.get_SerialRx()
+            print(f"Sensor Values: {sensors_values}")
             logging.info(f"JSON MESSAGE PROCESS: {sensors_values}")
         except Exception as e:
             logging.info(f"Error fetching sensor values: {e}")
@@ -110,7 +112,7 @@ async def process_serial():
         response_store = dbstore_message.store_response(response)
         logging.info(" --- END SERIAL ---")
 
-# Audio Microphone Process - Every 15 minutes
+# Audio Microphone Process - Every 10 minutes
 async def process_audio():
     while True:
         logging.info(f" --- START AUDIO RECORDING {datetime.datetime.now()} --- ")
