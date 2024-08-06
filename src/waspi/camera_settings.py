@@ -11,17 +11,17 @@ configName  = "settings.py"
 imagePath = Path.home() / "storages" / "images"    # Folder path to save images
 imageNamePrefix = 'mo-' # Prefix for all image file names. Eg front-
 imageWidth = 1280       # Final image width
-imageHeight = 720       # Final image height
+imageHeight = 720      # Final image height
 imageVFlip = True       # Flip image Vertically
 imageHFlip = False      # Flip image Horizontally
-imagePreview = True    # Set picamera preview False=off True=on
+imagePreview = True     # Set picamera preview False=off True=on
 imageNumOn = False      # Image Naming True=Number sequence  False=DateTime
 imageNumStart = 1000    # Start of number sequence if imageNumOn=True
 
 # User Motion Detection Settings
 # ------------------------------
-threshold = 10  # How Much pixel changes
-sensitivity = 100  # How many pixels change
-streamWidth = 128  # motion scan stream Width
+threshold = 20     # How Much pixel changes
+sensitivity = 25   # How many pixels change
+streamWidth = 100  # motion scan stream Width
 streamHeight = 80
 
