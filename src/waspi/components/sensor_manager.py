@@ -69,7 +69,7 @@ class SerialReceiver(SensorReporter):
             stop_event = asyncio.Event()
 
             async def stop_after_timeout():
-                await asyncio.sleep(10)
+                await asyncio.sleep(28)
                 stop_event.set()
 
             asyncio.create_task(stop_after_timeout())

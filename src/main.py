@@ -28,7 +28,6 @@ DEFAULT_DB_PATH_MESSAGE = Path.home() / "storages" / "waspi_messages.db"
 
 CONST_SERIAL_PORT = '/dev/ttyACM0'
 CONST_BAUD_RATE = 115200
-HWID_LIST = ["weight_scale", "temp_sht45_0", "hum_sht45_0", "temp_sht45_1", "hum_sht45_1"]
 HWID_LIST = ["weight_scale", "temp_sht45_0", "hum_sht45_0", "temp_sht45_1", "hum_sht45_1", "temp_scd41", "hum_scd41", "co2ppm_scd41"]
 
 AUDIO_SAMPLERATE = 44100
