@@ -108,12 +108,11 @@ async def process_serial():
         try:
             sensors_values = await serial_rx.get_SerialRx()
             if first_reading_after_audio:
-                print(f"First_reading_after_audio: {first_reading_after_audio}")
+                logging.info(f"First reading after audio - {first_reading_after_audio} - Ignore Reading")
                 first_reading_after_audio = False
-                print(f"Modify Flag: {first_reading_after_audio}")
                 continue
 
-            print(f"Sensor Values: {sensors_values}")
+            #print(f"Sensor Values: {sensors_values}")
             logging.info(f"JSON MESSAGE PROCESS: {sensors_values}")
 
         except Exception as e:
@@ -142,7 +141,6 @@ async def process_audio():
         accel_rec.record()
         logging.info(f" --- END AUDIO RECORDING {datetime.datetime.now()} ----")
         first_reading_after_audio = True
-        print(f"First Reading After Audio: {first_reading_after_audio}")
         await asyncio.sleep(600 - AUDIO_DURATION)
 
 
