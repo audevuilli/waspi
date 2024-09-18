@@ -1,0 +1,14 @@
+[Unit]
+Description=Microphone Audio Recording Waspi - Monitor, Save and Send Results of IoT Wasp Nest.
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/waspi/src/
+ExecStart=/usr/bin/python3 /home/pi/waspi/src/audio_rec.py
+Restart=always
+RestartSec=3
+TimeoutSec=30
+
+[Install]
+WantedBy=multi-user.target
