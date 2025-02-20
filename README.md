@@ -10,9 +10,9 @@ WasPi is built as a dual setup. A microcontroller (Arduino Uno) connects and rea
 
 *Note: The diagram below is not an electronic schematic. It does not include the various electronic components needed for the sensors values to be read correctly such as amplifiers, ADC.*
 
-<img src="docs/images/waspi_system_architecture.jpeg" width="90%">
+<img src="docs/images/wasp_architecture_diagram.pdf" width="90%">
 
-<img src="docs/images/electronics_top_01.jpeg" width="44%"> <img src="docs/images/wasp_enclosure.JPEG" width="44%">
+<img src="docs/images/electronics_top_01.jpeg" width="44%"> <img src="docs/images/wasp_architecture_diagram.pdf" width="44%">
 
 ## Wasp Nest Env. Sensor Nodes
 
