@@ -6,7 +6,7 @@ Waspi is a real-time monitoring system used to study the activity of wasp nests.
 #### Overview of the hardware system:
 Waspi is built as a dual setup. A microcontroller (Arduino Uno) connects and reads the values from the sensors, while a more powerful single-board computer (Raspberry Pi 3B+) handles the communication functions. 
 
-<img src="docs/images/wasp_architecture_diagram.png" width="90%">
+<img src="docs/images/wasp_architecture_diagram.png" width="95%">
 
 
 ## Wasp Nest Env. Sensor Nodes
@@ -38,8 +38,7 @@ Due to the dual nature of the wasp nest monitoring system, waspi software is div
 
 #### Overview of the software architecture
 
-<img src="docs/images/wasp_enclosure_outside.jpg" width="46%">
-<img src="docs/images/wasp_enclosure_inside.jpg" width="46%">
+<img src="docs/images/wasp_enclosure_outside.jpg" width="42%"><img src="docs/images/wasp_enclosure_inside.jpg" width="42%">
 
 - Arduino Sensors Script [Arduino_waspi.ino](/arduino/arduino_waspi/arduino_waspi.ino)
 - RaspberryPi IoT Scripts [src/waspi/components](/src/waspi/components)
