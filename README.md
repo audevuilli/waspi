@@ -6,7 +6,9 @@ Waspi is a real-time monitoring system used to study the activity of wasp nests.
 #### Overview of the hardware system:
 Waspi is built as a dual setup. A microcontroller (Arduino Uno) connects and reads the values from the sensors, while a more powerful single-board computer (Raspberry Pi 3B+) handles the communication functions. 
 
-<img src="docs/images/wasp_architecture_diagram.png" width="95%">
+<div align="center">
+<img src="docs/images/wasp_architecture_diagram.png" width="80%">
+</div>
 
 
 ## Wasp Nest Env. Sensor Nodes
@@ -38,20 +40,20 @@ Due to the dual nature of the wasp nest monitoring system, waspi software is div
 
 #### Overview of the software architecture
 
-<img src="docs/images/wasp_enclosure_outside.jpg" width="42%"><img src="docs/images/wasp_enclosure_inside.jpg" width="42%">
-
 - Arduino Sensors Script [Arduino_waspi.ino](/arduino/arduino_waspi/arduino_waspi.ino)
 - RaspberryPi IoT Scripts [src/waspi/components](/src/waspi/components)
 
-### Enclosure
-- Drawing and dimensions
-- List of Materials (wood, insect mesh, garden wire)
-
-<img src="docs/images/wasp_architecture_diagram.png" width="90%">
-
-### Setup
 **Audio and Images: Files Transfer**
 - Transfer audio and images to remote cloud storage (Google Drive) using [rclone](https://rclone.org/)
 - Good Documentation about setting up rclone to migrate files to Google Drive:
     - rclone: [rclone Google Drive Docs](https://rclone.org/drive/), [Configuring rclone on headless machine](https://rclone.org/remote_setup/)
     - others: [Mounting GDrive on RPi - Medium Tutorial by Artur Klauser](https://medium.com/@artur.klauser/mounting-google-drive-on-raspberry-pi-dd15193d8138), [Github Wiki rclone4pi by Claude Pageau](https://github.com/pageauc/rclone4pi/wiki)
+      
+### Enclosure
+- Drawing and dimensions
+- List of Materials (wood, insect mesh, garden wire)
+
+<div align="center">
+<img src="docs/images/wasp_enclosure_outside.jpg" width="44%"> <img src="docs/images/wasp_enclosure_inside.jpg" width="44%">
+</div>
+
