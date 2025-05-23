@@ -43,7 +43,7 @@ def record_accel():
         accel_rec.record()
         logging.info(f" --- END AUDIO RECORDING {datetime.datetime.now()} ----")
         first_reading_after_audio = True
-        time.sleep(1)
+        time.sleep(0.1)
 
 
 # Run the audio recording process continuously

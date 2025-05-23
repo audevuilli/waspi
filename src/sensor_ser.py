@@ -67,20 +67,20 @@ dbstore_message = SqliteMessageStore(db_path=DEFAULT_DB_PATH_MESSAGE)
 
 
 async def process_serial():
-    # Flag to check if it is the first reading after audio recording
-    global first_reading_after_audio
+    #Flag to check if it is the first reading after audio recording
+    #global first_reading_after_audio
     while True:  # Infinite loop to keep the process running
         logging.info(f" --- SERIAL READ START: {datetime.datetime.now()}")
 
         # Get the sensor values from serial port
         try:
             sensors_values = await serial_rx.get_SerialRx()
-            if first_reading_after_audio:
-                logging.info(
-                    f"First reading after audio - {first_reading_after_audio} - Ignore Reading"
-                )
-                first_reading_after_audio = False
-                continue
+            #if first_reading_after_audio:
+            #    logging.info(
+            #        f"First reading after audio - {first_reading_after_audio} - Ignore Reading"
+            #    )
+            #    first_reading_after_audio = False
+            #    continue
 
             # print(f"Sensor Values: {sensors_values}")
             logging.info(f"JSON MESSAGE PROCESS: {sensors_values}")

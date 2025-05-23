@@ -40,14 +40,14 @@ HWID_LIST = [
 ]
 
 AUDIO_SAMPLERATE = 44100
-AUDIO_DURATION = 15
+AUDIO_DURATION = 30
 AUDIO_CHUNKSIZE = 4096
 AUDIO_CHANNEL = 1
 AUDIO_DEVICE_NAME = "WordForum USB: Audio"
 AUDIO_DIR_PATH = Path.home() / "storages" / "recordings" / "audio_mic"
 
 ACCEL_SAMPLERATE = 44100
-ACCEL_DURATION = 15
+ACCEL_DURATION = 120
 ACCEL_CHANNEL = 2
 ACCEL_DIR_PATH = Path.home() / "storages" / "recordings" / "accel_rec"
 
@@ -137,11 +137,11 @@ async def process_audio():
     global first_reading_after_audio
     while True:
         logging.info(f" --- START AUDIO RECORDING {datetime.datetime.now()} --- ")
-        audio_mic.record()
+        #audio_mic.record()
         accel_rec.record()
         logging.info(f" --- END AUDIO RECORDING {datetime.datetime.now()} ----")
         first_reading_after_audio = True
-        await asyncio.sleep(600 - AUDIO_DURATION)
+        await asyncio.sleep(130 - ACCEL_DURATION)
 
 
 async def main():
