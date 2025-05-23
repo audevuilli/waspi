@@ -43,7 +43,7 @@ class AccelRecorder(AudioRecorder):
             # Define the arecord command
             arecord_command = [
                 'arecord',
-                '-D', 'plughw:2,0',  # Replace with the correct device ID or name
+                '-D', 'plughw:1,0',  # Replace with the correct device ID or name
                 '--format=S16_LE',
                 f'--channels={self.audio_channels}',
                 f'--rate={self.samplerate}',
