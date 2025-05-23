@@ -60,14 +60,14 @@ serial_rx = SerialReceiver(
 )
 
 """Create the Microhpone object."""
-audio_mic = PyAudioRecorder(
-    duration=AUDIO_DURATION,
-    samplerate=AUDIO_SAMPLERATE,
-    audio_channels=AUDIO_CHANNEL,
-    device_name=AUDIO_DEVICE_NAME,
-    chunksize=AUDIO_CHUNKSIZE,
-    audio_dir=AUDIO_DIR_PATH,
-)
+#audio_mic = PyAudioRecorder(
+#    duration=AUDIO_DURATION,
+#    samplerate=AUDIO_SAMPLERATE,
+#    audio_channels=AUDIO_CHANNEL,
+#    device_name=AUDIO_DEVICE_NAME,
+#    chunksize=AUDIO_CHUNKSIZE,
+#    audio_dir=AUDIO_DIR_PATH,
+#)
 
 """Create the Accelerometer objects."""
 accel_rec = AccelRecorder(
