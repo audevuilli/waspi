@@ -60,14 +60,14 @@ serial_rx = SerialReceiver(
 )
 
 """Create the Microhpone object."""
-#audio_mic = PyAudioRecorder(
+# audio_mic = PyAudioRecorder(
 #    duration=AUDIO_DURATION,
 #    samplerate=AUDIO_SAMPLERATE,
 #    audio_channels=AUDIO_CHANNEL,
 #    device_name=AUDIO_DEVICE_NAME,
 #    chunksize=AUDIO_CHUNKSIZE,
 #    audio_dir=AUDIO_DIR_PATH,
-#)
+# )
 
 """Create the Accelerometer objects."""
 accel_rec = AccelRecorder(
@@ -108,11 +108,13 @@ async def process_serial():
         try:
             sensors_values = await serial_rx.get_SerialRx()
             if first_reading_after_audio:
-                logging.info(f"First reading after audio - {first_reading_after_audio} - Ignore Reading")
+                logging.info(
+                    f"First reading after audio - {first_reading_after_audio} - Ignore Reading"
+                )
                 first_reading_after_audio = False
                 continue
 
-            #print(f"Sensor Values: {sensors_values}")
+            # print(f"Sensor Values: {sensors_values}")
             logging.info(f"JSON MESSAGE PROCESS: {sensors_values}")
 
         except Exception as e:
@@ -137,7 +139,7 @@ async def process_audio():
     global first_reading_after_audio
     while True:
         logging.info(f" --- START AUDIO RECORDING {datetime.datetime.now()} --- ")
-        #audio_mic.record()
+        # audio_mic.record()
         accel_rec.record()
         logging.info(f" --- END AUDIO RECORDING {datetime.datetime.now()} ----")
         first_reading_after_audio = True
@@ -149,12 +151,14 @@ async def main():
     1. Run the process_serial().
     2. Run the process_audio() - Record audio and accel for 15 seconds every 10 minutes.
     """
+    while True:
+        # Run process_serial first and wait for it to complete
+        await process_serial()
+        # Then, run process_audio and wait for it to complete
+        await process_audio()
+        await asyncio.sleep(0.01)
 
-    loop = asyncio.get_event_loop()
-    serial_task = loop.create_task(process_serial())
-    audio_task = loop.create_task(process_audio())
 
-    await asyncio.gather(serial_task, audio_task)
-
-
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
+# asyncio.run(main())
