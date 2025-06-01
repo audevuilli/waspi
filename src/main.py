@@ -1,7 +1,11 @@
 import asyncio
 from pathlib import Path
 
-from waspi.components.program_orchestrator import ProgramOrchestrater
+from waspi.components.program_orchestrator import (
+    ProgramOrchestrater,
+    SyncAwareOrchestrator,
+)
+from waspi.components.lockfile_coordinator import LockFileCoordinator
 from waspi import config_mqtt
 
 
@@ -51,7 +55,15 @@ async def main():
 
     # Create and run the program orchestrator
     orchestrator = ProgramOrchestrater(**config)
-    await orchestrator.run_program_continuously()
+    # Instantiate the coordinator
+    coordinator = LockFileCoordinator()
+
+    # Create a sync-aware orchestrator to handle lock file coordination
+    sync_orchestrator = SyncAwareOrchestrator(
+        orchestrator=orchestrator,
+        coordinator=coordinator,
+    )
+    await sync_orchestrator.run_continuous_with_sync_awareness()
 
 
 if __name__ == "__main__":

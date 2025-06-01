@@ -4,9 +4,10 @@ from pathlib import Path
 import time
 
 from waspi.components.accel_rec import AccelRecorder
-from waspi.components.sensor_manager import SerialReceiver
+from waspi.components.lockfile_coordinator import LockFileCoordinator
 from waspi.components.message_factories import SensorValue_MessageBuilder
 from waspi.components.messengers import MQTTMessenger
+from waspi.components.sensor_manager import SerialReceiver
 from waspi.components.message_stores.sqlite import SqliteMessageStore
 from waspi.components.stores.sqlite import SqliteStore
 
@@ -178,6 +179,62 @@ class ProgramOrchestrater:
                 # Step 3: Process Accelerometer
                 await self.process_accel_phase()
 
+                await asyncio.sleep(0.1)  # Very short sleep
+
+        except KeyboardInterrupt:
+            logger.info("Program interrupted by user. Exiting...")
+
+        except Exception as e:
+            logger.error(f"An error occurred in the main loop: {e}")
+            raise
+
+
+class SyncAwareOrchestrator:
+    """Extended Orchestrator that coordinate with sync operations."""
+
+    def __init__(
+        self, orchestrator: ProgramOrchestrater, coordinator: LockFileCoordinator
+    ):
+        """Initialize the orchestrator with the main orchestrator and lock file coordinator."""
+        self.orchestrator = orchestrator
+        self.coordinator = coordinator
+
+    # Max wait time for sync completion - 5 minutes
+    async def wait_for_sync_completion(self, max_wait: int = 300):
+        """Wait for the sync operation to complete."""
+        wait_time = 0
+        while self.coordinator.is_sync_in_progress() and wait_time < max_wait:
+            logger.info("Sync in progress. Waiting before next cycle.")
+            await asyncio.sleep(5)
+            wait_time += 5
+
+    async def run_program_cycle_with_sync_check(self):
+        """Run the program with sync checks."""
+
+        await self.wait_for_sync_completion()
+
+        # Acquire the lock - Prevent sync operations while running the program
+        if not self.coordinator.acquire_lock():
+            logger.warning("Failed to acquire lock. Skipping program cycle.")
+            return None
+
+        try:
+            # Run the main program cycle
+            return await self.orchestrator.run_program_continuously()
+
+        finally:
+            # Release the lock after the program cycle
+            self.coordinator.release_lock()
+
+    async def run_continuous_with_sync_awareness(self):
+        """Run the program continuously in a loop, checking for lock file status."""
+
+        logger.info("Starting the main program loop...")
+        try:
+            while True:
+                # Check if sync is in progress
+                await self.run_program_cycle_with_sync_check()
+                # Sleep for a short duration to avoid busy waiting
                 await asyncio.sleep(0.1)  # Very short sleep
 
         except KeyboardInterrupt:

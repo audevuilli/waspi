@@ -3,6 +3,7 @@
 from waspi.components.accel_rec import AccelRecorder
 from waspi.components.audio import PyAudioRecorder
 from waspi.components.sensor_manager import SerialReceiver
+from waspi.components.lockfile_coordinator import LockFileCoordinator
 from waspi.components.message_factories import (
     SensorValue_MessageBuilder,
     AccelLogger_MessageBuilder,
@@ -16,6 +17,7 @@ from waspi.components.stores.sqlite import SqliteStore
 __all__ = [
     "AccelRecorder",
     "PyAudioRecorder",
+    "LockFileCoordinator",
     "SerialReceiver",
     "SensorValue_MessageBuilder",
     "AccelLogger_MessageBuilder",
