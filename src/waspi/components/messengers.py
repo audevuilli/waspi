@@ -1,7 +1,7 @@
 """Messengers for the acoupi package."""
+
 import datetime
 from typing import Optional
-import asyncio
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
@@ -13,6 +13,7 @@ from waspi.components.types import Messenger
 __all__ = [
     "MQTTMessenger",
 ]
+
 
 class MQTTMessenger(Messenger):
     """Messenger that sends messages via MQTT."""
