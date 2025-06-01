@@ -1,13 +1,13 @@
 """Implementation of a SensorReporter for waspi."""
+
 import arrow
-import json
 import datetime
 import asyncio
 from typing import List
 
 from pySerialTransfer import pySerialTransfer as txfr
 from waspi import data
-from waspi.components.waspi_util import *
+from waspi.components.waspi_util import get_float
 
 
 class SensorReporter:
@@ -17,22 +17,20 @@ class SensorReporter:
         self.hwid_list = hwid_list
 
     def get_SensorInfo(self, n):
-    #async def get_SensorInfo(self, n):
+        # async def get_SensorInfo(self, n):
         """Create an sensor dict object."""
 
         sensor_values = {}
 
         for hwid in self.hwid_list:
             sensor_values[hwid] = data.SensorValue(
-                hwid=hwid,
-                value=n[hwid],
-                timestamp=arrow.utcnow().datetime.timestamp()
+                hwid=hwid, value=n[hwid], timestamp=arrow.utcnow().datetime.timestamp()
             )
         return sensor_values
 
     def get_PeriodicReport(self):
         """Create a report based on the sensor object."""
-        
+
         idx_value = {}
         idx = 0
 
