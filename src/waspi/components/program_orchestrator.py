@@ -16,8 +16,9 @@ from waspi.components.stores.sqlite import SqliteStore
 logging.basicConfig(
     filename="waspi.log",
     filemode="w",
-    format="%(levelname)s - %(message)s",
     level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger("waspi")
 
@@ -50,9 +51,9 @@ class ProgramOrchestrater:
         db_path: Path,
         db_path_message: Path,
         # Timing Configuration
-        max_serial_timeout: int = 20,  # Maximum time to receive serial data and send to MQTT
-        break_time: int = 5,  # Sleep time before accel record
-        max_cycle_time: int = 5,  # Maximum overhead time for each cycle
+        max_serial_timeout: int = 60,  # Maximum time to receive serial data and send to MQTT
+        break_time: int = 2,  # Sleep time before accel record
+        max_cycle_time: int = 20,  # Maximum overhead time for each cycle
     ):
         """Initialize the orchestrator with configuration parameters."""
         self.serial_receiver = SerialReceiver(
@@ -89,25 +90,22 @@ class ProgramOrchestrater:
 
         try:
             # Read serial data
-            logger.info("Reading serial data...")
-            # serial_task = asyncio.create_task(self.serial_receiver.get_SerialRx()) #serial_rx.get_SerialRx()
-            serial_task = asyncio.create_task(self.serial_receiver.get_SerialRx())
+            logger.info("Reading SerialTransfer binary data...")
 
             try:
                 serial_output = await asyncio.wait_for(
-                    serial_task, timeout=(self.max_serial_timeout - 5)
+                    self.serial_receiver.get_SerialRx(), timeout=65
                 )
+
             except asyncio.TimeoutError:
                 logger.error(
-                    f"Serial reading timed out after {self.max_serial_timeout-5}. Skipping this cycle."
+                    f"Serial reading timed out after {self.max_serial_timeout-5}. Arduino may be in 60s cycle."
                 )
                 return False, time.time() - phase_start
 
             if serial_output is None:
                 logger.error("No serial output received. Skipping this cycle.")
                 return False, time.time() - phase_start
-
-            logger.info(f"Serial output received: {serial_output}")
 
             # Build and send MQTT Message
             logger.info("Building MQTT message...")
