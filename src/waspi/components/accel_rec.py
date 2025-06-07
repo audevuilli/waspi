@@ -1,7 +1,7 @@
 import datetime
 from pathlib import Path
 import subprocess
-import sys
+import time
 from waspi import data
 from waspi.components.types import AudioRecorder
 
@@ -55,6 +55,9 @@ class AccelRecorder(AudioRecorder):
         except subprocess.CalledProcessError as e:
             print(f"Error during recording: {e}")
             return None
+
+        # Sleep to allow data to be collected by the arduino.
+        time.sleep(5)
 
         return data.Recording(
             path=audiofile_path,

@@ -16,7 +16,7 @@ Adafruit_SHT4x sht45_1 = Adafruit_SHT4x();
 DFRobot_SCD4X scd41 = DFRobot_SCD4X();
 
 // Reporting time interval
-const unsigned int reportingInterval = 30000; // 30s
+const unsigned int reportingInterval = 60000; // every minute
 
 // Arduino Pins - LoadCell Sensor
 const int loadCell_DoutPin = 9;
