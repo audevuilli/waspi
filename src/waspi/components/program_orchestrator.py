@@ -53,7 +53,7 @@ class ProgramOrchestrater:
         # Timing Configuration
         max_serial_timeout: int = 60,  # Maximum time to receive serial data and send to MQTT
         break_time: int = 2,  # Sleep time before accel record
-        max_cycle_time: int = 20,  # Maximum overhead time for each cycle
+        max_cycle_time: int = 30,  # Maximum overhead time for each cycle
     ):
         """Initialize the orchestrator with configuration parameters."""
         self.serial_receiver = SerialReceiver(
@@ -94,7 +94,7 @@ class ProgramOrchestrater:
 
             try:
                 serial_output = await asyncio.wait_for(
-                    self.serial_receiver.get_SerialRx(), timeout=65
+                    self.serial_receiver.get_SerialRx(), timeout=60
                 )
 
             except asyncio.TimeoutError:
@@ -120,13 +120,15 @@ class ProgramOrchestrater:
 
             phase_duration = time.time() - phase_start
 
-            if (response.status.value == 0):
+            if response.status.value == 0:
                 logger.info(
+                    f"MQTT message sent successfully in {phase_duration:.2f} seconds."
                     f"MQTT message sent successfully in {phase_duration:.2f} seconds."
                 )
                 return True, phase_duration
             else:
                 logger.error(f"Failed to send MQTT message: {response.status.value}")
+                logger.error(f"Failed to send MQTT message {response}")
                 logger.error(f"Failed to send MQTT message {response}")
                 return False, phase_duration
 
@@ -178,7 +180,7 @@ class ProgramOrchestrater:
                 # Step 3: Process Accelerometer
                 await self.process_accel_phase()
 
-                await asyncio.sleep(0.1)  # Very short sleep
+                await asyncio.sleep(2)  # Very short sleep
 
         except KeyboardInterrupt:
             logger.info("Program interrupted by user. Exiting...")
