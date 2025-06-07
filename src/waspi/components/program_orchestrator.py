@@ -120,13 +120,14 @@ class ProgramOrchestrater:
 
             phase_duration = time.time() - phase_start
 
-            if response.status.value == "SUCCESS":
+            if (response.status.value == 0):
                 logger.info(
-                    f"MQTT mesaage sent successfully in {phase_duration:.2f} seconds."
+                    f"MQTT message sent successfully in {phase_duration:.2f} seconds."
                 )
                 return True, phase_duration
             else:
                 logger.error(f"Failed to send MQTT message: {response.status.value}")
+                logger.error(f"Failed to send MQTT message {response}")
                 return False, phase_duration
 
         except Exception as e:

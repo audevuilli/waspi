@@ -35,7 +35,7 @@ async def main():
         "mqtt_topic": config_mqtt.DEFAULT_TOPIC,
         # Accelerometer Configuration
         "accel_duration": 60.0,  # seconds
-        "accel_samplerate": 16000,  # Hz
+        "accel_samplerate": 44100,  # Hz
         "accel_channels": 2,  # Stereo
         "accel_dir": Path.home() / "storages" / "recordings" / "accel_rec",
         # Audio Configuration
