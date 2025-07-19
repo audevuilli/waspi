@@ -7,6 +7,8 @@ import numpy as np
 from pathlib import Path
 
 from picamera2 import Picamera2
+from picamera2.encoders import H264Encoder
+from picamera2.outputs import FfmpegOutput
 from PIL import Image
 
 from camera_settings import *
@@ -40,8 +42,21 @@ def check_image_dir(images_dir):
 
     return images_dir_date
 
+def check_video_dir(video_path):
+    """ if video_path does not exist create the folder """
+    date_today = datetime.datetime.today().strftime('%Y_%m_%d')
+    video_dir_date = Path(video_path) / f"{date_today}"
+
+    if not video_dir_date.exists():
+        try:
+            video_dir_date.mkdir(parents=True)
+        except OSError as err:
+            print("ERROR : Could Not Create Folder %s %s" % (video_dir_date, err))
+            exit(1)
+
+    return video_dir_date
 #------------------------------------------------------------------------------
-def get_file_name(images_dir, image_name_prefix, current_count):
+def get_image_filename(images_dir, image_name_prefix, current_count):
     """
     Create a file name based on settings.py variables. Save images in datetime.
     """
@@ -52,6 +67,19 @@ def get_file_name(images_dir, image_name_prefix, current_count):
         file_path = str(images_dir) + '/' + str(datetime_now) + '.jpg'
     return file_path
 
+def get_video_filename(video_dir, video_name_prefix, current_count):
+    """
+    Create a file name based on settings.py variables. Save images in datetime.
+    """
+    datetime_now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    file_path = str(video_dir) + '/' + str(datetime_now) + '.jpg'
+    return file_path
+
+#------------------------------------------------------------------------------
+def is_time_to_record():
+    """Check if the current time is within the recording window."""
+    current_hour = datetime.datetime.now().hour
+    return videoRecordStartHour <= current_hour < videoRecordEndHour
 
 #------------------------------------------------------------------------------
 def get_last_counter():
